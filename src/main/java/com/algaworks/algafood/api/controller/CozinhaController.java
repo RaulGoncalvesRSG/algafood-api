@@ -42,8 +42,8 @@ public class CozinhaController {
 
     @PostMapping
     public ResponseEntity<Cozinha> adicionar(@RequestBody Cozinha cozinha){
-        Cozinha response = service.salvar(cozinha);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        cozinha = service.salvar(cozinha);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cozinha);
     }
 
     @PutMapping("/{id}")
