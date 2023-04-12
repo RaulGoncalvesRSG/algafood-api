@@ -18,25 +18,23 @@ public class CozinhaService {
     private final CozinhaRepository repository;
 
     public List<Cozinha> listar(){
-        return repository.listar();
+        return repository.findAll();
     }
 
     public Cozinha buscar(Long id){
-        Cozinha cozinha = repository.buscar(id);
+        Cozinha cozinha = repository.findById(id).
+                orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de cozinha com código %d.", id)));
 
-        if (cozinha == null){
-            throw new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de cozinha com código %d.", id));
-        }
         return cozinha;
     }
 
     public Cozinha salvar(Cozinha cozinha) {
-        return repository.salvar(cozinha);
+        return repository.save(cozinha);
     }
 
     public void excluir(Long id) {
         try {
-            repository.remover(id);
+            repository.deleteById(id);
         } catch(EmptyResultDataAccessException e){
             throw new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de cozinha com código %d.", id));
         } catch (DataIntegrityViolationException e){

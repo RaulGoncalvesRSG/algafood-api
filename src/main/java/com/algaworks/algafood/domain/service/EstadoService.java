@@ -18,27 +18,23 @@ public class EstadoService {
     private final EstadoRepository repository;
 
     public List<Estado> listar(){
-        return repository.listar();
+        return repository.findAll();
     }
 
     public Estado buscar(Long id){
-        Estado estado = repository.buscar(id);
+        Estado estado = repository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de estado com código %d.", id)));
 
-        if (estado == null){
-            throw new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de estado com código %d.", id));
-        }
         return estado;
     }
 
     public Estado salvar(Estado Estado) {
-        return repository.salvar(Estado);
+        return repository.save(Estado);
     }
 
     public void excluir(Long id) {
-        //chamar buscar
-
         try {
-            repository.remover(id);
+            repository.deleteById(id);
         } catch(EmptyResultDataAccessException e){
             throw new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de estado com código %d.", id));
         } catch (DataIntegrityViolationException e){

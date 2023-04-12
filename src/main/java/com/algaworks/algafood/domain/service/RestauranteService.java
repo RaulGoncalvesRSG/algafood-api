@@ -18,27 +18,23 @@ public class RestauranteService {
     private final CozinhaRepository cozinhaRepository;
 
     public List<Restaurante> listar(){
-        return repository.listar();
+        return repository.findAll();
     }
 
     public Restaurante buscar(Long id){
-        Restaurante restaurante = repository.buscar(id);
+        Restaurante restaurante = repository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de restaurante com código %d.", id)));
 
-        if (restaurante == null){
-            throw new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de restaurante com código %d.", id));
-        }
         return restaurante;
     }
 
     public Restaurante salvar(Restaurante restaurante) {
         Long cozinhaId = restaurante.getCozinha().getId();
-        Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
 
-        if (cozinha == null){
-            throw new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de cozinha com código %d.", cozinhaId));
-        }
+        Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de cozinha com código %d.", cozinhaId)));
 
         restaurante.setCozinha(cozinha);
-        return repository.salvar(restaurante);
+        return repository.save(restaurante);
     }
 }
