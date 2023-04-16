@@ -1,18 +1,27 @@
 package com.algaworks.algafood.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -33,4 +42,24 @@ public class Restaurante {
     @ManyToOne
     @JoinColumn(name = "cozinha_id")
     private Cozinha cozinha;
+
+    @JsonIgnore
+    @Embedded
+    private Endereco endereco;
+
+    @CreationTimestamp          //Atribui um horário para a classe no momento q ela for salva no BD
+    @Column(nullable = false, columnDefinition = "datetime") //columnDefinition sem precisão de ms
+    private LocalDateTime dataCadastro;
+
+    @UpdateTimestamp            //Atribui um horário para a classe sempre q ela for atualizada
+    @Column(nullable = false, columnDefinition = "datetime")
+    private LocalDateTime dataAtualizacao;
+
+    @JsonIgnore
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(name = "restaurante_forma_pagamento",
+            joinColumns = @JoinColumn(name = "restaurante_id"),
+            inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
+    private List<FormaPagamento> formaPagamentos = new ArrayList<>();
 }

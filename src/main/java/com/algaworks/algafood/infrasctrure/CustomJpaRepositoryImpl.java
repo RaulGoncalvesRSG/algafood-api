@@ -1,6 +1,7 @@
 package com.algaworks.algafood.infrasctrure;
 
 import com.algaworks.algafood.domain.repository.CustomJpaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
@@ -10,8 +11,10 @@ import java.util.Optional;
 public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>
         implements CustomJpaRepository<T, ID> {
 
+    @Autowired
     private EntityManager manager;
 
+    //Criação manualmente do constutor pq da alteração da classe padrão (SimpleJpaRepository)
     public CustomJpaRepositoryImpl(JpaEntityInformation<T, ?> entityInformation,
                                    EntityManager entityManager) {
         super(entityInformation, entityManager);
