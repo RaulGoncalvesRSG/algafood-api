@@ -50,15 +50,17 @@ public class Restaurante {
     @Embedded
     private Endereco endereco;
 
+    @JsonIgnore
     @CreationTimestamp          //Atribui um horário para a classe no momento q ela for salva no BD
     @Column(nullable = false, columnDefinition = "datetime") //columnDefinition sem precisão de ms
     private LocalDateTime dataCadastro;
 
+    @JsonIgnore
     @UpdateTimestamp            //Atribui um horário para a classe sempre q ela for atualizada
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime dataAtualizacao;
 
-  //  @JsonIgnore
+    @JsonIgnore
     @Builder.Default
     @ManyToMany
     @JoinTable(name = "restaurante_forma_pagamento",
