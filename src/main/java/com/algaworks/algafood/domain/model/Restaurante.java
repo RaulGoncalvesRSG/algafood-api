@@ -35,13 +35,15 @@ public class Restaurante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nome;
 
     @Column(nullable = false)
     private BigDecimal taxaFrete;
-    
-    @ManyToOne
-    @JoinColumn(name = "cozinha_id")
+
+ //   @JsonIgnore
+    @ManyToOne //(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
 
     @JsonIgnore
@@ -56,13 +58,13 @@ public class Restaurante {
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime dataAtualizacao;
 
-    @JsonIgnore
+  //  @JsonIgnore
     @Builder.Default
     @ManyToMany
     @JoinTable(name = "restaurante_forma_pagamento",
             joinColumns = @JoinColumn(name = "restaurante_id"),
             inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
-    private List<FormaPagamento> formaPagamentos = new ArrayList<>();
+    private List<FormaPagamento> formasPagamento = new ArrayList<>();
 
     @JsonIgnore
     @Builder.Default

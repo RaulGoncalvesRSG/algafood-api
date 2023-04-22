@@ -2,6 +2,7 @@ package com.algaworks.algafood.domain.repository;
 
 import com.algaworks.algafood.domain.model.Restaurante;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
@@ -12,6 +13,11 @@ public interface RestauranteRepository extends
         CustomJpaRepository<Restaurante, Long>,
         RestauranteRepositoryQueries,
         JpaSpecificationExecutor<Restaurante> {
+
+    /* Errata: se um restaurante não tiver nenhuma forma de pagamento associada a ele, esse restaurante não será retornado usando JOIN FETCH r.formasPagamento.
+    Para resolver isso, temos que usar LEFT JOIN FETCH r.formasPagamento:  @Query("from Restaurante r join fetch r.cozinha left join fetch r.formasPagamento")*/
+    @Query("SELECT DISTINCT r FROM Restaurante r LEFT JOIN FETCH r.cozinha LEFT JOIN FETCH r.formasPagamento")
+    List<Restaurante> findAll();
 
     List<Restaurante> queryByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
 
