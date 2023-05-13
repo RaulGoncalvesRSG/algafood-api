@@ -1,10 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
-import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CozinhaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,12 +31,8 @@ public class CozinhaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Cozinha> buscar(@PathVariable Long id){
-        try {
-            Cozinha cozinha = service.buscar(id);
-            return ResponseEntity.ok(cozinha);
-        } catch (EntidadeNaoEncontradaException e){
-            return ResponseEntity.notFound().build();
-        }
+        Cozinha cozinha = service.buscarOuFalhar(id);
+        return ResponseEntity.ok(cozinha);
     }
 
     @PostMapping
@@ -48,26 +43,15 @@ public class CozinhaController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Cozinha> atualizar(@PathVariable Long id, @RequestBody Cozinha cozinha) {
-        try {
-            service.buscar(id);
-        } catch (EntidadeNaoEncontradaException e){
-            return ResponseEntity.notFound().build();
-        }
+        Cozinha cozinhaAtual = service.buscarOuFalhar(id);
+        BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 
-        cozinha.setId(id);
-        service.salvar(cozinha);
-        return ResponseEntity.ok(cozinha);
+        return ResponseEntity.ok(service.salvar(cozinhaAtual));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Cozinha> remover(@PathVariable Long id) {
-        try {
-            service.excluir(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntidadeNaoEncontradaException e){
-            return ResponseEntity.notFound().build();
-        } catch (EntidadeEmUsoException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+    public ResponseEntity<Void> remover(@PathVariable Long id) {
+        service.excluir(id);
+        return ResponseEntity.noContent().build();
     }
 }
