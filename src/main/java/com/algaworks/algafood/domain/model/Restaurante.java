@@ -19,6 +19,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,10 +36,12 @@ public class Restaurante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    @NotBlank   //Não pode ser null (NotNull), vazio ou conter apenas espaço em branco (NotEmpty)
     @Column(nullable = false)
     private String nome;
 
+    @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal taxaFrete;
 
