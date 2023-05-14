@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -36,13 +37,13 @@ public class CozinhaController {
     }
 
     @PostMapping
-    public ResponseEntity<Cozinha> adicionar(@RequestBody Cozinha cozinha){
+    public ResponseEntity<Cozinha> adicionar(@RequestBody @Valid Cozinha cozinha){
         cozinha = service.salvar(cozinha);
         return ResponseEntity.status(HttpStatus.CREATED).body(cozinha);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cozinha> atualizar(@PathVariable Long id, @RequestBody Cozinha cozinha) {
+    public ResponseEntity<Cozinha> atualizar(@PathVariable Long id, @RequestBody @Valid Cozinha cozinha) {
         Cozinha cozinhaAtual = service.buscarOuFalhar(id);
         BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 

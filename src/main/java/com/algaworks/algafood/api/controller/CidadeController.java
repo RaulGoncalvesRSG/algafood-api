@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class CidadeController {
     }
 
     @PostMapping
-    public ResponseEntity<Cidade> adicionar(@RequestBody Cidade cidade){
+    public ResponseEntity<Cidade> adicionar(@RequestBody @Valid Cidade cidade){
         try {
             cidade = service.salvar(cidade);
             return ResponseEntity.status(HttpStatus.CREATED).body(cidade);
@@ -48,7 +49,7 @@ public class CidadeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cidade> atualizar(@PathVariable Long id, @RequestBody Cidade cidade) {
+    public ResponseEntity<Cidade> atualizar(@PathVariable Long id, @RequestBody  @Valid Cidade cidade) {
         try {
             Cidade cidadeAtual = service.buscarOuFalhar(id);
             BeanUtils.copyProperties(cidade, cidadeAtual, "id");

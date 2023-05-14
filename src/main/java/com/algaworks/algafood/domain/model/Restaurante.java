@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.model;
 
+import com.algaworks.algafood.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,8 +20,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.groups.ConvertGroup;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,7 +40,7 @@ public class Restaurante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @NotBlank   //Não pode ser null (NotNull), vazio ou conter apenas espaço em branco (NotEmpty)
     @Column(nullable = false)
     private String nome;
@@ -45,8 +49,10 @@ public class Restaurante {
     @Column(nullable = false)
     private BigDecimal taxaFrete;
 
- //   @JsonIgnore
-    @ManyToOne //(fetch = FetchType.LAZY)
+    @Valid          //Indica que será validado as propriedades do obj Cozinha (vai procurar todas validações do obj)
+    @ConvertGroup(to = Groups.CozinhaId.class)  //Quando cadastrar Restaurante, utiliza o grupo CadastroRestaurante para validar cozinha
+    @NotNull
+    @ManyToOne
     @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
 

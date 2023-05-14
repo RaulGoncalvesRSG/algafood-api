@@ -47,7 +47,7 @@ public class RestauranteController {
         return ResponseEntity.ok(restaurante);
     }
 
-    @PostMapping
+    @PostMapping        //@Validated aceita argumento, diferente do @Valid. Está informando q irá validar apenas propriedades do grupo CadastroRestaurante. O grupo padrão é o Default.class
     public ResponseEntity<Restaurante> adicionar(@RequestBody @Valid Restaurante restaurante){
         try {
             restaurante = service.salvar(restaurante);
@@ -58,7 +58,7 @@ public class RestauranteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Restaurante> atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante){
+    public ResponseEntity<Restaurante> atualizar(@PathVariable Long id, @RequestBody @Valid Restaurante restaurante){
         try {
             Restaurante restauranteAtual = service.buscarOuFalhar(id);
 
