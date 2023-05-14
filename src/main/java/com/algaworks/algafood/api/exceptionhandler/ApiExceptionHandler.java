@@ -6,8 +6,11 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +28,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
+@AllArgsConstructor
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	public static final String MSG_ERRO_GENERICA_USUARIO_FINAL
 		= "Ocorreu um erro interno inesperado no sistema. Tente novamente e se "
 				+ "o problema persistir, entre em contato com o administrador do sistema.";
+
+	private final MessageSource messageSource;
 	
 	@Override  //tratando exception de violação de constraints de validação
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -40,10 +46,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		List<Problem.Field> problemFields = ex.getFieldErrors()
 				.stream()
-				.map(fieldError -> Problem.Field.builder()
-						.name(fieldError.getField())
-						.userMessage(String.format("O campo %s.", fieldError.getDefaultMessage()))
-						.build())
+				.map(fieldError -> {
+					String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());  //Pega o Locale do SO do sistema
+
+					return Problem.Field.builder()
+							.name(fieldError.getField())
+							.userMessage(String.format("O campo %s.", message))
+							.build();
+				})
 				.collect(Collectors.toList());
 
 	    Problem problem = createProblemBuilder(status, problemType, detail)
