@@ -23,7 +23,7 @@ public class Problem {
 
 	@Getter
 	@Builder
-	public static class Field{
+	public static class Field {
 
 		private String name;
 		private String userMessage;

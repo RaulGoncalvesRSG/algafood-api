@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,11 +32,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+	private final MessageSource messageSource;
+
 	public static final String MSG_ERRO_GENERICA_USUARIO_FINAL
 		= "Ocorreu um erro interno inesperado no sistema. Tente novamente e se "
 				+ "o problema persistir, entre em contato com o administrador do sistema.";
-
-	private final MessageSource messageSource;
 	
 	@Override  //tratando exception de violação de constraints de validação
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -46,11 +47,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		List<Problem.Field> problemFields = ex.getFieldErrors()
 				.stream()
-				.map(fieldError -> {
-					String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());  //Pega o Locale do SO do sistema
+				.map(objectError -> {
+					String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());  //Pega o Locale do SO do sistema
+					String name = objectError.getObjectName();
+
+					if (objectError instanceof FieldError) {
+						name = objectError.getField();		//Qnd for um FieldError, atribui na variável
+					}
 
 					return Problem.Field.builder()
-							.name(fieldError.getField())
+							.name(name)
 							.userMessage(String.format("O campo %s.", message))
 							.build();
 				})
