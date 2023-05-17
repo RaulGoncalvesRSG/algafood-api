@@ -26,7 +26,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,12 +64,12 @@ public class Restaurante {
     @JsonIgnore
     @CreationTimestamp          //Atribui um horário para a classe no momento q ela for salva no BD
     @Column(nullable = false, columnDefinition = "datetime") //columnDefinition sem precisão de ms
-    private LocalDateTime dataCadastro;
+    private OffsetDateTime dataCadastro;
 
     @JsonIgnore
     @UpdateTimestamp            //Atribui um horário para a classe sempre q ela for atualizada
     @Column(nullable = false, columnDefinition = "datetime")
-    private LocalDateTime dataAtualizacao;
+    private OffsetDateTime dataAtualizacao;
 
     @JsonIgnore
     @Builder.Default
