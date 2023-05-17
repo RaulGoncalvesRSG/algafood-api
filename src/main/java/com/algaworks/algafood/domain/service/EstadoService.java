@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,10 +24,12 @@ public class EstadoService {
         return repository.findAll();
     }
 
+    @Transactional
     public Estado salvar(Estado estado) {
         return repository.save(estado);
     }
 
+    @Transactional
     public void excluir(Long estadoId) {
         try {
             repository.deleteById(estadoId);

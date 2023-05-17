@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class CidadeService {
         return repository.findAll();
     }
 
+    @Transactional
     public Cidade salvar(Cidade cidade) {
         Long estadoId = cidade.getEstado().getId();
         Estado estado = estadoService.buscarOuFalhar(estadoId);
@@ -33,6 +35,7 @@ public class CidadeService {
         return repository.save(cidade);
     }
 
+    @Transactional
     public void excluir(Long cidadeId) {
         try {
             repository.deleteById(cidadeId);
