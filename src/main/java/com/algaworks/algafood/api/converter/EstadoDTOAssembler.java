@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.assembler;
+package com.algaworks.algafood.api.converter;
 
 import com.algaworks.algafood.api.dto.response.EstadoDTO;
 import com.algaworks.algafood.domain.model.Estado;
