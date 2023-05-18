@@ -1,13 +1,12 @@
-package com.algaworks.algafood.api.dto;
+package com.algaworks.algafood.api.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Builder
 @Data
-public class CidadeDTO {
+public class CozinhaDTO {
 
     private Long id;
     private String nome;
-    private EstadoDTO estado;
 }

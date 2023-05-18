@@ -1,6 +1,6 @@
 package com.algaworks.algafood.api.assembler;
 
-import com.algaworks.algafood.api.dto.EstadoDTO;
+import com.algaworks.algafood.api.dto.response.EstadoDTO;
 import com.algaworks.algafood.domain.model.Estado;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;

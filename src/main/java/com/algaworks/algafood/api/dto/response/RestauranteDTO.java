@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.dto;
+package com.algaworks.algafood.api.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
