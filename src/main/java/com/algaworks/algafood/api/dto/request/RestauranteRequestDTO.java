@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.dto.input;
+package com.algaworks.algafood.api.dto.request;
 
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 
 @Builder
 @Data
-public class RestauranteInputDTO {
+public class RestauranteRequestDTO {
 
     @NotBlank
     private String nome;
@@ -22,5 +22,5 @@ public class RestauranteInputDTO {
 
     @Valid
     @NotNull
-    private CozinhaIdInputDTO cozinha;
+    private CozinhaIdRequestDTO cozinha;
 }
