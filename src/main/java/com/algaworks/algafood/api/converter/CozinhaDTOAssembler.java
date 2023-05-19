@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class CozinhaRequestAssembler {
+public class CozinhaDTOAssembler {
 
     private final ModelMapper modelMapper;
 

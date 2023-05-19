@@ -28,29 +28,29 @@ import java.util.List;
 public class RestauranteController {
 
     private final RestauranteService service;
-    private final RestauranteDTOAssembler dtoAssembler;
-    private final RestauranteRequestDTODisassembler dtoDisassembler;
+    private final RestauranteDTOAssembler assembler;
+    private final RestauranteRequestDTODisassembler disassembler;
 
     @GetMapping
     public ResponseEntity<List<RestauranteDTO>> listar(){
         List<Restaurante> restaurantes = service.listar();
-        List<RestauranteDTO> dtos = dtoAssembler.toCollectionDTO(restaurantes);
+        List<RestauranteDTO> dtos = assembler.toCollectionDTO(restaurantes);
         return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RestauranteDTO> buscar(@PathVariable Long id){
         Restaurante restaurante = service.buscarOuFalhar(id);
-        RestauranteDTO dto = dtoAssembler.toDTO(restaurante);
+        RestauranteDTO dto = assembler.toDTO(restaurante);
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping
     public ResponseEntity<RestauranteDTO> adicionar(@RequestBody @Valid RestauranteRequestDTO requestDTO){
         try {
-            Restaurante restaurante = dtoDisassembler.toDomainObject(requestDTO);
+            Restaurante restaurante = disassembler.toDomainObject(requestDTO);
             restaurante = service.salvar(restaurante);
-            RestauranteDTO dto = dtoAssembler.toDTO(restaurante);
+            RestauranteDTO dto = assembler.toDTO(restaurante);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(dto);
         } catch (CozinhaNaoEncontradaException e) {
@@ -62,9 +62,9 @@ public class RestauranteController {
     public ResponseEntity<RestauranteDTO> atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteRequestDTO requestDTO){
         try {
             Restaurante restauranteAtual = service.buscarOuFalhar(id);
-            dtoDisassembler.copyToDomainObject(requestDTO, restauranteAtual);
+            disassembler.copyToDomainObject(requestDTO, restauranteAtual);
             restauranteAtual = service.salvar(restauranteAtual);
-            RestauranteDTO dto = dtoAssembler.toDTO(restauranteAtual);
+            RestauranteDTO dto = assembler.toDTO(restauranteAtual);
 
             return ResponseEntity.ok(dto);
         } catch (CozinhaNaoEncontradaException e) {
