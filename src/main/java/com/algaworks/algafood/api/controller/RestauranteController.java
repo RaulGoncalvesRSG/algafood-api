@@ -1,11 +1,14 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.converter.RestauranteDTOAssembler;
+import com.algaworks.algafood.api.converter.RestauranteRequestDTODisassembler;
+import com.algaworks.algafood.api.dto.request.RestauranteRequestDTO;
+import com.algaworks.algafood.api.dto.response.RestauranteDTO;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,38 +28,45 @@ import java.util.List;
 public class RestauranteController {
 
     private final RestauranteService service;
+    private final RestauranteDTOAssembler dtoAssembler;
+    private final RestauranteRequestDTODisassembler dtoDisassembler;
 
     @GetMapping
-    public ResponseEntity<List<Restaurante>> listar(){
-        return ResponseEntity.ok(service.listar());
+    public ResponseEntity<List<RestauranteDTO>> listar(){
+        List<Restaurante> restaurantes = service.listar();
+        List<RestauranteDTO> dtos = dtoAssembler.toCollectionDTO(restaurantes);
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Restaurante> buscar(@PathVariable Long id){
+    public ResponseEntity<RestauranteDTO> buscar(@PathVariable Long id){
         Restaurante restaurante = service.buscarOuFalhar(id);
-        return ResponseEntity.ok(restaurante);
+        RestauranteDTO dto = dtoAssembler.toDTO(restaurante);
+        return ResponseEntity.ok(dto);
     }
 
-    @PostMapping        //@Validated aceita argumento, diferente do @Valid. Está informando q irá validar apenas propriedades do grupo CadastroRestaurante. O grupo padrão é o Default.class
-    public ResponseEntity<Restaurante> adicionar(@RequestBody @Valid Restaurante restaurante){
+    @PostMapping
+    public ResponseEntity<RestauranteDTO> adicionar(@RequestBody @Valid RestauranteRequestDTO requestDTO){
         try {
+            Restaurante restaurante = dtoDisassembler.toDomainObject(requestDTO);
             restaurante = service.salvar(restaurante);
-            return ResponseEntity.status(HttpStatus.CREATED).body(restaurante);
+            RestauranteDTO dto = dtoAssembler.toDTO(restaurante);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
         } catch (CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Restaurante> atualizar(@PathVariable Long id, @RequestBody @Valid Restaurante restaurante){
+    public ResponseEntity<RestauranteDTO> atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteRequestDTO requestDTO){
         try {
             Restaurante restauranteAtual = service.buscarOuFalhar(id);
-
-            BeanUtils.copyProperties(restaurante, restauranteAtual,
-                    "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
-
+            dtoDisassembler.copyToDomainObject(requestDTO, restauranteAtual);
             restauranteAtual = service.salvar(restauranteAtual);
-            return ResponseEntity.ok(restauranteAtual);
+            RestauranteDTO dto = dtoAssembler.toDTO(restauranteAtual);
+
+            return ResponseEntity.ok(dto);
         } catch (CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
