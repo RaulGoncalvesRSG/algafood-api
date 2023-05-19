@@ -2,12 +2,12 @@ package com.algaworks.algafood.api.converter;
 
 import com.algaworks.algafood.api.dto.request.CozinhaRequestDTO;
 import com.algaworks.algafood.domain.model.Cozinha;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CozinhaRequestDTODisassembler {
 
     private final ModelMapper modelMapper;

@@ -1,10 +1,14 @@
 package com.algaworks.algafood.api.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Builder
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CidadeDTO {
 
     private Long id;
