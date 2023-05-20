@@ -30,19 +30,20 @@ public class EstadoService {
     }
 
     @Transactional
-    public void excluir(Long estadoId) {
+    public void excluir(Long id) {
         try {
-            repository.deleteById(estadoId);
+            repository.deleteById(id);
+            repository.flush();         //Descarrega tds mudanças pendentes no BD, operações ainda n executadas
         } catch (EmptyResultDataAccessException e) {
-            throw new EstadoNaoEncontradoException(estadoId);
+            throw new EstadoNaoEncontradoException(id);
         } catch (DataIntegrityViolationException e) {
-            throw new EntidadeEmUsoException(String.format(MSG_ESTADO_EM_USO, estadoId));
+            throw new EntidadeEmUsoException(String.format(MSG_ESTADO_EM_USO, id));
         }
     }
 
-    public Estado buscarOuFalhar(Long estadoId) {
+    public Estado buscarOuFalhar(Long id) {
         return repository
-                .findById(estadoId)
-                .orElseThrow(() -> new EstadoNaoEncontradoException(estadoId));
+                .findById(id)
+                .orElseThrow(() -> new EstadoNaoEncontradoException(id));
     }
 }

@@ -30,19 +30,20 @@ public class CozinhaService {
     }
 
     @Transactional
-    public void excluir(Long cozinhaId) {
+    public void excluir(Long id) {
         try {
-            repository.deleteById(cozinhaId);
+            repository.deleteById(id);
+            repository.flush();         //Descarrega tds mudanças pendentes no BD, operações ainda n executadas
         } catch (EmptyResultDataAccessException e) {
-            throw new CozinhaNaoEncontradaException(cozinhaId);
+            throw new CozinhaNaoEncontradaException(id);
         } catch (DataIntegrityViolationException e) {
-            throw new EntidadeEmUsoException(String.format(MSG_COZINHA_EM_USO, cozinhaId));
+            throw new EntidadeEmUsoException(String.format(MSG_COZINHA_EM_USO, id));
         }
     }
 
-    public Cozinha buscarOuFalhar(Long cozinhaId) {
+    public Cozinha buscarOuFalhar(Long id) {
         return repository
-                .findById(cozinhaId)
-                .orElseThrow(() -> new CozinhaNaoEncontradaException(cozinhaId));
+                .findById(id)
+                .orElseThrow(() -> new CozinhaNaoEncontradaException(id));
     }
 }

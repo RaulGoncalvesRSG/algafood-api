@@ -29,9 +29,9 @@ public class RestauranteService {
         return repository.save(restaurante);
     }
 
-    public Restaurante buscarOuFalhar(Long restauranteId) {
+    public Restaurante buscarOuFalhar(Long id) {
         return repository
-                .findById(restauranteId)
-                .orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
+                .findById(id)
+                .orElseThrow(() -> new RestauranteNaoEncontradoException(id));
     }
 }

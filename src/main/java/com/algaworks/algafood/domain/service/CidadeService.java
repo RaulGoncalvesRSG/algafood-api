@@ -36,19 +36,20 @@ public class CidadeService {
     }
 
     @Transactional
-    public void excluir(Long cidadeId) {
+    public void excluir(Long id) {
         try {
-            repository.deleteById(cidadeId);
+            repository.deleteById(id);
+            repository.flush();         //Descarrega tds mudanças pendentes no BD, operações ainda n executadas
         } catch (EmptyResultDataAccessException e) {
-            throw new CidadeNaoEncontradaException(cidadeId);
+            throw new CidadeNaoEncontradaException(id);
         } catch (DataIntegrityViolationException e) {
-            throw new EntidadeEmUsoException(String.format(MSG_CIDADE_EM_USO, cidadeId));
+            throw new EntidadeEmUsoException(String.format(MSG_CIDADE_EM_USO, id));
         }
     }
 
-    public Cidade buscarOuFalhar(Long cidadeId) {
+    public Cidade buscarOuFalhar(Long id) {
         return repository
-                .findById(cidadeId)
-                .orElseThrow(() -> new CidadeNaoEncontradaException(cidadeId));
+                .findById(id)
+                .orElseThrow(() -> new CidadeNaoEncontradaException(id));
     }
 }
