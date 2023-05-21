@@ -3,16 +3,26 @@ package com.algaworks.algafood.api.converter;
 import org.modelmapper.ModelMapper;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public interface DTOConverter<DTO, OBJ> {
 
     ModelMapper modelMapper = new ModelMapper();
 
     default DTO converterToDTO(OBJ obj) {
-        return modelMapper.map(obj, ((ParameterizedType) getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+        ParameterizedType type = (ParameterizedType) getClass().getGenericInterfaces()[0];
+        return modelMapper.map(obj, type.getActualTypeArguments()[0]);
     }
 
     default OBJ convert(DTO dto) {
-        return modelMapper.map(dto, ((ParameterizedType) getClass().getGenericInterfaces()[0]).getActualTypeArguments()[1]);
+        ParameterizedType type = (ParameterizedType) getClass().getGenericInterfaces()[0];
+        return modelMapper.map(dto, type.getActualTypeArguments()[1]);
+    }
+
+    default List<DTO> toCollectionDTO(List<OBJ> listOfDomainObjects) {
+        return listOfDomainObjects.stream()
+                .map(this::converterToDTO)
+                .collect(Collectors.toList());
     }
 }

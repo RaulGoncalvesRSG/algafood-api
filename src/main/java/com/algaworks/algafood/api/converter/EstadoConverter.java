@@ -6,9 +6,6 @@ import com.algaworks.algafood.domain.model.Estado;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
 @RequiredArgsConstructor
 public class EstadoConverter implements DTOConverter<EstadoDTO, Estado> {
@@ -19,11 +16,5 @@ public class EstadoConverter implements DTOConverter<EstadoDTO, Estado> {
 
     public Estado toDomainObject(EstadoRequestDTO dto){
         return modelMapper.map(dto, Estado.class);
-    }
-
-    public List<EstadoDTO> toCollectionDTO(List<Estado> estados){
-        return estados.stream()
-                .map(estado -> converterToDTO(estado))
-                .collect(Collectors.toList());
     }
 }
