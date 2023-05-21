@@ -29,6 +29,20 @@ public class RestauranteService {
         return repository.save(restaurante);
     }
 
+    @Transactional
+    public void ativar(Long restauranteId){
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+        /*N precisa usar o epository.save pq qnd busca o Restaurante com repository.findById, a instância do Restaurante fica em um estado gerenciável pelo contexto de persistência do JPA
+        Qualquer modificação feita nesse obj dentro dessa transação será sincronizada (fazer update) com BD, o JPA conseguen entender isso*/
+        restaurante.ativar();
+    }
+
+    @Transactional
+    public void inativar(Long restauranteId){
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+        restaurante.inativar();
+    }
+
     public Restaurante buscarOuFalhar(Long id) {
         return repository
                 .findById(id)

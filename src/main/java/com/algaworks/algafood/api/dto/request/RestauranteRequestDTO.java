@@ -17,14 +17,14 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class RestauranteRequestDTO {
 
-    @NotBlank
+    @NotBlank       //Não pode ser null (NotNull), vazio ou conter apenas espaço em branco (NotEmpty)
     private String nome;
 
     @NotNull
     @PositiveOrZero
     private BigDecimal taxaFrete;
 
-    @Valid
+    @Valid      //Indica que será validado as propriedades do obj Cozinha (vai procurar todas validações do obj)
     @NotNull
     private CozinhaIdRequestDTO cozinha;
 }

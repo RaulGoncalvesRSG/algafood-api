@@ -33,7 +33,9 @@ public class CozinhaService {
     public void excluir(Long id) {
         try {
             repository.deleteById(id);
-            repository.flush();         //Descarrega tds mudanças pendentes no BD, operações ainda n executadas
+            /*Descarrega tds mudanças pendentes no BD, operações ainda n executadas.
+            Mesmo utilizando o flush e gerando uma sincronização das mudanças, o commit é feito apenas quando sai do método. Flush não força commit*/
+            repository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new CozinhaNaoEncontradaException(id);
         } catch (DataIntegrityViolationException e) {
