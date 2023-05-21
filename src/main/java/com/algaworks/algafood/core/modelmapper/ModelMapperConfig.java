@@ -9,9 +9,8 @@ public class ModelMapperConfig {
 
     @Bean
     public ModelMapper modelMapper(){
-        ModelMapper modelMapper = new ModelMapper();
+        return new ModelMapper();
         //modelMapper.createTypeMap(Restaurante.class, RestauranteModel.class)
 //			.addMapping(Restaurante::getTaxaFrete, RestauranteModel::setPrecoFrete);
-        return modelMapper;
     }
 }
