@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.converter.RestauranteDTOAssembler;
 import com.algaworks.algafood.api.converter.RestauranteRequestDTODisassembler;
 import com.algaworks.algafood.api.dto.request.RestauranteRequestDTO;
 import com.algaworks.algafood.api.dto.response.RestauranteDTO;
+import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -11,7 +12,13 @@ import com.algaworks.algafood.domain.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -47,7 +54,7 @@ public class RestauranteController {
             RestauranteDTO dto = assembler.toDTO(restaurante);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(dto);
-        } catch (CozinhaNaoEncontradaException e) {
+        } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }
@@ -61,7 +68,7 @@ public class RestauranteController {
             RestauranteDTO dto = assembler.toDTO(restauranteAtual);
 
             return ResponseEntity.ok(dto);
-        } catch (CozinhaNaoEncontradaException e) {
+        } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage());
         }
     }

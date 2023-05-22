@@ -27,4 +27,8 @@ public class RestauranteRequestDTO {
     @Valid      //Indica que será validado as propriedades do obj Cozinha (vai procurar todas validações do obj)
     @NotNull
     private CozinhaIdRequestDTO cozinha;
+
+    @Valid
+    @NotNull
+    private EnderecoRequestDTO endereco;
 }

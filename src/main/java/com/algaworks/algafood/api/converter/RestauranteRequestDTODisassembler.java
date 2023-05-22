@@ -1,11 +1,14 @@
 package com.algaworks.algafood.api.converter;
 
 import com.algaworks.algafood.api.dto.request.RestauranteRequestDTO;
+import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -21,6 +24,11 @@ public class RestauranteRequestDTODisassembler {
     public void copyToDomainObject(RestauranteRequestDTO dto, Restaurante restaurante) {
         // Para evitar org.hibernate.HibernateException: identifier of an instance of com.algaworks.algafood.domain.model.Cozinha was altered from 1 to 2
         restaurante.setCozinha(new Cozinha());      //Instância limpa de Cozinha sem nd de JPA
+
+        if (Objects.nonNull(restaurante.getEndereco())){
+            restaurante.getEndereco().setCidade(new Cidade());
+        }
+
         modelMapper.map(dto, restaurante);
     }
 }

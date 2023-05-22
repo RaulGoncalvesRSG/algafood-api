@@ -23,11 +23,11 @@ public abstract class ObjectDTOGenericConverter<DTO, DOMAIN> {
     }
 
     public DTO toDTO(DOMAIN domain) {
-        return this.modelMapper.map(domain, this.dtoObject);
+        return this.modelMapper.map(domain, dtoObject);
     }
 
     public DOMAIN toDomainObject(DTO dto) {
-        return this.modelMapper.map(dto, this.domainObject);
+        return this.modelMapper.map(dto, domainObject);
     }
 
     public void copyToDomainObject(DTO dto, DOMAIN domainObject) {

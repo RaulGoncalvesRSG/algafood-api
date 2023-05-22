@@ -15,7 +15,7 @@ public interface DTOConverter<DTO, OBJ> {
         return modelMapper.map(obj, type.getActualTypeArguments()[0]);
     }
 
-    default OBJ convert(DTO dto) {
+    default OBJ converterToDomain(DTO dto) {
         ParameterizedType type = (ParameterizedType) getClass().getGenericInterfaces()[0];
         return modelMapper.map(dto, type.getActualTypeArguments()[1]);
     }

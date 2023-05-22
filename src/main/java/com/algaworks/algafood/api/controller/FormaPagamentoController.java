@@ -32,8 +32,8 @@ public class FormaPagamentoController {
 
     @GetMapping
     public ResponseEntity<List<FormaPagamentoDTO>> listar(){
-        List<FormaPagamento> formaPagamentos = service.listar();
-        List<FormaPagamentoDTO> dtos = assembler.toCollectionDTO(formaPagamentos);
+        List<FormaPagamento> formasPagamento = service.listar();
+        List<FormaPagamentoDTO> dtos = assembler.toCollectionDTO(formasPagamento);
         return ResponseEntity.ok(dtos);
     }
 
