@@ -11,7 +11,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -53,7 +55,7 @@ public class Restaurante {
     @JoinTable(name = "restaurante_forma_pagamento",
             joinColumns = @JoinColumn(name = "restaurante_id"),
             inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
-    private List<FormaPagamento> formasPagamento = new ArrayList<>();
+    private Set<FormaPagamento> formasPagamento = new HashSet<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "restaurante")
@@ -65,5 +67,13 @@ public class Restaurante {
 
     public void inativar() {
         setAtivo(false);
+    }
+
+    public boolean adicionarFormaPagamento(FormaPagamento formaPagamento){
+        return getFormasPagamento().add(formaPagamento);
+    }
+
+    public boolean removerFormaPagamento(FormaPagamento formaPagamento){
+        return getFormasPagamento().remove(formaPagamento);        //Método remove retorna boolean: TRUE se foi removido
     }
 }
