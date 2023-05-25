@@ -13,6 +13,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -69,11 +70,21 @@ public class Restaurante {
         setAtivo(false);
     }
 
-    public boolean adicionarFormaPagamento(FormaPagamento formaPagamento){
-        return getFormasPagamento().add(formaPagamento);
+    public void adicionarFormaPagamento(FormaPagamento formaPagamento){
+        getFormasPagamento().add(formaPagamento);
     }
 
-    public boolean removerFormaPagamento(FormaPagamento formaPagamento){
-        return getFormasPagamento().remove(formaPagamento);        //Método remove retorna boolean: TRUE se foi removido
+    public void removerFormaPagamento(FormaPagamento formaPagamento){
+        getFormasPagamento().remove(formaPagamento);
+    }
+
+    public boolean formaPagamentoNaoAssociada(Long formaPagamentoId){
+        return encontrarFormaPagamento(formaPagamentoId).isEmpty();
+    }
+
+    public Optional<FormaPagamento> encontrarFormaPagamento(Long formaPagamentoId) {
+        return getFormasPagamento().stream()
+                .filter(formaPagamento -> formaPagamento.getId().equals(formaPagamentoId))
+                .findFirst();
     }
 }

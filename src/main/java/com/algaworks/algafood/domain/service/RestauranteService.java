@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
+import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +22,8 @@ public class RestauranteService {
     private final CozinhaService cozinhaService;
     private final CidadeService cidadeService;
     private final FormaPagamentoService formaPagamentoService;
+
+    private static final String FORMA_PAGAMENTO_NAO_ASSOCIADA = "A forma de pagamento do código %d não esta associado ao restaurante";
 
     public List<Restaurante> listar(){
         return repository.findAll();
@@ -39,6 +43,12 @@ public class RestauranteService {
         return repository.save(restaurante);
     }
 
+    public Restaurante buscarOuFalhar(Long id) {
+        return repository
+                .findById(id)
+                .orElseThrow(() -> new RestauranteNaoEncontradoException(id));
+    }
+
     @Transactional
     public void ativar(Long restauranteId){
         Restaurante restaurante = buscarOuFalhar(restauranteId);
@@ -54,24 +64,23 @@ public class RestauranteService {
     }
 
     @Transactional
-    public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId){
+    public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
         Restaurante restaurante = buscarOuFalhar(restauranteId);
-        FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
 
-        restaurante.adicionarFormaPagamento(formaPagamento);
+        if (restaurante.formaPagamentoNaoAssociada(formaPagamentoId)) {
+            FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
+            restaurante.adicionarFormaPagamento(formaPagamento);
+        }
     }
 
     @Transactional
-    public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId){
+    public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId) {
         Restaurante restaurante = buscarOuFalhar(restauranteId);
-        FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
+        Optional<FormaPagamento> formaPagamentoOpt = restaurante.encontrarFormaPagamento(formaPagamentoId);
 
-        restaurante.removerFormaPagamento(formaPagamento);
-    }
-
-    public Restaurante buscarOuFalhar(Long id) {
-        return repository
-                .findById(id)
-                .orElseThrow(() -> new RestauranteNaoEncontradoException(id));
+        if (formaPagamentoOpt.isEmpty()){
+            throw new NegocioException(String.format(FORMA_PAGAMENTO_NAO_ASSOCIADA, formaPagamentoId));
+        }
+        restaurante.removerFormaPagamento(formaPagamentoOpt.get());
     }
 }

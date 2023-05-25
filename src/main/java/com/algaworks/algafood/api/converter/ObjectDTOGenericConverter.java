@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public abstract class ObjectDTOGenericConverter<DTO, DOMAIN> {
         modelMapper.map(dto, domainObject);
     }
 
-    public List<DTO> toCollectionDTO(List<DOMAIN> listOfDomainObjects) {
+    public List<DTO> toCollectionDTO(Collection<DOMAIN> listOfDomainObjects) {
         return listOfDomainObjects.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
