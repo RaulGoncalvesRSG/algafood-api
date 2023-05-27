@@ -59,7 +59,7 @@ public class Restaurante {
     private Set<FormaPagamento> formasPagamento = new HashSet<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "restaurante")
+    @OneToMany(mappedBy = "restaurante")            //Produto é o dono da relação
     private List<Produto> produtos = new ArrayList<>();
 
     public void ativar() {

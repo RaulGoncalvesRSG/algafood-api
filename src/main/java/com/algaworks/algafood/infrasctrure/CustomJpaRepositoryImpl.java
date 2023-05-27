@@ -35,6 +35,6 @@ public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID>  
 
     @Override
     public void detach(T entity) {
-        manager.detach(entity);     //Remove o gerenciamento do JPA do obj
+        manager.detach(entity);     //Remove o gerenciamento do JPA do obj, evita save/update automático
     }
 }
