@@ -83,4 +83,16 @@ public class RestauranteController {
         service.inativar(restauranteId);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{restauranteId}/abertura")
+    public ResponseEntity<Void> abrir(@PathVariable Long restauranteId) {
+        service.abrir(restauranteId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{restauranteId}/fechamento")
+    public ResponseEntity<Void> fechar(@PathVariable Long restauranteId) {
+        service.fechar(restauranteId);
+        return ResponseEntity.noContent().build();
+    }
 }

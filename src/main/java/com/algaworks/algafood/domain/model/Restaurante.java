@@ -43,6 +43,9 @@ public class Restaurante {
     @Builder.Default
     private Boolean ativo = Boolean.TRUE;
 
+    @Builder.Default
+    private Boolean aberto = Boolean.FALSE;
+
     @CreationTimestamp          //Atribui um horário para a classe no momento q ela for salva no BD
     @Column(nullable = false, columnDefinition = "datetime") //columnDefinition sem precisão de ms
     private OffsetDateTime dataCadastro;
@@ -86,5 +89,13 @@ public class Restaurante {
         return getFormasPagamento().stream()
                 .filter(formaPagamento -> formaPagamento.getId().equals(formaPagamentoId))
                 .findFirst();
+    }
+
+    public void abrir(){
+        setAberto(true);
+    }
+
+    public void fechar(){
+        setAberto(false);
     }
 }
