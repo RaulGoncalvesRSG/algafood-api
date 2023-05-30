@@ -65,6 +65,13 @@ public class Restaurante {
     @OneToMany(mappedBy = "restaurante")            //Produto é o dono da relação
     private List<Produto> produtos = new ArrayList<>();
 
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(name = "restaurante_usuario_responsavel",
+            joinColumns = @JoinColumn(name = "restaurante_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuarioId"))
+    private Set<Usuario> usuarios = new HashSet<>();
+
     public void ativar() {
         setAtivo(true);
     }
@@ -74,11 +81,11 @@ public class Restaurante {
     }
 
     public void adicionarFormaPagamento(FormaPagamento formaPagamento){
-        getFormasPagamento().add(formaPagamento);
+        formasPagamento.add(formaPagamento);
     }
 
     public void removerFormaPagamento(FormaPagamento formaPagamento){
-        getFormasPagamento().remove(formaPagamento);
+        formasPagamento.remove(formaPagamento);
     }
 
     public boolean formaPagamentoNaoAssociada(Long formaPagamentoId){
@@ -86,7 +93,7 @@ public class Restaurante {
     }
 
     public Optional<FormaPagamento> encontrarFormaPagamento(Long formaPagamentoId) {
-        return getFormasPagamento().stream()
+        return formasPagamento.stream()
                 .filter(formaPagamento -> formaPagamento.getId().equals(formaPagamentoId))
                 .findFirst();
     }
@@ -97,5 +104,23 @@ public class Restaurante {
 
     public void fechar(){
         setAberto(false);
+    }
+
+    public void adicionarResponsavel(Usuario usuario){
+        usuarios.add(usuario);
+    }
+
+    public void removerResponsavel(Usuario usuario){
+        usuarios.remove(usuario);
+    }
+
+    public boolean responsavelNaoAssociado(Long usuarioId){
+        return encontrarResponsavel(usuarioId).isEmpty();
+    }
+
+    public Optional<Usuario> encontrarResponsavel(Long usuarioId) {
+        return usuarios.stream()
+                .filter(usuario -> usuario.getId().equals(usuarioId))
+                .findFirst();
     }
 }

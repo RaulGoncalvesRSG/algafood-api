@@ -6,6 +6,7 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class RestauranteService {
     private final CozinhaService cozinhaService;
     private final CidadeService cidadeService;
     private final FormaPagamentoService formaPagamentoService;
+    private final UsuarioService usuarioService;
 
     private static final String FORMA_PAGAMENTO_NAO_ASSOCIADA = "A forma de pagamento do código %d não esta associado ao restaurante";
 
@@ -94,5 +96,26 @@ public class RestauranteService {
     public void fechar(Long restauranteId){
         Restaurante restaurante = buscarOuFalhar(restauranteId);
         restaurante.fechar();
+    }
+
+    @Transactional
+    public void associarResponsavel(Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+
+        if (restaurante.responsavelNaoAssociado(usuarioId)) {
+            Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
+            restaurante.adicionarResponsavel(usuario);
+        }
+    }
+
+    @Transactional
+    public void desassociarResponsavel(Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+        Optional<Usuario> usuarioOpt = restaurante.encontrarResponsavel(usuarioId);
+
+        if (usuarioOpt.isEmpty()){
+            throw new NegocioException(String.format(FORMA_PAGAMENTO_NAO_ASSOCIADA, usuarioId));
+        }
+        restaurante.removerResponsavel(usuarioOpt.get());
     }
 }
