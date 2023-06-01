@@ -6,11 +6,13 @@ import com.algaworks.algafood.api.dto.request.RestauranteRequestDTO;
 import com.algaworks.algafood.api.dto.response.RestauranteDTO;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,6 +83,26 @@ public class RestauranteController {
     @PutMapping("/{restauranteId}/inativo")
     public ResponseEntity<Void> inativar(@PathVariable Long restauranteId) {
         service.inativar(restauranteId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/ativacoes")
+    public ResponseEntity<Void> ativarMultiplos(@RequestBody List<Long> restauranteIds) {
+        try {
+            service.ativar(restauranteIds);
+        }catch (RestauranteNaoEncontradoException e){
+            throw new NegocioException(e.getMessage(), e);
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/ativacoes")
+    public ResponseEntity<Void> inativarMultiplos(@RequestBody List<Long> restauranteIds) {
+        try {
+            service.inativar(restauranteIds);
+        }catch (RestauranteNaoEncontradoException e){
+            throw new NegocioException(e.getMessage(), e);
+        }
         return ResponseEntity.noContent().build();
     }
 
