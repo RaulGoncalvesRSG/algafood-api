@@ -123,4 +123,12 @@ public class Restaurante {
                 .filter(usuario -> usuario.getId().equals(usuarioId))
                 .findFirst();
     }
+
+    public boolean aceitaFormaPagamento(FormaPagamento formaPagamento) {
+        return formasPagamento.contains(formaPagamento);
+    }
+
+    public boolean naoAceitaFormaPagamento(FormaPagamento formaPagamento) {
+        return !aceitaFormaPagamento(formaPagamento);
+    }
 }
