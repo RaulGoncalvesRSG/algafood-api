@@ -1,7 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.api.converter.PedidoDTOAssembler;
+import com.algaworks.algafood.api.converter.PedidoResumoDTOAssembler;
 import com.algaworks.algafood.api.dto.response.PedidoDTO;
+import com.algaworks.algafood.api.dto.response.PedidoResumoDTO;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
@@ -20,17 +22,18 @@ public class PedidoController {
 
     private final PedidoRepository pedidoRepository;
     private final EmissaoPedidoService emissaoPedido;
-    private final PedidoDTOAssembler pedidoModelAssembler;
+    private final PedidoDTOAssembler pedidoDTOAssembler;
+    private final PedidoResumoDTOAssembler pedidoResumoDTOAssembler;
 
     @GetMapping
-    public List<PedidoDTO> listar() {
+    public List<PedidoResumoDTO> listar() {
         List<Pedido> pedidos = pedidoRepository.findAll();
-        return pedidoModelAssembler.toCollectionDTO(pedidos);
+        return pedidoResumoDTOAssembler.toCollectionDTO(pedidos);
     }
 
     @GetMapping("/{id}")
     public PedidoDTO buscar(@PathVariable Long id) {
         Pedido pedido = emissaoPedido.buscarOuFalhar(id);
-        return pedidoModelAssembler.toDTO(pedido);
+        return pedidoDTOAssembler.toDTO(pedido);
     }
 }
