@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -63,22 +64,16 @@ public class Pedido {
     @JoinColumn(name = "usuario_cliente_id", nullable = false)
     private Usuario cliente;
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)      //Qnd salvar o pedido, salva os itens em cascata
     private List<ItemPedido> itens = new ArrayList<>();
 
     public void calcularValorTotal() {
-        subtotal = itens.stream()
+        itens.forEach(ItemPedido::calcularPrecoTotal);
+
+        this.subtotal = getItens().stream()
                 .map(ItemPedido::getPrecoTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        valorTotal = subtotal.add(taxaFrete);
-    }
-
-    public void definirFrete() {
-        setTaxaFrete(getRestaurante().getTaxaFrete());
-    }
-
-    public void atribuirPedidoAosItens() {
-        itens.forEach(item -> item.setPedido(this));         //Atribui o próprio pedido a seus itens
+        this.valorTotal = this.subtotal.add(this.taxaFrete);
     }
 }

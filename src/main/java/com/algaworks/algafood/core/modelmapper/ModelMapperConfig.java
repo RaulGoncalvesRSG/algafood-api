@@ -1,7 +1,9 @@
 package com.algaworks.algafood.core.modelmapper;
 
+import com.algaworks.algafood.api.dto.request.ItemPedidoRequestDTO;
 import com.algaworks.algafood.api.dto.response.EnderecoDTO;
 import com.algaworks.algafood.domain.model.Endereco;
+import com.algaworks.algafood.domain.model.ItemPedido;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +17,10 @@ public class ModelMapperConfig {
         ModelMapper modelMapper = new ModelMapper();
         //modelMapper.createTypeMap(Restaurante.class, RestauranteModel.class)
 //			.addMapping(Restaurante::getTaxaFrete, RestauranteModel::setPrecoFrete);
+
+        //Faz um skip (pula, ignora) o mapeamento do setId, ou seja, o modelMapper não seta valor no id do ItemPedido
+        modelMapper.createTypeMap(ItemPedidoRequestDTO.class, ItemPedido.class)
+                .addMappings(mapper -> mapper.skip(ItemPedido::setId));
 
         //Mapeamento de Endereco para EnderecoDTO
         TypeMap<Endereco, EnderecoDTO> enderecoDTOTypeMap = modelMapper.createTypeMap(Endereco.class, EnderecoDTO.class);
