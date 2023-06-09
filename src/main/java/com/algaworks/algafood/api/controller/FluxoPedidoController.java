@@ -9,23 +9,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/pedidos/{id}")
+@RequestMapping("/pedidos/{codigo}")
 public class FluxoPedidoController {
 
     private final FluxoPedidoService fluxoPedidoService;
 
     @PutMapping("/confirmacao")
-    public void confirmar(@PathVariable Long id){
-        fluxoPedidoService.confirmar(id);
+    public void confirmar(@PathVariable String codigo){
+        fluxoPedidoService.confirmar(codigo);
     }
 
     @PutMapping("/cancelamento")
-    public void cancelar(@PathVariable Long id){
-        fluxoPedidoService.cancelar(id);
+    public void cancelar(@PathVariable String codigo){
+        fluxoPedidoService.cancelar(codigo);
     }
 
     @PutMapping("/entrega")
-    public void entregar(@PathVariable Long id){
-        fluxoPedidoService.entregar(id);
+    public void entregar(@PathVariable String codigo){
+        fluxoPedidoService.entregar(codigo);
     }
 }

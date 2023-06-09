@@ -9,7 +9,7 @@ import java.util.List;
 public enum StatusPedido {
 
     CRIADO("Criado"),
-    CONFIRMADO("Confirmado", CRIADO),
+    CONFIRMADO("Confirmado", CRIADO),       //Para confirmar, é preciso passar pelos status anteiores
     ENTREGUE("Entregue", CONFIRMADO),
     CANCELADO("Cancelado", CRIADO);
 

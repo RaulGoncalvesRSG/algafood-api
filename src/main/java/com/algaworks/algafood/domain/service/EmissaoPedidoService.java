@@ -32,9 +32,9 @@ public class EmissaoPedidoService {
         return repository.findAll();
     }
 
-    public Pedido buscarOuFalhar(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new PedidoNaoEncontradoException(id));
+    public Pedido buscarOuFalhar(String codigo) {
+        return repository.findByCodigo(codigo)
+                .orElseThrow(() -> new PedidoNaoEncontradoException(codigo));
     }
 
     @Transactional

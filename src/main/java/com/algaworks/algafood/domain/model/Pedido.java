@@ -19,10 +19,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -35,6 +37,7 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String codigo;
     private BigDecimal subtotal;
     private BigDecimal taxaFrete;
     private BigDecimal valorTotal;
@@ -90,5 +93,10 @@ public class Pedido {
     public void cancelar() {
         setStatus(StatusPedido.CANCELADO);
         setDataCancelamento(OffsetDateTime.now());
+    }
+
+    @PrePersist     //Método callback JPA é executado em alguns eventos do ciclo de vida da entidade. Um dos eventos é o PrePersist: antes de persistir o dado no BD, executa o método
+    private void gerarCodigo(){
+        setCodigo(UUID.randomUUID().toString());
     }
 }

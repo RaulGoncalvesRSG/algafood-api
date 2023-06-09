@@ -40,9 +40,9 @@ public class PedidoController {
         return pedidoResumoDTOAssembler.toCollectionDTO(pedidos);
     }
 
-    @GetMapping("/{id}")
-    public PedidoDTO buscar(@PathVariable Long id) {
-        Pedido pedido = emissaoPedidoService.buscarOuFalhar(id);
+    @GetMapping("/{codigo}")
+    public PedidoDTO buscar(@PathVariable String codigo) {
+        Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigo);
         return pedidoDTOAssembler.toDTO(pedido);
     }
 
