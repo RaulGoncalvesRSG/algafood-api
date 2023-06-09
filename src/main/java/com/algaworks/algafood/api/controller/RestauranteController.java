@@ -4,11 +4,13 @@ import com.algaworks.algafood.api.converter.RestauranteDTOAssembler;
 import com.algaworks.algafood.api.converter.RestauranteRequestDTODisassembler;
 import com.algaworks.algafood.api.dto.request.RestauranteRequestDTO;
 import com.algaworks.algafood.api.dto.response.RestauranteDTO;
+import com.algaworks.algafood.api.dto.view.RestaruanteView;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,11 +35,18 @@ public class RestauranteController {
     private final RestauranteDTOAssembler assembler;
     private final RestauranteRequestDTODisassembler disassembler;
 
+    @JsonView(RestaruanteView.Resumo.class)
     @GetMapping
     public ResponseEntity<List<RestauranteDTO>> listar(){
         List<Restaurante> restaurantes = service.listar();
         List<RestauranteDTO> dtos = assembler.toCollectionDTO(restaurantes);
         return ResponseEntity.ok(dtos);
+    }
+
+    @JsonView(RestaruanteView.ApenasNome.class)     //Retorna apenas os canpos com a anotação e a classe indicada
+    @GetMapping(params = "projecao=apenas-nome")     //Se passar parâmetros no GET, chama este método
+    public ResponseEntity<List<RestauranteDTO>> listarNomes(){
+        return listar();
     }
 
     @GetMapping("/{id}")
