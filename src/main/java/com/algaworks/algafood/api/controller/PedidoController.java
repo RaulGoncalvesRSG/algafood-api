@@ -10,6 +10,7 @@ import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Usuario;
+import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,8 +36,8 @@ public class PedidoController {
     private final PedidoResumoDTOAssembler pedidoResumoDTOAssembler;
 
     @GetMapping
-    public List<PedidoResumoDTO> listar() {
-        List<Pedido> pedidos = emissaoPedidoService.listar();
+    public List<PedidoResumoDTO> pesquisar(PedidoFilter filtro) {  //Apenas em add o parâmetro PedidoFilter, a pesquisa será feita sem anotação
+        List<Pedido> pedidos = emissaoPedidoService.listar(filtro);
         return pedidoResumoDTOAssembler.toCollectionDTO(pedidos);
     }
 
