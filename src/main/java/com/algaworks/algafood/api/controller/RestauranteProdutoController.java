@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -32,9 +33,12 @@ public class RestauranteProdutoController {
     private final ProdutoRequestDTODisassembler disassembler;
 
     @GetMapping
-    public ResponseEntity<List<ProdutoDTO>> listar(@PathVariable Long restauranteId){
+    public ResponseEntity<List<ProdutoDTO>> listar(@PathVariable Long restauranteId,
+                                                   @RequestParam(required = false) boolean incluirInativos) {
         Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
-        List<ProdutoDTO> dtos = assembler.toCollectionDTO(restaurante.getProdutos());
+
+        List<Produto> produtos = incluirInativos? produtoService.findTodosByRestaurante(restaurante) : produtoService.findAtivosByRestaurante(restaurante);
+        List<ProdutoDTO> dtos = assembler.toCollectionDTO(produtos);
 
         return ResponseEntity.ok(dtos);
     }

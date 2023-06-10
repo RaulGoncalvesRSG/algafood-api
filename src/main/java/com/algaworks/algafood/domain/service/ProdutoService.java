@@ -16,8 +16,12 @@ public class ProdutoService {
 
     private final ProdutoRepository repository;
 
-    public List<Produto> findByRestaurante(Restaurante restaurante){
-        return repository.findByRestaurante(restaurante);
+    public List<Produto> findTodosByRestaurante(Restaurante restaurante){
+        return repository.findTodosByRestaurante(restaurante);
+    }
+
+    public List<Produto> findAtivosByRestaurante(Restaurante restaurante){
+        return repository.findAtivosByRestaurante(restaurante);
     }
 
     @Transactional
