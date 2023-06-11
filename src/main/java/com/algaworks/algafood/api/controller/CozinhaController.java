@@ -7,6 +7,10 @@ import com.algaworks.algafood.api.dto.response.CozinhaDTO;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CozinhaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,10 +35,12 @@ public class CozinhaController {
     private final CozinhaRequestDTODisassembler disassembler;
 
     @GetMapping
-    public ResponseEntity<List<CozinhaDTO>> listar(){
-        List<Cozinha> cozinhas = service.listar();
-        List<CozinhaDTO> dtos = assembler.toCollectionDTO(cozinhas);
-        return ResponseEntity.ok(dtos);
+    public ResponseEntity<Page<CozinhaDTO>> listar(@PageableDefault(size = 10) Pageable pageable){
+        Page<Cozinha> cozinhas = service.listar(pageable);
+        List<CozinhaDTO> dtos = assembler.toCollectionDTO(cozinhas.getContent());
+        Page<CozinhaDTO> cozinhasPage = new PageImpl<>(dtos, pageable, cozinhas.getTotalElements());
+
+        return ResponseEntity.ok(cozinhasPage);
     }
 
     @GetMapping("/{id}")

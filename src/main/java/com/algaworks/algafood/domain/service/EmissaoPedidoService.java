@@ -12,10 +12,11 @@ import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.infrasctrure.spec.PedidoSpecs;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -30,8 +31,8 @@ public class EmissaoPedidoService {
 
     private static final String FORMA_PAGAMENTO_NAO_ACEITA = "Forma de pagamento '%s' não é aceita por esse restaurante.";
 
-    public List<Pedido> listar(PedidoFilter filtro){
-        return repository.findAll(PedidoSpecs.usarFiltro(filtro));
+    public Page<Pedido> listar(PedidoFilter filtro, Pageable pageable){
+        return repository.findAll(PedidoSpecs.usarFiltro(filtro), pageable);
     }
 
     public Pedido buscarOuFalhar(String codigo) {

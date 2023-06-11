@@ -13,6 +13,10 @@ import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,15 +40,20 @@ public class PedidoController {
     private final PedidoResumoDTOAssembler pedidoResumoDTOAssembler;
 
     @GetMapping
-    public List<PedidoResumoDTO> pesquisar(PedidoFilter filtro) {  //Apenas em add o parâmetro PedidoFilter, a pesquisa será feita sem anotação
-        List<Pedido> pedidos = emissaoPedidoService.listar(filtro);
-        return pedidoResumoDTOAssembler.toCollectionDTO(pedidos);
+    public ResponseEntity<Page<PedidoResumoDTO>> pesquisar(PedidoFilter filtro, //Apenas em add o parâmetro PedidoFilter, a pesquisa será feita sem anotação
+                                           @PageableDefault(size = 10) Pageable pageable) {
+        Page<Pedido> pedidos = emissaoPedidoService.listar(filtro, pageable);
+        List<PedidoResumoDTO> dtos = pedidoResumoDTOAssembler.toCollectionDTO(pedidos.getContent());
+        Page<PedidoResumoDTO> pedidosPage = new PageImpl<>(dtos, pageable, pedidos.getTotalElements());
+
+        return ResponseEntity.ok(pedidosPage);
     }
 
     @GetMapping("/{codigo}")
-    public PedidoDTO buscar(@PathVariable String codigo) {
+    public ResponseEntity<PedidoDTO> buscar(@PathVariable String codigo) {
         Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigo);
-        return pedidoDTOAssembler.toDTO(pedido);
+        PedidoDTO dto = pedidoDTOAssembler.toDTO(pedido);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping

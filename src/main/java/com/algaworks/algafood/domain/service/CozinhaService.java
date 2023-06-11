@@ -7,10 +7,10 @@ import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -20,8 +20,8 @@ public class CozinhaService {
 
     private static final String MSG_COZINHA_EM_USO = "Cozinha de código %d não pode ser removida, pois está em uso";
 
-    public List<Cozinha> listar(){
-        return repository.findAll();
+    public Page<Cozinha> listar(Pageable pageable){
+        return repository.findAll(pageable);
     }
 
     @Transactional

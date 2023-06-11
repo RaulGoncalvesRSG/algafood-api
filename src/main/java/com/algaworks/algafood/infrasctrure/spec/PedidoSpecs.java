@@ -12,6 +12,7 @@ public class PedidoSpecs {
 	//Para o filtro funcionar na busca do JPA, é preciso estender o repository com JpaSpecificationExecutor
 	public static Specification<Pedido> usarFiltro(PedidoFilter filtro) {
 		return (root, query, builder) -> {
+			//Verifica se o ResultType é do tipo Pedido. Se for, é um select para retornar Pedidos e faz o fetch. Quando usa count,o ResultType é um tipo numérico
 			if (Pedido.class.equals(query.getResultType())) {
 				//Para cada pedido retornado, estava fazendo um select no restaurante. Usando .fetch("restaurante"), resolve o problema do N+1 com restaurante. Isso é equivalente a usar from Pedido p join fetch p.restaurante, mas dessa vez é usando é com criteria
 				root.fetch("restaurante").fetch("cozinha");			//cozinha está dentro de restaurante
