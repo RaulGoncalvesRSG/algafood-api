@@ -6,6 +6,7 @@ import com.algaworks.algafood.api.converter.PedidoResumoDTOAssembler;
 import com.algaworks.algafood.api.dto.request.PedidoRequestDTO;
 import com.algaworks.algafood.api.dto.response.PedidoDTO;
 import com.algaworks.algafood.api.dto.response.PedidoResumoDTO;
+import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -39,9 +41,10 @@ public class PedidoController {
     private final PedidoRequestDTODisassembler pedidoRequestDTODisassembler;
     private final PedidoResumoDTOAssembler pedidoResumoDTOAssembler;
 
-    @GetMapping
-    public ResponseEntity<Page<PedidoResumoDTO>> pesquisar(PedidoFilter filtro, //Apenas em add o parâmetro PedidoFilter, a pesquisa será feita sem anotação
-                                           @PageableDefault(size = 10) Pageable pageable) {
+    @GetMapping     //Apenas em add o parâmetro PedidoFilter, a pesquisa será feita sem anotação
+    public ResponseEntity<Page<PedidoResumoDTO>> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
+        pageable = traduzirPageable(pageable);
+
         Page<Pedido> pedidos = emissaoPedidoService.listar(filtro, pageable);
         List<PedidoResumoDTO> dtos = pedidoResumoDTOAssembler.toCollectionDTO(pedidos.getContent());
         Page<PedidoResumoDTO> pedidosPage = new PageImpl<>(dtos, pageable, pedidos.getTotalElements());
@@ -72,5 +75,20 @@ public class PedidoController {
         } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
+    }
+
+    private Pageable traduzirPageable(Pageable pageable) {           //Campos que podem ser ordenados
+        Map<String, String> mapeamento = Map.of(
+                "codigo", "codigo",
+                "subtotal", "subtotal",
+                "taxaFrete", "taxaFrete",
+                "valorTotal", "valorTotal",
+                "dataCriacao", "dataCriacao",
+                "restaurante.nome", "restaurante.nome",
+                "restaurante.id", "restaurante.id",
+                "cliente.id", "cliente.id",
+                "cliente.nome", "cliente.nome"
+        );
+        return PageableTranslator.translate(pageable, mapeamento);      //Não pode usar o memso Pageable, é precisa traduzir/converter para um novo Pageable
     }
 }
