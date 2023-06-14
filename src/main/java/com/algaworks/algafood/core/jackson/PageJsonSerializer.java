@@ -11,7 +11,7 @@ import java.io.IOException;
 @JsonComponent //JsonComponent - Componente q fornece implementação de serializador/desserializador q deve ser registrado no jackson
 public class PageJsonSerializer extends JsonSerializer<Page<?>> {  //Page<?> - serializador para qualquer tipo de página
 
-	@Override		//Alterando a serialização da paginação dos endpoints
+	@Override		//Alterando a serialização da paginação dos endpoints. OBS: A configuração é para tds endpoints do projeto
 	public void serialize(Page<?> page, JsonGenerator generator, SerializerProvider serializers) throws IOException {
 		generator.writeStartObject();
 		//Adicionando as informações desejadas para o Page
