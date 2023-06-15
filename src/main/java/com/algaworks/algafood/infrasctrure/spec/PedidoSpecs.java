@@ -4,7 +4,9 @@ import com.algaworks.algafood.domain.filter.PedidoFilter;
 import com.algaworks.algafood.domain.model.Pedido;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 
 public class PedidoSpecs {
@@ -19,28 +21,32 @@ public class PedidoSpecs {
 				root.fetch("cliente");
 			}
 
-			ArrayList<Predicate> predicates = new ArrayList<>();
-
-			if (filtro.getClienteId() != null) {
-				predicates.add(builder.equal(root.get("cliente"), filtro.getClienteId()));			//get pega o nome da propriedade em Pedido
-			}
-			
-			if (filtro.getRestauranteId() != null) {
-				predicates.add(builder.equal(root.get("restaurante"), filtro.getRestauranteId()));
-			}
-			
-			if (filtro.getDataCriacaoInicio() != null) {
-				predicates.add(builder.greaterThanOrEqualTo(root.get("dataCriacao"), 
-						filtro.getDataCriacaoInicio()));
-			}
-			
-			if (filtro.getDataCriacaoFim() != null) {
-				predicates.add(builder.lessThanOrEqualTo(root.get("dataCriacao"), 
-						filtro.getDataCriacaoFim()));
-			}
+			ArrayList<Predicate> predicates = buildPredicates(filtro, builder, root);
 			
 			return builder.and(predicates.toArray(new Predicate[0]));
 		};
 	}
-	
+
+	private static ArrayList<Predicate> buildPredicates(PedidoFilter filtro, CriteriaBuilder builder, Root<Pedido> root){
+		ArrayList<Predicate> predicates = new ArrayList<>();
+
+		if (filtro.getClienteId() != null) {
+			predicates.add(builder.equal(root.get("cliente"), filtro.getClienteId()));			//get pega o nome da propriedade em Pedido
+		}
+
+		if (filtro.getRestauranteId() != null) {
+			predicates.add(builder.equal(root.get("restaurante"), filtro.getRestauranteId()));
+		}
+
+		if (filtro.getDataCriacaoInicio() != null) {
+			predicates.add(builder.greaterThanOrEqualTo(root.get("dataCriacao"),
+					filtro.getDataCriacaoInicio()));
+		}
+
+		if (filtro.getDataCriacaoFim() != null) {
+			predicates.add(builder.lessThanOrEqualTo(root.get("dataCriacao"),
+					filtro.getDataCriacaoFim()));
+		}
+		return predicates;
+	}
 }

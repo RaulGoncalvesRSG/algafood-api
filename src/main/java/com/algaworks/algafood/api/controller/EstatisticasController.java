@@ -24,7 +24,7 @@ public class EstatisticasController {
 	
 	@GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<VendaDiariaDTO> consultarVendasDiarias(VendaDiariaFilter filtro,
-													   @RequestParam(required = false, defaultValue = "+00:00") @Offset String timeOffset) {		//Default com data no UTF
+													   @RequestParam(required = false, defaultValue = "+00:00") @Offset String timeOffset) {		//Default com data no UTC
 		return vendaQueryService.consultarVendasDiarias(filtro, timeOffset);
 	}
 	
