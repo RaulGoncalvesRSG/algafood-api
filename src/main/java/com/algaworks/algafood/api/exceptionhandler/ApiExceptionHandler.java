@@ -26,7 +26,11 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Path;
 import java.time.OffsetDateTime;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -280,5 +284,41 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 			.map(ref -> ref.getFieldName())
 			.collect(Collectors.joining("."));
 	}
-	
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		String detail = MSG_ERRO_GENERICA_USUARIO_FINAL;
+
+		List<Problem.Field> objects = ex.getConstraintViolations().stream()
+				.map(constraint -> {
+					String name = extrairNomePropriedadeComErro(constraint);
+
+					return Problem.Field.builder()
+							.name(name)
+							.userMessage(constraint.getMessage())
+							.build();
+				})
+				.collect(Collectors.toList());
+
+		Problem problem = createProblemBuilder(status, ProblemType.DADOS_INVALIDOS, detail)
+				.userMessage(detail)
+				.fields(objects)
+				.build();
+
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+	}
+
+	private String extrairNomePropriedadeComErro(ConstraintViolation<?> constraint) {
+		StringBuilder name = new StringBuilder();
+
+		Iterator<Path.Node> iterator = constraint.getPropertyPath().iterator();
+		iterator.next();
+
+		while (iterator.hasNext()) {
+			Path.Node node = iterator.next();
+			name.append(node.getName());
+		}
+		return name.toString();
+	}
 }
