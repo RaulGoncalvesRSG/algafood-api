@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.CascadeType;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@FieldNameConstants         //Pega a String com o nome da variável. Se refatorar o nome da propriedade, a constante na spec factory também vai ser refatorada
 @Data
 @Builder
 @AllArgsConstructor

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CompoundSelection;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -26,11 +27,11 @@ public class VendaQueryServiceImpl implements VendaQueryService {
 	private EntityManager manager;
 
 	/*Query do método Criteria
-		select date (convert_tz(p.data_criacao, '+00:00', '-03:00')) as data_criacao,
-		COUNT(p.id) as total_vendas,
-		SUM(p.valor_total) as total_faturado
+		SELECT date (convert_tz(p.data_criacao, '+00:00', '-03:00')) AS data_criacao,
+		COUNT(p.id) AS total_vendas,
+		SUM(p.valor_total) AS total_faturado
 		FROM pedido p
-		group by date(p.data_criacao)*/
+		GROUP BY date(p.data_criacao)*/
 	@Override
 	public List<VendaDiariaDTO> consultarVendasDiarias(VendaDiariaFilter filtro, String timeOffset) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
@@ -63,19 +64,65 @@ public class VendaQueryServiceImpl implements VendaQueryService {
 	private ArrayList<Predicate> buildPredicates(VendaDiariaFilter filtro, CriteriaBuilder builder, Root<Pedido> root){
 		ArrayList<Predicate> predicates = new ArrayList<>();
 
-		if (filtro.getRestauranteId() != null) {
-			predicates.add(builder.equal(root.get("restaurante"), filtro.getRestauranteId()));
+		if (filtro.getRestauranteId() != null) {						//root.get("restaurante") - pega o MESMO nome do atributo da classe Java infromada no Root (Pedido)
+			predicates.add(builder.equal(root.get(Pedido.Fields.restaurante), filtro.getRestauranteId()));
 		}
 
 		if (filtro.getDataCriacaoInicio() != null) {
-			predicates.add(builder.greaterThanOrEqualTo(root.get("dataCriacao"), filtro.getDataCriacaoInicio()));
+			predicates.add(builder.greaterThanOrEqualTo(root.get(Pedido.Fields.dataCriacao), filtro.getDataCriacaoInicio()));
 		}
 
 		if (filtro.getDataCriacaoFim() != null) {
-			predicates.add(builder.lessThanOrEqualTo(root.get("dataCriacao"), filtro.getDataCriacaoFim()));
+			predicates.add(builder.lessThanOrEqualTo(root.get(Pedido.Fields.dataCriacao), filtro.getDataCriacaoFim()));
 		}
 
-		predicates.add(root.get("status").in(StatusPedido.CONFIRMADO, StatusPedido.ENTREGUE));			//WHERE p.status IN ('CONFIRMADO', 'ENTREGUE')
+		predicates.add(root.get(Pedido.Fields.status).in(StatusPedido.CONFIRMADO, StatusPedido.ENTREGUE));			//WHERE p.status IN ('CONFIRMADO', 'ENTREGUE')
 		return predicates;
+	}
+
+	@Override
+	public List<VendaDiariaDTO> consultarVendasDiariasJPQL(VendaDiariaFilter filtro) {
+		StringBuilder jpql = new StringBuilder(
+				"SELECT new com.algaworks.algafood.domain.model.dto.VendaDiaria(" +
+						"FUNCTION('date', p.dataCriacao), COUNT(p.id), SUM(p.valorTotal)) " +
+						"FROM Pedido p ");
+
+		String where = " WHERE p.status IN ('CONFIRMADO','ENTREGUE') ";
+		boolean setDataCriacaoInicio = false;
+		boolean setDataCriacaoFim = false;
+		boolean setRestauranteId = false;
+
+		if (filtro.getDataCriacaoInicio() != null) {
+			where += " AND p.dataCriacao >= :dataCriacaoInicio ";
+			setDataCriacaoInicio = true;
+		}
+
+		if (filtro.getDataCriacaoFim() != null) {
+			where += " AND p.dataCriacao <= :dataCriacaoFim ";
+			setDataCriacaoFim = true;
+		}
+
+		if (filtro.getRestauranteId() != null) {
+			where += " AND  p.restaurante.id = :restauranteId ";
+			setRestauranteId = true;
+		}
+
+		jpql.append(where);
+		jpql.append("GROUP BY FUNCTION('date', p.dataCriacao)");
+
+		TypedQuery<VendaDiariaDTO> query = manager.createQuery(jpql.toString(), VendaDiariaDTO.class);
+
+		if (setDataCriacaoInicio) {
+			query.setParameter("dataCriacaoInicio", filtro.getDataCriacaoInicio());
+		}
+
+		if (setDataCriacaoFim) {
+			query.setParameter("dataCriacaoFim", filtro.getDataCriacaoFim());
+		}
+
+		if (setRestauranteId) {
+			query.setParameter("restauranteId", filtro.getRestauranteId());
+		}
+		return query.getResultList();
 	}
 }
