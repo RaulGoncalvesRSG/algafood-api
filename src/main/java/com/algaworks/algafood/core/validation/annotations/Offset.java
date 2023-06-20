@@ -1,4 +1,4 @@
-package com.algaworks.algafood.infrasctrure.service.annotation;
+package com.algaworks.algafood.core.validation.annotations;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

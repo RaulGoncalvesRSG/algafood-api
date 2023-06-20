@@ -1,5 +1,6 @@
 package com.algaworks.algafood.core.validation;
 
+import com.algaworks.algafood.core.validation.annotations.ValorZeroIncluiDescricao;
 import org.springframework.beans.BeanUtils;
 
 import javax.validation.ConstraintValidator;

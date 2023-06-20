@@ -4,7 +4,7 @@ import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.dto.VendaDiariaDTO;
 import com.algaworks.algafood.domain.service.VendaQueryService;
 import com.algaworks.algafood.domain.service.VendaReportService;
-import com.algaworks.algafood.infrasctrure.service.annotation.Offset;
+import com.algaworks.algafood.core.validation.annotations.Offset;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

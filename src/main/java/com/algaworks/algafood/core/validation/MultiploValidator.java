@@ -1,5 +1,7 @@
 package com.algaworks.algafood.core.validation;
 
+import com.algaworks.algafood.core.validation.annotations.Multiplo;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.math.BigDecimal;
