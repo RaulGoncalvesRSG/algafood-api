@@ -22,7 +22,7 @@ import java.util.Optional;
 public class CatalogoFotoProdutoService {
 
     private final ProdutoRepository produtoRepository;
-    private final FotoStorageService fotoStorage;
+    private final FotoStorageService fotoStorageService;
 
     public FotoProduto buildFotoProduto(Produto produto, FotoProdutoRequestDTO fotoProdutoDTO, MultipartFile arquivo) {
         return FotoProduto.builder()
@@ -36,7 +36,7 @@ public class CatalogoFotoProdutoService {
 
     @Transactional
     public FotoProduto salvar(FotoProduto foto, InputStream dadosArquivo) {
-        String nomeNovoArquivo = fotoStorage.gerarNomeArquivo(foto.getNomeArquivo());
+        String nomeNovoArquivo = fotoStorageService.gerarNomeArquivo(foto.getNomeArquivo());
         String nomeArquivoExistente = null;
 
         Optional<FotoProduto> fotoExistente = produtoRepository.findFotoById(foto.getRestauranteId(), foto.getProduto().getId());
@@ -59,7 +59,7 @@ public class CatalogoFotoProdutoService {
                 .inputStream(dadosArquivo)
                 .build();
 
-        fotoStorage.substituir(nomeArquivoExistente, novaFoto);
+        fotoStorageService.substituir(nomeArquivoExistente, novaFoto);
         return foto;
     }
 
@@ -85,5 +85,13 @@ public class CatalogoFotoProdutoService {
         if (!compativel) {
             throw new HttpMediaTypeNotAcceptableException(mediaTypesAceitas);
         }
+    }
+
+    @Transactional
+    public void excluir(FotoProduto fotoProduto){
+        produtoRepository.delete(fotoProduto);
+        produtoRepository.flush();
+
+        fotoStorageService.remover(fotoProduto.getNomeArquivo());
     }
 }

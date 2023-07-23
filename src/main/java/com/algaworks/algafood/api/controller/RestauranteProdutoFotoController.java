@@ -8,11 +8,13 @@ import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.service.CatalogoFotoProdutoService;
 import com.algaworks.algafood.domain.service.FotoStorageService;
 import com.algaworks.algafood.domain.service.ProdutoService;
+import com.algaworks.algafood.domain.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,6 +36,7 @@ public class RestauranteProdutoFotoController {
     private final ProdutoService produtoService;
     private final CatalogoFotoProdutoService catalogoFotoProdutoService;
     private final FotoStorageService fotoStorageService;
+    private final RestauranteService restauranteService;
    // private final FotoProdutoDTOAssembler fotoProdutoDTOAssembler;
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -56,7 +59,7 @@ public class RestauranteProdutoFotoController {
     }
 
     @GetMapping
-    public ResponseEntity<InputStreamResource> servirFoto(@PathVariable Long restauranteId,
+    public ResponseEntity<InputStreamResource> exibirFoto(@PathVariable Long restauranteId,
                                                           @PathVariable Long produtoId,
                                                           @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException{
         try {
@@ -75,5 +78,16 @@ public class RestauranteProdutoFotoController {
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> excluir(@PathVariable Long restauranteId, @PathVariable Long produtoId){
+        restauranteService.buscarOuFalhar(restauranteId);
+        produtoService.buscarOuFalhar(restauranteId, produtoId);
+
+        FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
+        catalogoFotoProdutoService.excluir(fotoProduto);
+
+        return ResponseEntity.noContent().build();
     }
 }
