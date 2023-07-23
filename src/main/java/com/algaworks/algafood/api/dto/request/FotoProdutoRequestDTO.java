@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 public class FotoProdutoRequestDTO {
 
 	@NotNull
-	@FileSize(max = "500KB")			//O default do tamanho do MultipartFile é no máximo 1mb. O rquest completa (tds arquivos) com no max 10mb
+	@FileSize(max = "5000KB")			//O default do tamanho do MultipartFile é no máximo 1mb. O rquest completa (tds arquivos) com no max 10mb
 	@FileContentType(allowed = { MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE }, message = "Somente são permitido os tipos {allowed}")
 	private MultipartFile arquivo;
 	
