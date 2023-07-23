@@ -8,6 +8,8 @@ import java.util.UUID;
 
 public interface FotoStorageService {
 
+    InputStream recuperar(String nomeArquivo);
+
     void armazenar(NovaFoto novaFoto);       //Serviço de armazenamento de fotos, independente do dispotivio (local, BD, AWS)
 
     void remover(String nomeArquivo);

@@ -2,6 +2,7 @@ package com.algaworks.algafood.domain.service;
 
 import com.algaworks.algafood.api.dto.request.FotoProdutoRequestDTO;
 import com.algaworks.algafood.api.dto.response.FotoProdutoDTO;
+import com.algaworks.algafood.domain.exception.FotoProdutoNaoEncontradoException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.repository.ProdutoRepository;
@@ -20,7 +21,7 @@ public class CatalogoFotoProdutoService {
     private final ProdutoRepository produtoRepository;
     private final FotoStorageService fotoStorage;
 
-    public FotoProduto buildFotoProduto(Produto produto, FotoProdutoRequestDTO fotoProdutoDTO, MultipartFile arquivo){
+    public FotoProduto buildFotoProduto(Produto produto, FotoProdutoRequestDTO fotoProdutoDTO, MultipartFile arquivo) {
         return FotoProduto.builder()
                 .produto(produto)
                 .descricao(fotoProdutoDTO.getDescricao())
@@ -31,14 +32,14 @@ public class CatalogoFotoProdutoService {
     }
 
     @Transactional
-    public FotoProdutoDTO salvar(FotoProduto foto, InputStream dadosArquivo) {
+    public FotoProduto salvar(FotoProduto foto, InputStream dadosArquivo) {
         String nomeNovoArquivo = fotoStorage.gerarNomeArquivo(foto.getNomeArquivo());
         String nomeArquivoExistente = null;
 
         Optional<FotoProduto> fotoExistente = produtoRepository.findFotoById(foto.getRestauranteId(), foto.getProduto().getId());
 
         //Se no momento que for salvar uma foto, já existir alguma, exclui aquela existente para salvar uma por cima
-        if (fotoExistente.isPresent()){
+        if (fotoExistente.isPresent()) {
             nomeArquivoExistente = fotoExistente.get().getNomeArquivo();
             produtoRepository.delete(fotoExistente.get());
         }
@@ -56,16 +57,20 @@ public class CatalogoFotoProdutoService {
                 .build();
 
         fotoStorage.substituir(nomeArquivoExistente, novaFoto);
-
-        return toDTO(foto);
+        return foto;
     }
 
-    private FotoProdutoDTO toDTO(FotoProduto fotoProduto){
+    public FotoProdutoDTO toDTO(FotoProduto fotoProduto) {
         return FotoProdutoDTO.builder()
                 .nomeArquivo(fotoProduto.getNomeArquivo())
                 .descricao(fotoProduto.getDescricao())
                 .contentType(fotoProduto.getContentType())
                 .tamanho(fotoProduto.getTamanho())
                 .build();
+    }
+
+    public FotoProduto buscarOuFalhar(Long restauranteId, Long produtoId) {
+        return produtoRepository.findFotoById(restauranteId, produtoId)
+                .orElseThrow(() -> new FotoProdutoNaoEncontradoException(restauranteId, produtoId));
     }
 }
