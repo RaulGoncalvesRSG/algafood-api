@@ -120,7 +120,7 @@
 			<version>${jasperreports.version}</version>
 		</dependency>
 
-		<!-- AWS SDK -->
+		<!-- AWS SDK para acessar API do S3 -->
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>

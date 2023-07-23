@@ -1,4 +1,4 @@
-package com.algaworks.algafood.domain.service;
+package com.algaworks.algafood.infrasctrure.service.storage;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -31,7 +31,9 @@ public interface FotoStorageService {
     @Getter
     class NovaFoto {
 
-        private String nomeAquivo;
+        private String filename;
+        private String contentType;
         private InputStream inputStream;
+        private Long size;
     }
 }

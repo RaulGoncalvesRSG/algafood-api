@@ -39,7 +39,7 @@ public class EstatisticasController {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=vendas-diarias.pdf");   //"attachment" indica que o conteúdo é para download e não ser mostrado automaticamente (in-line na aba do navegador)
-		//headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline");			//PDF de forma inline não pode especificar o nome do arquivo
+		//headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline");			//PDF de forma inline não pode especificar o nome do arquivo. A forma inline permite visualizar o arquivo no navegador sem precisar fazer download
 
 		return ResponseEntity.ok()
 				.contentType(MediaType.APPLICATION_PDF)

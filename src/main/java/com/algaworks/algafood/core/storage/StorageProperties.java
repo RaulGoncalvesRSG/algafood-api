@@ -37,7 +37,7 @@ public class StorageProperties {
 		private String idChaveAcesso;
 		private String chaveAcessoSecreta;
 		private String bucket;
-		private Regions regiao;
+		private Regions regiao;				//Tipo Regions do SDK da Amazon consegue converter a str do properties. Regions é um Enum
 		private String diretorioFotos;
 	}
 }

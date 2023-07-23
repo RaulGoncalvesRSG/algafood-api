@@ -1,7 +1,6 @@
 package com.algaworks.algafood.infrasctrure.service.storage;
 
 import com.algaworks.algafood.core.storage.StorageProperties;
-import com.algaworks.algafood.domain.service.FotoStorageService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
@@ -27,7 +26,7 @@ public class LocalFotoStorageService implements FotoStorageService {
     @Override
     public void armazenar(NovaFoto novaFoto) {
         try {
-            Path arquivoPath = getArquivoPath(novaFoto.getNomeAquivo());
+            Path arquivoPath = getArquivoPath(novaFoto.getFilename());
             FileCopyUtils.copy(novaFoto.getInputStream(), Files.newOutputStream(arquivoPath));   //Copia os dados da nova foto para o destino
         } catch (Exception e) {
             throw new StorageException("Não foi possível armazenar arquivo.", e);
