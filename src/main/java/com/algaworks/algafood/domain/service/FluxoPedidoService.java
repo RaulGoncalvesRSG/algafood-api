@@ -3,6 +3,7 @@ package com.algaworks.algafood.domain.service;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.enums.StatusPedido;
+import com.algaworks.algafood.domain.service.EnvioEmailService.Mensagem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import javax.transaction.Transactional;
 public class FluxoPedidoService {
 
     private final EmissaoPedidoService emissaoPedidoService;
+    private final EnvioEmailService envioEmailService;
 
     private final static String ALTERACAO_STATUS_INVALIDA = "Stauts do pedido %s não pode ser alterado de %s para %s";
 
@@ -21,6 +23,10 @@ public class FluxoPedidoService {
         Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigo);
         validarAlteracaoStatus(pedido, StatusPedido.CONFIRMADO);
         pedido.confirmar();
+
+        Mensagem mensagem = Mensagem.builder().build();
+
+        envioEmailService.enviar(mensagem);
     }
 
     @Transactional
