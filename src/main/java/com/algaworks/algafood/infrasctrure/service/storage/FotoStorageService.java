@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface FotoStorageService {
 
-    InputStream recuperar(String nomeArquivo);
+    FotoRecuperada recuperar(String nomeArquivo);
 
     void armazenar(NovaFoto novaFoto);       //Serviço de armazenamento de fotos, independente do dispotivio (local, BD, AWS)
 
@@ -35,5 +35,17 @@ public interface FotoStorageService {
         private String contentType;
         private InputStream inputStream;
         private Long size;
+    }
+
+    @Builder
+    @Getter
+    class FotoRecuperada {
+
+        private InputStream inputStream;    //Arquivo salvo em disco local utiliza InputStream
+        private String url;                 //S3 utilia URL
+
+        public boolean temUrl() {
+            return url != null;
+        }
     }
 }

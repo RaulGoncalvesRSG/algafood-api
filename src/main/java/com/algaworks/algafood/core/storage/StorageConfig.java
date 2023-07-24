@@ -1,5 +1,8 @@
 package com.algaworks.algafood.core.storage;
 
+import com.algaworks.algafood.infrasctrure.service.storage.FotoStorageService;
+import com.algaworks.algafood.infrasctrure.service.storage.LocalFotoStorageService;
+import com.algaworks.algafood.infrasctrure.service.storage.S3FotoStorageService;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
@@ -26,5 +29,14 @@ public class StorageConfig {
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withRegion(storageProperties.getS3().getRegiao())
                 .build();
+    }
+
+    @Bean       //Configuração para informar qual é a impelmentação da interface FotoStorageService a ser utilizada. OBS: as classes de implementação n possuem @Service
+    public FotoStorageService fotoStorageService() {
+        if (StorageProperties.TipoStorage.S3.equals(storageProperties.getTipo())) {
+            return new S3FotoStorageService();
+        } else {
+            return new LocalFotoStorageService();
+        }
     }
 }

@@ -6,21 +6,27 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.InputStream;
+import java.net.URL;
 
-@AllArgsConstructor
-@Service
 public class S3FotoStorageService implements FotoStorageService {
 
-    private final AmazonS3 amazonS3;
-    private final StorageProperties storageProperties;
+    @Autowired
+    private AmazonS3 amazonS3;
+
+    @Autowired
+    private StorageProperties storageProperties;
 
     @Override
-    public InputStream recuperar(String nomeArquivo) {
-        return null;
+    public FotoRecuperada recuperar(String nomeArquivo) {      //Retorna a URL
+        String caminhoArquivo = getCaminhoArquivo(nomeArquivo);
+        //Primeiro param informa qual é o bucket e segundo param qual é caminho do obj no bucket
+        URL url = amazonS3.getUrl(storageProperties.getS3().getBucket(), caminhoArquivo);
+
+        return FotoRecuperada.builder()
+                .url(url.toString())
+                .build();
     }
 
     @Override
@@ -57,6 +63,7 @@ public class S3FotoStorageService implements FotoStorageService {
         }
     }
 
+    //Retorna a chave do obj no Bucket
     private String getCaminhoArquivo(String nomeArquivo) {
         return String.format("%s/%s", storageProperties.getS3().getDiretorioFotos(), nomeArquivo);
     }
