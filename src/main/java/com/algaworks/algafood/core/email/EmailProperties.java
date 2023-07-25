@@ -15,12 +15,21 @@ import javax.validation.constraints.NotNull;
 @ConfigurationProperties("algafood.email")
 public class EmailProperties {
 
-    private Implementacao impl = Implementacao.FAKE;        //Coloca o Default como FAKE
+    //Atribuimos FAKE como padrão. Isso evita o problema de enviar e-mails de verdade caso esqueça de definir no properties
+    private Implementacao impl = Implementacao.FAKE;
+    private Sandbox sandbox = new Sandbox();
 
     @NotNull
     private String remetente;
 
     public enum Implementacao {
-        SMTP, FAKE
+        SMTP, FAKE, SANDBOX
+    }
+
+    @Getter
+    @Setter
+    public class Sandbox {
+
+        private String destinatario;
     }
 }
