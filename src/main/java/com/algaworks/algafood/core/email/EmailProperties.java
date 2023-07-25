@@ -15,7 +15,12 @@ import javax.validation.constraints.NotNull;
 @ConfigurationProperties("algafood.email")
 public class EmailProperties {
 
+    private Implementacao impl = Implementacao.FAKE;        //Coloca o Default como FAKE
 
     @NotNull
     private String remetente;
+
+    public enum Implementacao {
+        SMTP, FAKE
+    }
 }

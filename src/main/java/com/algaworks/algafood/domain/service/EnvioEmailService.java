@@ -26,7 +26,7 @@ public interface EnvioEmailService {
         @NonNull
         private String corpo;       //Aceita formatação em html
 
-        @Singular("variavel")
+        @Singular("variavel")           //Especifica o nome em singular
         private Map<String, Object> variaveis;
     }
 }
