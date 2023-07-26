@@ -1,12 +1,15 @@
 package com.algaworks.algafood.domain.model;
 
+import com.algaworks.algafood.domain.event.PedidoConfirmadoEvent;
 import com.algaworks.algafood.domain.model.enums.StatusPedido;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -30,10 +33,11 @@ import java.util.UUID;
 @Entity
 @FieldNameConstants         //Pega a String com o nome da variável. Se refatorar o nome da propriedade, a constante na spec factory também vai ser refatorada
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)       //Anotação para n usar EqualsAndHashCode da classe extendida, mas sim a de Pedido
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Pedido {
+public class Pedido extends AbstractAggregateRoot<Pedido> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -85,6 +89,8 @@ public class Pedido {
     public void confirmar() {
         setStatus(StatusPedido.CONFIRMADO);
         setDataConfirmacao(OffsetDateTime.now());
+
+        registerEvent(new PedidoConfirmadoEvent(this));     //Registra o evendo q deve ser disparado assim q o obj desta entidade for salvo
     }
 
     public void entregar() {

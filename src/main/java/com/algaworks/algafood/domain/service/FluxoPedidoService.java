@@ -3,7 +3,7 @@ package com.algaworks.algafood.domain.service;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.enums.StatusPedido;
-import com.algaworks.algafood.domain.service.EnvioEmailService.Mensagem;
+import com.algaworks.algafood.domain.repository.PedidoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,10 @@ import javax.transaction.Transactional;
 public class FluxoPedidoService {
 
     private final EmissaoPedidoService emissaoPedidoService;
-    private final EnvioEmailService envioEmailService;
+
+    /*O evento não será disparado msmo depois q a transação do método confirmar for concluída
+    Para o evento ser disparado (particularidade do Spring Data), é preciso chamar o método save do respository (precisa ser do Spring Data)*/
+    private final PedidoRepository pedidoRepository;
 
     private final static String ALTERACAO_STATUS_INVALIDA = "Stauts do pedido %s não pode ser alterado de %s para %s";
 
@@ -24,9 +27,8 @@ public class FluxoPedidoService {
         validarAlteracaoStatus(pedido, StatusPedido.CONFIRMADO);
         pedido.confirmar();
 
-        Mensagem mensagem = Mensagem.builder().build();
-
-        envioEmailService.enviar(mensagem);
+        //Mesmo não chamando save, o obj seria salvo, pois o método confirmar faz alterações de uma instância q está sendo gerenciadas pelo EntityManager do JPA
+        pedidoRepository.save(pedido);
     }
 
     @Transactional
