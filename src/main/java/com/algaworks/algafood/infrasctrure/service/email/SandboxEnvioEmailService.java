@@ -13,7 +13,6 @@ public class SandboxEnvioEmailService extends SmtpEnvioEmailService {
     @Autowired
     private EmailProperties emailProperties;
 
-
     @Override       //Sobreescrevendo o método da classe pai
     protected MimeMessage criarMimeMessage(Mensagem mensagem) throws MessagingException {
         MimeMessage mimeMessage = super.criarMimeMessage(mensagem);

@@ -5,7 +5,6 @@ import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.service.EnvioEmailService;
 import com.algaworks.algafood.domain.service.EnvioEmailService.Mensagem;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -13,8 +12,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component      //Uma classe pode ter mais de um EventListener
 public class NotificacaoClientePedidoConfirmadoListener {
 
-    @Autowired
-    private EnvioEmailService envioEmail;
+    private final EnvioEmailService envioEmail;
 
     //@EventListener informa q o método irá escutar evento do parâmetro qnd for disparado
     /*@TransactionalEventListener - pode especificar qual é a fase específica (parâmetro pashe = TransactionPhase.AFTER_COMMIT) da transação q o

@@ -1,10 +1,12 @@
 package com.algaworks.algafood.domain.service;
 
+import com.algaworks.algafood.domain.event.PedidoCanceladoEvent;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.enums.StatusPedido;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,10 +16,10 @@ import javax.transaction.Transactional;
 public class FluxoPedidoService {
 
     private final EmissaoPedidoService emissaoPedidoService;
-
     /*O evento não será disparado msmo depois q a transação do método confirmar for concluída
     Para o evento ser disparado (particularidade do Spring Data), é preciso chamar o método save do respository (precisa ser do Spring Data)*/
     private final PedidoRepository pedidoRepository;
+    private final ApplicationEventPublisher publisher;
 
     private final static String ALTERACAO_STATUS_INVALIDA = "Stauts do pedido %s não pode ser alterado de %s para %s";
 
@@ -36,6 +38,8 @@ public class FluxoPedidoService {
         Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigo);
         validarAlteracaoStatus(pedido, StatusPedido.CANCELADO);
         pedido.cancelar();
+
+        publisher.publishEvent(new PedidoCanceladoEvent(pedido));
     }
 
     @Transactional
