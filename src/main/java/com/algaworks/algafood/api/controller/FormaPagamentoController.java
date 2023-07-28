@@ -7,6 +7,7 @@ import com.algaworks.algafood.api.dto.response.FormaPagamentoDTO;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.service.FormaPagamentoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,6 +38,7 @@ public class FormaPagamentoController {
         return ResponseEntity.ok(dtos);
     }
 
+    @Cacheable(value = "forma-pagamento-buscar")
     @GetMapping("/{id}")
     public ResponseEntity<FormaPagamentoDTO> buscar(@PathVariable Long id){
         FormaPagamento formaPagamento = service.buscarOuFalhar(id);

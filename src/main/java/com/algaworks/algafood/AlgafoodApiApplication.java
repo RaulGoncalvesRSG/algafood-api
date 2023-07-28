@@ -3,11 +3,13 @@ package com.algaworks.algafood;
 import com.algaworks.algafood.infrasctrure.CustomJpaRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.TimeZone;
 
 @SpringBootApplication
+@EnableCaching
 @EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl.class)			//Especifica o respotory base. O padrão é SimpleJpaRepository
 public class AlgafoodApiApplication {
 
