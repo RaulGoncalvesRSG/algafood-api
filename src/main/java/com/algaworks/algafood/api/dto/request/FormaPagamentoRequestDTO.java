@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.dto.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class FormaPagamentoRequestDTO {
 
+    @ApiModelProperty(example = "Cartão de crédito", required = true)
     @NotBlank
     private String descricao;
 }

@@ -6,6 +6,7 @@ import com.algaworks.algafood.api.converter.PedidoResumoDTOAssembler;
 import com.algaworks.algafood.api.dto.request.PedidoRequestDTO;
 import com.algaworks.algafood.api.dto.response.PedidoDTO;
 import com.algaworks.algafood.api.dto.response.PedidoResumoDTO;
+import com.algaworks.algafood.api.openapi.controller.PedidoControllerOpenApi;
 import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -34,7 +35,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/pedidos")
-public class PedidoController {
+public class PedidoController implements PedidoControllerOpenApi {
 
     private final EmissaoPedidoService emissaoPedidoService;
     private final PedidoDTOAssembler pedidoDTOAssembler;

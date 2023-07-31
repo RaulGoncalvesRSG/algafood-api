@@ -2,6 +2,7 @@ package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.api.dto.request.FotoProdutoRequestDTO;
 import com.algaworks.algafood.api.dto.response.FotoProdutoDTO;
+import com.algaworks.algafood.api.openapi.controller.RestauranteProdutoFotoControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.model.Produto;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +35,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteProdutoFotoController {
+public class RestauranteProdutoFotoController implements RestauranteProdutoFotoControllerOpenApi {
 
     private final ProdutoService produtoService;
     private final CatalogoFotoProdutoService catalogoFotoProdutoService;
@@ -41,12 +43,13 @@ public class RestauranteProdutoFotoController {
     private final RestauranteService restauranteService;
    // private final FotoProdutoDTOAssembler fotoProdutoDTOAssembler;
 
+    //Parâmetro com @RequestPart MultipartFile, pois o swagger não estava enviando content-type com multipart/form-data ao enviar arquivo
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FotoProdutoDTO> atualizarFoto(@PathVariable Long restauranteId,
                                                         @PathVariable Long produtoId,
-                                                        @Valid FotoProdutoRequestDTO fotoProdutoInput) throws IOException {
+                                                        @Valid FotoProdutoRequestDTO fotoProdutoInput,
+                                                        @RequestPart MultipartFile arquivo) throws IOException {
         Produto produto = produtoService.buscarOuFalhar(restauranteId, produtoId);
-        MultipartFile arquivo = fotoProdutoInput.getArquivo();
         FotoProduto foto = catalogoFotoProdutoService.buildFotoProduto(produto, fotoProdutoInput, arquivo);
         FotoProduto fotoSalva = catalogoFotoProdutoService.salvar(foto, arquivo.getInputStream());
         FotoProdutoDTO dto = catalogoFotoProdutoService.toDTO(fotoSalva);
@@ -60,7 +63,7 @@ public class RestauranteProdutoFotoController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping
+    @GetMapping     //O GET é chamado quando coloca qualquer MediaType diferente de aplication/json
     public ResponseEntity<?> exibirFoto(@PathVariable Long restauranteId,
                                                           @PathVariable Long produtoId,
                                                           @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException{

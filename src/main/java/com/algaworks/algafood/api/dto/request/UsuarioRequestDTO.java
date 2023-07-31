@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.dto.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,9 +15,11 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class UsuarioRequestDTO {
 
+    @ApiModelProperty(example = "João da Silva", required = true)
     @NotBlank
     private String nome;
 
+    @ApiModelProperty(example = "joao.ger@algafood.com.br", required = true)
     @NotBlank
     @Email
     private String email;

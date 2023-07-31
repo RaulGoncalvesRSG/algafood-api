@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.converter.CidadeDTOAssembler;
 import com.algaworks.algafood.api.converter.CidadeRequestDTODisassembler;
 import com.algaworks.algafood.api.dto.request.CidadeRequestDTO;
 import com.algaworks.algafood.api.dto.response.CidadeDTO;
+import com.algaworks.algafood.api.openapi.controller.CidadeControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -26,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/cidades")
-public class CidadeController {
+public class CidadeController implements CidadeControllerOpenApi {
 
     private final CidadeService service;
     private final CidadeDTOAssembler assembler;

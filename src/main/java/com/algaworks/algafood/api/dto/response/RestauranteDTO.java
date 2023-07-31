@@ -2,6 +2,7 @@ package com.algaworks.algafood.api.dto.response;
 
 import com.algaworks.algafood.api.dto.view.RestaruanteView;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,12 +16,15 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class RestauranteDTO {
 
+    @ApiModelProperty(example = "1")
     @JsonView({RestaruanteView.Resumo.class, RestaruanteView.ApenasNome.class})
     private Long id;
 
+    @ApiModelProperty(example = "Thai Gourmet")
     @JsonView({RestaruanteView.Resumo.class, RestaruanteView.ApenasNome.class})
     private String nome;
 
+    @ApiModelProperty(example = "12.00")
     @JsonView(RestaruanteView.Resumo.class)
     private BigDecimal taxaFrete;
 
@@ -28,6 +32,6 @@ public class RestauranteDTO {
     private CozinhaDTO cozinha;
 
     private Boolean ativo;
-    private EnderecoDTO endereco;
     private Boolean aberto;
+    private EnderecoDTO endereco;
 }

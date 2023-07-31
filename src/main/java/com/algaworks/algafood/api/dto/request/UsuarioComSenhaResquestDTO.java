@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.dto.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class UsuarioComSenhaResquestDTO extends UsuarioRequestDTO {
 
+    @ApiModelProperty(example = "123", required = true)
     @NotBlank
     private String senha;
 }

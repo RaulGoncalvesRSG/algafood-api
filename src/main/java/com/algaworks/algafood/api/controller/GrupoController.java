@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.converter.GrupoDTOAssembler;
 import com.algaworks.algafood.api.converter.GrupoRequestDTODisassembler;
 import com.algaworks.algafood.api.dto.request.GrupoRequestDTO;
 import com.algaworks.algafood.api.dto.response.GrupoDTO;
+import com.algaworks.algafood.api.openapi.controller.GrupoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.service.GrupoService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/grupos")
-public class GrupoController {
+public class GrupoController implements GrupoControllerOpenApi {
 
     private final GrupoService service;
     private final GrupoDTOAssembler assembler;

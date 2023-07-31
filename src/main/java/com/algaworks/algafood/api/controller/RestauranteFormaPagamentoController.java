@@ -2,6 +2,7 @@ package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.api.converter.FormaPagamentoDTOAssembler;
 import com.algaworks.algafood.api.dto.response.FormaPagamentoDTO;
+import com.algaworks.algafood.api.openapi.controller.RestauranteFormaPagamentoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/formas-pagamento")
-public class RestauranteFormaPagamentoController {
+public class RestauranteFormaPagamentoController implements RestauranteFormaPagamentoControllerOpenApi {
 
     private final RestauranteService service;
     private final FormaPagamentoDTOAssembler assembler;

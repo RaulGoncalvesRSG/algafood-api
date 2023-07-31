@@ -2,6 +2,7 @@ package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.api.converter.GrupoDTOAssembler;
 import com.algaworks.algafood.api.dto.response.GrupoDTO;
+import com.algaworks.algafood.api.openapi.controller.UsuarioGrupoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.GrupoService;
@@ -20,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/usuarios/{usuarioId}/grupos")
-public class UsuarioGrupoController {
+public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 
     private final UsuarioService usuarioService;
     private final GrupoService grupoService;

@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.converter.RestauranteRequestDTODisassembler;
 import com.algaworks.algafood.api.dto.request.RestauranteRequestDTO;
 import com.algaworks.algafood.api.dto.response.RestauranteDTO;
 import com.algaworks.algafood.api.dto.view.RestaruanteView;
+import com.algaworks.algafood.api.openapi.controller.RestauranteControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
@@ -29,13 +30,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/restaurantes")
-public class RestauranteController {
+public class RestauranteController implements RestauranteControllerOpenApi {
 
     private final RestauranteService service;
     private final RestauranteDTOAssembler assembler;
     private final RestauranteRequestDTODisassembler disassembler;
 
-    @JsonView(RestaruanteView.Resumo.class)
+    @JsonView(RestaruanteView.Resumo.class)     //O JsonView faz retornar apenas os atributos do DTO com @JsonView(Nome_classe_especificado)
     @GetMapping
     public ResponseEntity<List<RestauranteDTO>> listar(){
         List<Restaurante> restaurantes = service.listar();
@@ -45,7 +46,7 @@ public class RestauranteController {
 
     @JsonView(RestaruanteView.ApenasNome.class)     //Retorna apenas os canpos com a anotação e a classe indicada
     @GetMapping(params = "projecao=apenas-nome")     //Se passar parâmetros no GET, chama este método
-    public ResponseEntity<List<RestauranteDTO>> listarNomes(){
+    public ResponseEntity<List<RestauranteDTO>> listarApenasNomes(){
         return listar();
     }
 

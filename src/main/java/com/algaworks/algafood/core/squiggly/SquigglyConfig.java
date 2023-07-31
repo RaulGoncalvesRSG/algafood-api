@@ -18,6 +18,7 @@ public class SquigglyConfig {
     public FilterRegistrationBean<SquigglyRequestFilter> squigglyRequestFilter(ObjectMapper objectMapper) {
         Squiggly.init(objectMapper, new RequestSquigglyContextProvider("campos", null));
 
+        //Urls que aceitam a possibilidade de passar campos por parâmetro
         List<String> urlPatterns = Arrays.asList("/pedidos/*", "/restaurantes/*");
 
         //Add no projeto um filtro nas reqyisições http. Sempre que alguma requsição chegar na API, vai passar por esse filtro

@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.dto.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class EstadoIdRequestDTO {
 
+    @ApiModelProperty(example = "1", required = true)
     @NotNull
     private Long id;
 }

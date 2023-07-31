@@ -6,6 +6,7 @@ import com.algaworks.algafood.api.dto.request.SenhaRequestDTO;
 import com.algaworks.algafood.api.dto.request.UsuarioComSenhaResquestDTO;
 import com.algaworks.algafood.api.dto.request.UsuarioRequestDTO;
 import com.algaworks.algafood.api.dto.response.UsuarioDTO;
+import com.algaworks.algafood.api.openapi.controller.UsuarioControllerOpenApi;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/usuarios")
-public class UsuarioController {
+public class UsuarioController implements UsuarioControllerOpenApi {
 
     private final UsuarioService service;
     private final UsuarioDTOAssembler assembler;
@@ -46,8 +47,8 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> adicionar(@RequestBody @Valid UsuarioComSenhaResquestDTO usuarioInput) {
-        Usuario usuario = disassembler.toDomainObject(usuarioInput);
+    public ResponseEntity<UsuarioDTO> adicionar(@RequestBody @Valid UsuarioComSenhaResquestDTO resquestDTO) {
+        Usuario usuario = disassembler.toDomainObject(resquestDTO);
         usuario = service.salvar(usuario);
         UsuarioDTO dto = assembler.toDTO(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
@@ -63,8 +64,8 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}/senha")
-    public ResponseEntity<Void> alterarSenha(@PathVariable Long id, @RequestBody @Valid SenhaRequestDTO senha) {
-        service.alterarSenha(id, senha.getSenhaAtual(), senha.getNovaSenha());
+    public ResponseEntity<Void> alterarSenha(@PathVariable Long id, @RequestBody @Valid SenhaRequestDTO senhaDTO) {
+        service.alterarSenha(id, senhaDTO.getSenhaAtual(), senhaDTO.getNovaSenha());
         return ResponseEntity.noContent().build();
     }
 }

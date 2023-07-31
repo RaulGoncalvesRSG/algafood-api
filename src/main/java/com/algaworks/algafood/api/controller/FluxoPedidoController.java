@@ -1,7 +1,9 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.openapi.controller.FluxoPedidoControllerOpenApi;
 import com.algaworks.algafood.domain.service.FluxoPedidoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,22 +12,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/pedidos/{codigo}")
-public class FluxoPedidoController {
+public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
 
     private final FluxoPedidoService fluxoPedidoService;
 
     @PutMapping("/confirmacao")
-    public void confirmar(@PathVariable String codigo){
+    public ResponseEntity<Void> confirmar(@PathVariable String codigo){
         fluxoPedidoService.confirmar(codigo);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/cancelamento")
-    public void cancelar(@PathVariable String codigo){
+    public ResponseEntity<Void> cancelar(@PathVariable String codigo){
         fluxoPedidoService.cancelar(codigo);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/entrega")
-    public void entregar(@PathVariable String codigo){
+    public ResponseEntity<Void> entregar(@PathVariable String codigo){
         fluxoPedidoService.entregar(codigo);
+        return ResponseEntity.noContent().build();
     }
 }

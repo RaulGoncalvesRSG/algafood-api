@@ -2,6 +2,7 @@ package com.algaworks.algafood.api.controller;
 
 import com.algaworks.algafood.api.converter.PermissaoDTOAssembler;
 import com.algaworks.algafood.api.dto.response.PermissaoDTO;
+import com.algaworks.algafood.api.openapi.controller.GrupoPermissaoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Permissao;
 import com.algaworks.algafood.domain.service.GrupoService;
@@ -20,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/grupos/{grupoId}/permissoes")
-public class PermissaoController {
+public class PermissaoController implements GrupoPermissaoControllerOpenApi {
 
     private final PermissaoService permissaoService;
     private final GrupoService grupoService;

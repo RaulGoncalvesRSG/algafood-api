@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.converter.CozinhaDTOAssembler;
 import com.algaworks.algafood.api.converter.CozinhaRequestDTODisassembler;
 import com.algaworks.algafood.api.dto.request.CozinhaRequestDTO;
 import com.algaworks.algafood.api.dto.response.CozinhaDTO;
+import com.algaworks.algafood.api.openapi.controller.CozinhaControllerOpenApi;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CozinhaService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/cozinhas")
-public class CozinhaController {
+public class CozinhaController implements CozinhaControllerOpenApi {
 
     private final CozinhaService service;
     private final CozinhaDTOAssembler assembler;

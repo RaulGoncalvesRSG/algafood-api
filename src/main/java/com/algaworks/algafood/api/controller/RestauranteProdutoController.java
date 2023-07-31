@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.converter.ProdutoDTOAssembler;
 import com.algaworks.algafood.api.converter.ProdutoRequestDTODisassembler;
 import com.algaworks.algafood.api.dto.request.ProdutoRequestDTO;
 import com.algaworks.algafood.api.dto.response.ProdutoDTO;
+import com.algaworks.algafood.api.openapi.controller.RestauranteProdutoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.ProdutoService;
@@ -25,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/restaurantes/{restauranteId}/produtos")
-public class RestauranteProdutoController {
+public class RestauranteProdutoController implements RestauranteProdutoControllerOpenApi {
 
     private final ProdutoService produtoService;
     private final RestauranteService restauranteService;
@@ -34,7 +35,7 @@ public class RestauranteProdutoController {
 
     @GetMapping
     public ResponseEntity<List<ProdutoDTO>> listar(@PathVariable Long restauranteId,
-                                                   @RequestParam(required = false) boolean incluirInativos) {
+                                                   @RequestParam(required = false) Boolean incluirInativos) {
         Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 
         List<Produto> produtos = incluirInativos? produtoService.findTodosByRestaurante(restaurante) : produtoService.findAtivosByRestaurante(restaurante);
