@@ -164,6 +164,12 @@
 			<artifactId>springfox-bean-validators</artifactId>
 			<version>${springfox.version}</version>
 		</dependency>
+
+		<!-- HATEOAS -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-hateoas</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

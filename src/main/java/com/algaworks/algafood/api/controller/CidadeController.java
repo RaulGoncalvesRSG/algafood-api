@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.converter.CidadeDTOAssembler;
 import com.algaworks.algafood.api.converter.CidadeRequestDTODisassembler;
 import com.algaworks.algafood.api.dto.request.CidadeRequestDTO;
@@ -10,7 +11,6 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.service.CidadeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -53,8 +54,9 @@ public class CidadeController implements CidadeControllerOpenApi {
             Cidade cidade = disassembler.toDomainObject(requestDTO);
             cidade = service.salvar(cidade);
             CidadeDTO dto = assembler.toDTO(cidade);
+            URI uri = ResourceUriHelper.generateURI(dto.getId());
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+            return ResponseEntity.created(uri).body(dto);
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }
