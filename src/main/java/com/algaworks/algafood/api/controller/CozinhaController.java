@@ -9,9 +9,10 @@ import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CozinhaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -34,14 +34,16 @@ public class CozinhaController implements CozinhaControllerOpenApi {
     private final CozinhaService service;
     private final CozinhaDTOAssembler assembler;
     private final CozinhaRequestDTODisassembler disassembler;
+    private final PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
-    @GetMapping
-    public ResponseEntity<Page<CozinhaDTO>> listar(@PageableDefault(size = 10) Pageable pageable){
+    @GetMapping     //PagedModel é um Page que aceita hateoas
+    public ResponseEntity<PagedModel<CozinhaDTO>> listar(@PageableDefault(size = 10) Pageable pageable){
         Page<Cozinha> cozinhas = service.listar(pageable);
-        List<CozinhaDTO> dtos = assembler.toCollectionDTO(cozinhas.getContent());
-        Page<CozinhaDTO> cozinhasPage = new PageImpl<>(dtos, pageable, cozinhas.getTotalElements());
+        /*Usa PagedResourcesAssembler para converter um Page comum para PageModel. Qm faz a conversão de Domain para DTO é
+        é o CozinhaDTOAssembler, por isso ele é o segundo argumento do método toModel*/
+        PagedModel<CozinhaDTO> cozinhasPagedModel = pagedResourcesAssembler.toModel(cozinhas, assembler);
 
-        return ResponseEntity.ok(cozinhasPage);
+        return ResponseEntity.ok(cozinhasPagedModel);
     }
 
     @GetMapping("/{id}")

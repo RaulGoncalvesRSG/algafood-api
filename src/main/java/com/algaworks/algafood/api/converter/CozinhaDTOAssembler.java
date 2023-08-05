@@ -1,27 +1,33 @@
 package com.algaworks.algafood.api.converter;
 
+import com.algaworks.algafood.api.controller.CozinhaController;
+import com.algaworks.algafood.api.converter.generic.ObjectRepresentationDTOGenericConverter;
 import com.algaworks.algafood.api.dto.response.CozinhaDTO;
 import com.algaworks.algafood.domain.model.Cozinha;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Component
-@RequiredArgsConstructor
-public class CozinhaDTOAssembler {
+public class CozinhaDTOAssembler extends ObjectRepresentationDTOGenericConverter<CozinhaDTO, Cozinha, CozinhaController> {
 
-    private final ModelMapper modelMapper;
+    private final Class<CozinhaController> controllerClass;
 
-    public CozinhaDTO toDTO(Cozinha cozinha) {
-        return modelMapper.map(cozinha, CozinhaDTO.class);
+    private static final String COZINHAS = "cozinhas";
+
+    public CozinhaDTOAssembler() {
+        super(CozinhaController.class, CozinhaDTO.class);
+        this.controllerClass = CozinhaController.class;
     }
 
-    public List<CozinhaDTO> toCollectionDTO(List<Cozinha> cozinhas){
-        return cozinhas.stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+    @Override
+    public CozinhaDTO toModel(Cozinha cozinha) {
+        CozinhaDTO dto = createModelWithId(cozinha.getId(), cozinha);
+        modelMapper.map(cozinha, dto);
+
+        dto.add(linkTo(controllerClass)
+                .withRel(COZINHAS));
+
+        return dto;
     }
 }

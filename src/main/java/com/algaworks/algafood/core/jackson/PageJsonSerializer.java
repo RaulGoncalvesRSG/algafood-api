@@ -14,7 +14,7 @@ public class PageJsonSerializer extends JsonSerializer<Page<?>> {  //Page<?> - s
 	@Override		//Alterando a serialização da paginação dos endpoints. OBS: A configuração é para tds endpoints do projeto
 	public void serialize(Page<?> page, JsonGenerator generator, SerializerProvider serializers) throws IOException {
 		generator.writeStartObject();
-		//Adicionando as informações desejadas para o Page
+		//Adicionando as informações desejadas para o Page. O objetivo é simplificar a qtd de atributos apresentadas na paginação
 		generator.writeObjectField("content", page.getContent());
 		generator.writeNumberField("size", page.getSize());
 		generator.writeNumberField("totalElements", page.getTotalElements());

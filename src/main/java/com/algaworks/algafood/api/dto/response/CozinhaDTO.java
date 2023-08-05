@@ -7,12 +7,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
+@Relation(collectionRelation = "cozinhas")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CozinhaDTO {
+public class CozinhaDTO extends RepresentationModel<CozinhaDTO> {
 
     @ApiModelProperty(example = "1")
     @JsonView(RestaruanteView.Resumo.class)     //Retorna apenas os canpos com a anotação

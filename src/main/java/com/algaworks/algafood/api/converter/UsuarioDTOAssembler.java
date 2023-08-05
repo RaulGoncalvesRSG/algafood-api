@@ -25,19 +25,19 @@ public class UsuarioDTOAssembler extends ObjectRepresentationDTOGenericConverter
 
     @Override
     public UsuarioDTO toModel(Usuario usuario) {
-        UsuarioDTO usuarioDTO = createModelWithId(usuario.getId(), usuario);
-        modelMapper.map(usuario, usuarioDTO);
+        UsuarioDTO dto = createModelWithId(usuario.getId(), usuario);
+        modelMapper.map(usuario, dto);
 
         /*Em métodos que tem parâmetros, é preciso usar o methodOn para que o HATEOAS descubra quem são eles e possa utilizá-los corretamente
         Sem usar o methodOn, estará fazendo referência ao @RequestMapping que está anotado dentro do Controller,
         que dá na mesma do método listar(), já que o listar() não tem nenhum path diferente do @RequestMapping*/
-        usuarioDTO.add(linkTo(controllerClass)
+        dto.add(linkTo(controllerClass)
                 .withRel(USUARIOS));
 
-        usuarioDTO.add(linkTo(methodOn(UsuarioGrupoController.class)
-                .listar(usuarioDTO.getId()))
+        dto.add(linkTo(methodOn(UsuarioGrupoController.class)
+                .listar(dto.getId()))
                 .withRel(GRUPOS_USUARIO));
 
-        return usuarioDTO;
+        return dto;
     }
 }
