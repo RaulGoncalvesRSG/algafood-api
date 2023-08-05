@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.converter;
 
+import com.algaworks.algafood.api.converter.generic.ObjectDTOGenericConverter;
 import com.algaworks.algafood.api.dto.response.ProdutoDTO;
 import com.algaworks.algafood.domain.model.Produto;
 import lombok.RequiredArgsConstructor;

@@ -6,6 +6,7 @@ import com.algaworks.algafood.api.openapi.controller.RestauranteUsuarioResponsav
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RequiredArgsConstructor
 @RestController
@@ -25,9 +27,14 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
     private final UsuarioDTOAssembler assembler;
 
     @GetMapping
-    public ResponseEntity<List<UsuarioDTO>> listar(@PathVariable Long restauranteId){
+    public ResponseEntity<CollectionModel<UsuarioDTO>> listar(@PathVariable Long restauranteId){
         Restaurante restaurante = service.buscarOuFalhar(restauranteId);
-        List<UsuarioDTO> dtos = assembler.toCollectionDTO(restaurante.getUsuarios());
+        CollectionModel<UsuarioDTO> dtos = assembler.toCollectionModel(restaurante.getUsuarios());
+
+        //toCollectionModel retorna a coleção com self href de link de usuários. Então é preciso remover o link e add um correto
+        dtos.removeLinks().add(linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
+                        .listar(restauranteId)).withSelfRel());
+
         return ResponseEntity.ok(dtos);
     }
 

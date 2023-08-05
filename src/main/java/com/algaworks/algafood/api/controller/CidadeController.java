@@ -11,6 +11,7 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.service.CidadeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,16 +36,16 @@ public class CidadeController implements CidadeControllerOpenApi {
     private final CidadeRequestDTODisassembler disassembler;
 
     @GetMapping
-    public ResponseEntity<List<CidadeDTO>> listar(){
+    public ResponseEntity<CollectionModel<CidadeDTO>> listar(){
         List<Cidade> cidades = service.listar();
-        List<CidadeDTO> dtos = assembler.toCollectionDTO(cidades);
+        CollectionModel<CidadeDTO> dtos = assembler.toCollectionModel(cidades);
         return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CidadeDTO> buscar(@PathVariable Long id){
         Cidade cidade = service.buscarOuFalhar(id);
-        CidadeDTO dto = assembler.toDTO(cidade);
+        CidadeDTO dto = assembler.toModel(cidade);
         return ResponseEntity.ok(dto);
     }
 
@@ -53,7 +54,7 @@ public class CidadeController implements CidadeControllerOpenApi {
         try {
             Cidade cidade = disassembler.toDomainObject(requestDTO);
             cidade = service.salvar(cidade);
-            CidadeDTO dto = assembler.toDTO(cidade);
+            CidadeDTO dto = assembler.toModel(cidade);
             URI uri = ResourceUriHelper.generateURI(dto.getId());
 
             return ResponseEntity.created(uri).body(dto);
@@ -68,7 +69,7 @@ public class CidadeController implements CidadeControllerOpenApi {
             Cidade cidadeAtual = service.buscarOuFalhar(id);
             disassembler.copyToDomainObject(requestDTO, cidadeAtual);
             cidadeAtual = service.salvar(cidadeAtual);
-            CidadeDTO dto = assembler.toDTO(cidadeAtual);
+            CidadeDTO dto = assembler.toModel(cidadeAtual);
 
             return ResponseEntity.ok(dto);
         } catch (EstadoNaoEncontradoException e) {

@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.converter;
+package com.algaworks.algafood.api.converter.generic;
 
 import org.modelmapper.ModelMapper;
 
