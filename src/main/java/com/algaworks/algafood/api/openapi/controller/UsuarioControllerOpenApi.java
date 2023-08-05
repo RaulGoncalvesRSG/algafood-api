@@ -10,15 +10,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 @Api(tags = "Usuários")
 public interface UsuarioControllerOpenApi {
 
 	@ApiOperation("Lista os usuários")
-	ResponseEntity<List<UsuarioDTO>> listar();
+	ResponseEntity<CollectionModel<UsuarioDTO>> listar();
 
 	@ApiOperation("Busca um usuário por ID")
 	@ApiResponses({

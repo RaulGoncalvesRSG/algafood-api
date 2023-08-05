@@ -10,6 +10,7 @@ import com.algaworks.algafood.api.openapi.controller.UsuarioControllerOpenApi;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,9 +34,9 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     private final UsuarioRequestDTODisassembler disassembler;
 
     @GetMapping
-    public ResponseEntity<List<UsuarioDTO>> listar(){
+    public ResponseEntity<CollectionModel<UsuarioDTO>> listar(){
         List<Usuario> usuarios = service.listar();
-        List<UsuarioDTO> dtos = assembler.toCollectionDTO(usuarios);
+        CollectionModel<UsuarioDTO> dtos = assembler.toCollectionModel(usuarios);
         return ResponseEntity.ok(dtos);
     }
 
