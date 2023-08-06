@@ -103,6 +103,18 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
         setDataCancelamento(OffsetDateTime.now());
     }
 
+    public boolean podeSerConfirmado() {
+        return getStatus().podeAlterarPara(StatusPedido.CONFIRMADO);
+    }
+
+    public boolean podeSerEntregue() {
+        return getStatus().podeAlterarPara(StatusPedido.ENTREGUE);
+    }
+
+    public boolean podeSerCancelado() {
+        return getStatus().podeAlterarPara(StatusPedido.CANCELADO);
+    }
+
     @PrePersist     //Método callback JPA é executado em alguns eventos do ciclo de vida da entidade. Um dos eventos é o PrePersist: antes de persistir o dado no BD, executa o método
     private void gerarCodigo(){
         setCodigo(UUID.randomUUID().toString());

@@ -16,6 +16,9 @@ public class PedidoDTOAssembler extends ObjectRepresentationDTOGenericConverter<
 
     private static final String PEDIDOS = "pedidos";
     private static final String PRODUTOS = "produtos";
+    private static final String CONFIRMAR = "confirmar";
+    private static final String CANCELAR = "cancelar";
+    private static final String ENTREGAR = "entregar";
 
     public PedidoDTOAssembler() {
         super(PedidoController.class, PedidoDTO.class);
@@ -27,6 +30,19 @@ public class PedidoDTOAssembler extends ObjectRepresentationDTOGenericConverter<
         modelMapper.map(pedido, dto);
 
         dto.add(algaLinks.linkToPedidos(PEDIDOS));
+
+        if (pedido.podeSerConfirmado()) {
+            dto.add(algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), CONFIRMAR));
+        }
+
+        if (pedido.podeSerCancelado()) {
+            dto.add(algaLinks.linkToCancelamentoPedido(pedido.getCodigo(), CANCELAR));
+        }
+
+        if (pedido.podeSerEntregue()) {
+            dto.add(algaLinks.linkToEntregaPedido(pedido.getCodigo(), ENTREGAR));
+        }
+
         dto.getRestaurante().add(algaLinks.linkToRestaurante(pedido.getRestaurante().getId()));
         dto.getCliente().add(algaLinks.linkToUsuario(pedido.getCliente().getId()));
         dto.getFormaPagamento().add(algaLinks.linkToFormaPagamento(pedido.getFormaPagamento().getId()));
