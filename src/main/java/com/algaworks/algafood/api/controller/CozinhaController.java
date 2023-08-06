@@ -39,8 +39,8 @@ public class CozinhaController implements CozinhaControllerOpenApi {
     @GetMapping     //PagedModel é um Page que aceita hateoas
     public ResponseEntity<PagedModel<CozinhaDTO>> listar(@PageableDefault(size = 10) Pageable pageable){
         Page<Cozinha> cozinhas = service.listar(pageable);
-        /*Usa PagedResourcesAssembler para converter um Page comum para PageModel. Qm faz a conversão de Domain para DTO é
-        é o CozinhaDTOAssembler, por isso ele é o segundo argumento do método toModel*/
+        /*Usa PagedResourcesAssembler para converter um Page comum para PageModel. Qm faz a conversão de Cozinha (Domain)
+        para CozinhaDTO é o CozinhaDTOAssembler, por isso ele é o segundo argumento do método toModel*/
         PagedModel<CozinhaDTO> cozinhasPagedModel = pagedResourcesAssembler.toModel(cozinhas, assembler);
 
         return ResponseEntity.ok(cozinhasPagedModel);

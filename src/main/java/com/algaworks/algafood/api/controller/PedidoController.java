@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -41,16 +42,17 @@ public class PedidoController implements PedidoControllerOpenApi {
     private final PedidoDTOAssembler pedidoDTOAssembler;
     private final PedidoRequestDTODisassembler pedidoRequestDTODisassembler;
     private final PedidoResumoDTOAssembler pedidoResumoDTOAssembler;
+    private final PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
 
     @GetMapping     //Apenas em add o parâmetro PedidoFilter, a pesquisa será feita sem anotação
-    public ResponseEntity<Page<PedidoResumoDTO>> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
-        pageable = traduzirPageable(pageable);
+    public ResponseEntity<PagedModel<PedidoResumoDTO>> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
+        Pageable pageableTraduzido = traduzirPageable(pageable);
+        Page<Pedido> pedidosPage = emissaoPedidoService.listar(filtro, pageableTraduzido);
 
-        Page<Pedido> pedidos = emissaoPedidoService.listar(filtro, pageable);
-        List<PedidoResumoDTO> dtos = pedidoResumoDTOAssembler.toCollectionDTO(pedidos.getContent());
-        Page<PedidoResumoDTO> pedidosPage = new PageImpl<>(dtos, pageable, pedidos.getTotalElements());
+        pedidosPage = new PageImpl<>(pedidosPage.getContent(), pageable, pedidosPage.getTotalElements());
+        PagedModel<PedidoResumoDTO> pedidosPagedModel = pagedResourcesAssembler.toModel(pedidosPage, pedidoResumoDTOAssembler);
 
-        return ResponseEntity.ok(pedidosPage);
+        return ResponseEntity.ok(pedidosPagedModel);
     }
 
     @GetMapping("/{codigo}")
@@ -78,14 +80,15 @@ public class PedidoController implements PedidoControllerOpenApi {
         }
     }
 
-    private Pageable traduzirPageable(Pageable pageable) {           //Campos que podem ser ordenados
+    private Pageable traduzirPageable(Pageable pageable) {        //Campos que podem ser ordenados. Traduz as propriedades para o nome de destino (value)
+        //A key é domínio (nome da propriedade) e o value é a representação. Ex: poderia ser "nomeRestaurante" (key) e apresentar como "restaurante.nome" (value)
         Map<String, String> mapeamento = Map.of(
                 "codigo", "codigo",
                 "subtotal", "subtotal",
                 "taxaFrete", "taxaFrete",
                 "valorTotal", "valorTotal",
                 "dataCriacao", "dataCriacao",
-                "restaurante.nome", "restaurante.nome",
+                "restauranteNome", "restaurante.nome",
                 "restaurante.id", "restaurante.id",
                 "cliente.id", "cliente.id",
                 "cliente.nome", "cliente.nome"
