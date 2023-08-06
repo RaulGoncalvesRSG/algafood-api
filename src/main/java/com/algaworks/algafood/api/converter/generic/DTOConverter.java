@@ -6,6 +6,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//Exemplo de Conversor como interface
 public interface DTOConverter<DTO, OBJ> {
 
     ModelMapper modelMapper = new ModelMapper();

@@ -1,27 +1,28 @@
 package com.algaworks.algafood.api.converter;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.controller.CidadeController;
-import com.algaworks.algafood.api.controller.EstadoController;
 import com.algaworks.algafood.api.dto.response.CidadeDTO;
 import com.algaworks.algafood.domain.model.Cidade;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.methodOn;
 
-@Component
+@Component      //Exemplo de Assembler com Hateoas sem estender classe genérica
 public class CidadeDTOAssembler extends RepresentationModelAssemblerSupport<Cidade, CidadeDTO> {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private AlgaLinks algaLinks;
 
     private static final String CIDADES = "cidades";
 
@@ -31,23 +32,17 @@ public class CidadeDTOAssembler extends RepresentationModelAssemblerSupport<Cida
 
     @Override     //Qnd converter um Domain para DTO, adiciona os links hateoas
     public CidadeDTO toModel(Cidade cidade) {
-        CidadeDTO cidadeDTO = createModelWithId(cidade.getId(), cidade);        //Cria um DTO com withSelfReal já implementado
-        modelMapper.map(cidade, cidadeDTO);                              //Copia as pripriedades do domain para DTO
+        CidadeDTO dto = createModelWithId(cidade.getId(), cidade);        //Cria um DTO com withSelfReal já implementado
+        modelMapper.map(cidade, dto);                              //Copia as pripriedades do domain para DTO
 
         //Forma de add withSelfRel sem utilizar createModelWithId do RepresentationModelAssemblerSupport
-//        CidadeDTO cidadeDTO = modelMapper.map(cidade, CidadeDTO.class);
-//        cidadeDTO.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class).buscar(cidadeDTO.getId())).withSelfRel());
+//        CidadeDTO dto = modelMapper.map(cidade, CidadeDTO.class);
+//        dto.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CidadeController.class).buscar(dto.getId())).withSelfRel());
 
-        //WebMvcLinkBuilder - construtor de link dinâmico. Ele adiciona protocolo, domínio e porta da aplicação para conseguir formar a URL completa do endpoint
-        cidadeDTO.add(WebMvcLinkBuilder
-                .linkTo(methodOn(CidadeController.class).listar())
-                .withRel(CIDADES));
+        dto.add(algaLinks.linkToCidades(CIDADES));
+        dto.getEstado().add(algaLinks.linkToEstado(dto.getEstado().getId()));
 
-        cidadeDTO.getEstado().add(WebMvcLinkBuilder
-                .linkTo(methodOn(EstadoController.class).buscar(cidade.getEstado().getId()))
-                .withSelfRel());
-
-        return cidadeDTO;
+        return dto;
     }
 
     @Override

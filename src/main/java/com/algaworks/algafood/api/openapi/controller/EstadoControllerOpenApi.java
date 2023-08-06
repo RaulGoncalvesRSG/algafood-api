@@ -8,15 +8,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 @Api(tags = "Estados")
 public interface EstadoControllerOpenApi {
 
 	@ApiOperation("Lista os estados")
-	ResponseEntity<List<EstadoDTO>> listar();
+	ResponseEntity<CollectionModel<EstadoDTO>> listar();
 
 	@ApiOperation("Busca um estado por ID")
 	@ApiResponses({

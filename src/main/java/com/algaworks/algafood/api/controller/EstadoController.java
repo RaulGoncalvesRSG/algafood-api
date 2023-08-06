@@ -1,12 +1,13 @@
 package com.algaworks.algafood.api.controller;
 
-import com.algaworks.algafood.api.converter.EstadoConverter;
+import com.algaworks.algafood.api.converter.EstadoDTOAssembler;
 import com.algaworks.algafood.api.dto.request.EstadoRequestDTO;
 import com.algaworks.algafood.api.dto.response.EstadoDTO;
 import com.algaworks.algafood.api.openapi.controller.EstadoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.EstadoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,36 +28,36 @@ import java.util.List;
 public class EstadoController implements EstadoControllerOpenApi {
 
     private final EstadoService service;
-    private final EstadoConverter estadoConverter;
+    private final EstadoDTOAssembler assembler;
 
     @GetMapping
-    public ResponseEntity<List<EstadoDTO>> listar(){
+    public ResponseEntity<CollectionModel<EstadoDTO>> listar(){
         List<Estado> estados = service.listar();
-        List<EstadoDTO> dtos = estadoConverter.toCollectionDTO(estados);
+        CollectionModel<EstadoDTO> dtos = assembler.toCollectionModel(estados);
         return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EstadoDTO> buscar(@PathVariable Long id){
         Estado estado = service.buscarOuFalhar(id);
-        EstadoDTO dto = estadoConverter.converterToDTO(estado);
+        EstadoDTO dto = assembler.toDTO(estado);
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping
     public ResponseEntity<EstadoDTO> adicionar(@RequestBody @Valid EstadoRequestDTO requestDTO){
-        Estado estado = estadoConverter.toDomainObject(requestDTO);
+        Estado estado = assembler.toDomainObject(requestDTO);
         estado = service.salvar(estado);
-        EstadoDTO dto = estadoConverter.converterToDTO(estado);
+        EstadoDTO dto = assembler.toDTO(estado);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<EstadoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid EstadoRequestDTO requestDTO) {
         Estado estadoAtual = service.buscarOuFalhar(id);
-        estadoConverter.copyToDomainObject(requestDTO, estadoAtual);
+        assembler.copyToDomainObject(requestDTO, estadoAtual);
         estadoAtual = service.salvar(estadoAtual);
-        EstadoDTO dto = estadoConverter.converterToDTO(estadoAtual);
+        EstadoDTO dto = assembler.toDTO(estadoAtual);
 
         return ResponseEntity.ok(dto);
     }
