@@ -1,16 +1,17 @@
 package com.algaworks.algafood.api.controller;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.openapi.controller.EstatisticasControllerOpenApi;
+import com.algaworks.algafood.core.validation.annotations.Offset;
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.dto.VendaDiariaDTO;
 import com.algaworks.algafood.domain.service.VendaQueryService;
 import com.algaworks.algafood.domain.service.VendaReportService;
-import com.algaworks.algafood.core.validation.annotations.Offset;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/estatisticas")
@@ -26,6 +26,15 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
 
 	private final VendaQueryService vendaQueryService;
 	private final VendaReportService vendaReportService;
+	private final AlgaLinks algaLinks;
+
+	@GetMapping( produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<EstatisticasModel> estatisticas() {
+		EstatisticasModel estatisticasModel = new EstatisticasModel();
+		//Algum dia o sistema pode ter vendas-mensais, vendas-anuais, etc. Então add os links em um endpoint
+		estatisticasModel.add(algaLinks.linkToEstatisticasVendasDiarias("vendas-diarias"));
+		return ResponseEntity.ok(estatisticasModel);
+	}
 	
 	@GetMapping(path = "/vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<VendaDiariaDTO>> consultarVendasDiarias(VendaDiariaFilter filtro,
@@ -46,5 +55,8 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
 				.contentType(MediaType.APPLICATION_PDF)
 				.headers(headers)
 				.body(bytesPdf);
+	}
+
+	public static class EstatisticasModel extends RepresentationModel<EstatisticasModel> {
 	}
 }

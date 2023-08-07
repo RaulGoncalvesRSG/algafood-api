@@ -43,7 +43,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> buscar(@PathVariable Long id) {
         Usuario usuario = service.buscarOuFalhar(id);
-        UsuarioDTO dto = assembler.toDTO(usuario);
+        UsuarioDTO dto = assembler.toModel(usuario);
         return ResponseEntity.ok(dto);
     }
 

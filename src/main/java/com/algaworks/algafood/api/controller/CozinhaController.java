@@ -49,7 +49,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
     @GetMapping("/{id}")
     public ResponseEntity<CozinhaDTO> buscar(@PathVariable Long id){
         Cozinha cozinha = service.buscarOuFalhar(id);
-        CozinhaDTO dto = assembler.toDTO(cozinha);
+        CozinhaDTO dto = assembler.toModel(cozinha);
         return ResponseEntity.ok(dto);
     }
 

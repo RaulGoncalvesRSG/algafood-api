@@ -58,7 +58,7 @@ public class PedidoController implements PedidoControllerOpenApi {
     @GetMapping("/{codigo}")
     public ResponseEntity<PedidoDTO> buscar(@PathVariable String codigo) {
         Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigo);
-        PedidoDTO dto = pedidoDTOAssembler.toDTO(pedido);
+        PedidoDTO dto = pedidoDTOAssembler.toModel(pedido);
         return ResponseEntity.ok(dto);
     }
 

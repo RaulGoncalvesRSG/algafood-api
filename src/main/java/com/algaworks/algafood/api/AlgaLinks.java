@@ -31,16 +31,24 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class AlgaLinks {
 
-	private final Class<UsuarioController> usuarioControllerClass = UsuarioController.class;
-	private final Class<UsuarioGrupoController> usuarioGrupoControllerClass = UsuarioGrupoController.class;
-	private final Class<GrupoPermissaoController> grupoPermissaoControllerClass = GrupoPermissaoController.class;
-	private final Class<PedidoController> pedidoControllerClass = PedidoController.class;
-	private final Class<CozinhaController> cozinhaControllerClass = CozinhaController.class;
-	private final Class<RestauranteController> restauranteControllerClass = RestauranteController.class;
-	private final Class<RestauranteProdutoFotoController> restauranteProdutoFotoControllerClass = RestauranteProdutoFotoController.class;
-	private final Class<FluxoPedidoController> fluxoPedidoControllerClass = FluxoPedidoController.class;
-	private final Class<RestauranteFormaPagamentoController> restauranteFormaPagamentoControllerClass  = RestauranteFormaPagamentoController.class;
-	private final Class<EstatisticasController> estatisticasControllerClass  = EstatisticasController.class;
+	private final Class<UsuarioController> usuarioController = UsuarioController.class;
+	private final Class<UsuarioGrupoController> usuarioGrupoController = UsuarioGrupoController.class;
+	private final Class<GrupoPermissaoController> grupoPermissaoController = GrupoPermissaoController.class;
+	private final Class<PedidoController> pedidoController = PedidoController.class;
+	private final Class<CozinhaController> cozinhaController = CozinhaController.class;
+	private final Class<RestauranteController> restauranteController = RestauranteController.class;
+	private final Class<RestauranteProdutoFotoController> restauranteProdutoFotoController = RestauranteProdutoFotoController.class;
+	private final Class<FluxoPedidoController> fluxoPedidoController = FluxoPedidoController.class;
+	private final Class<RestauranteFormaPagamentoController> restauranteFormaPagamentoController = RestauranteFormaPagamentoController.class;
+	private final Class<EstatisticasController> estatisticasController = EstatisticasController.class;
+	private final Class<RestauranteProdutoController> restauranteProdutoController = RestauranteProdutoController.class;
+	private final Class<CidadeController> cidadeController = CidadeController.class;
+	private final Class<EstadoController> estadoController = EstadoController.class;
+	private final Class<FormaPagamentoController> formaPagamentoController = FormaPagamentoController.class;
+	private final Class<RestauranteUsuarioResponsavelController> restauranteUsuarioResponsavelController = RestauranteUsuarioResponsavelController.class;
+
+    private static final String VERBO_GET = "GET";
+    private static final String VERBO_PUT = "PUT";
 
 	//Parâmetros da paginação
 	public static final TemplateVariables PAGINACAO_VARIABLES = new TemplateVariables(
@@ -60,28 +68,36 @@ public class AlgaLinks {
 
 	public Link linkToPedidos(String linkRelations) {
 		//Resultado de variáveis de template: "URL/pedidos{?page,size,sort,clienteId,restauranteId...}"
-		String pedidosUrl = linkTo(pedidoControllerClass).toUri().toString();
+		String pedidosUrl = linkTo(pedidoController).toUri().toString();
 		return Link.of(UriTemplate.of(pedidosUrl,PAGINACAO_VARIABLES.concat(FILTRO_VARIABLES)), linkRelations);
 	}
 
 	public Link linkToConfirmacaoPedido(String codigoPedido, String linkRelations) {
-		return linkTo(methodOn(fluxoPedidoControllerClass)
-				.confirmar(codigoPedido)).withRel(linkRelations);
+		return linkTo(methodOn(fluxoPedidoController)
+				.confirmar(codigoPedido))
+                .withRel(linkRelations)
+                .withType(VERBO_PUT);
 	}
 
 	public Link linkToEntregaPedido(String codigoPedido, String linkRelations) {
-		return linkTo(methodOn(fluxoPedidoControllerClass)
-				.entregar(codigoPedido)).withRel(linkRelations);
+		return linkTo(methodOn(fluxoPedidoController)
+				.entregar(codigoPedido))
+                .withRel(linkRelations)
+                .withType(VERBO_PUT);
 	}
 
 	public Link linkToCancelamentoPedido(String codigoPedido, String linkRelations) {
-		return linkTo(methodOn(fluxoPedidoControllerClass)
-				.cancelar(codigoPedido)).withRel(linkRelations);
+		return linkTo(methodOn(fluxoPedidoController)
+				.cancelar(codigoPedido))
+                .withRel(linkRelations)
+                .withType(VERBO_PUT);
 	}
 
 	public Link linkToRestaurante(Long restauranteId, String linkRelations) {
-		return linkTo(methodOn(restauranteControllerClass)
-				.buscar(restauranteId)).withRel(linkRelations);
+		return linkTo(methodOn(restauranteController)
+				.buscar(restauranteId))
+                .withRel(linkRelations)
+                .withType(VERBO_GET);
 	}
 
 	public Link linkToRestaurante(Long restauranteId) {
@@ -89,7 +105,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToRestaurantes(String linkRelations) {
-		String restaurantesUrl = linkTo(restauranteControllerClass).toUri().toString();
+		String restaurantesUrl = linkTo(restauranteController).toUri().toString();
 		return Link.of(UriTemplate.of(restaurantesUrl, PROJECAO_VARIABLES), linkRelations);
 	}
 
@@ -98,7 +114,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToRestauranteFormasPagamento(Long restauranteId, String linkRelations) {
-		return linkTo(methodOn(restauranteFormaPagamentoControllerClass)
+		return linkTo(methodOn(restauranteFormaPagamentoController)
 				.listarFormasPagamento(restauranteId)).withRel(linkRelations);
 	}
 
@@ -107,37 +123,42 @@ public class AlgaLinks {
 	}
 
 	public Link linkToRestauranteFormaPagamentoDesassociacao(Long restauranteId, Long formaPagamentoId, String linkRelations) {
-		return linkTo(methodOn(restauranteFormaPagamentoControllerClass)
+		return linkTo(methodOn(restauranteFormaPagamentoController)
 				.desassociar(restauranteId, formaPagamentoId)).withRel(linkRelations);
 	}
 
 	public Link linkToRestauranteFormaPagamentoAssociacao(Long restauranteId, String linkRelations) {
-		return linkTo(methodOn(restauranteFormaPagamentoControllerClass)
+		return linkTo(methodOn(restauranteFormaPagamentoController)
 				.associar(restauranteId, null)).withRel(linkRelations);
 	}
 
 	public Link linkToRestauranteAbertura(Long restauranteId, String linkRelations) {
-		return linkTo(methodOn(restauranteControllerClass)
-				.abrir(restauranteId)).withRel(linkRelations);
+		return linkTo(methodOn(restauranteController)
+				.abrir(restauranteId))
+				.withRel(linkRelations)
+				.withType(VERBO_PUT);
 	}
 
 	public Link linkToRestauranteFechamento(Long restauranteId, String linkRelations) {
-		return linkTo(methodOn(restauranteControllerClass)
-				.fechar(restauranteId)).withRel(linkRelations);
+		return linkTo(methodOn(restauranteController)
+				.fechar(restauranteId)).withRel(linkRelations)
+				.withType(VERBO_PUT);
 	}
 
 	public Link linkToRestauranteInativacao(Long restauranteId, String linkRelations) {
-		return linkTo(methodOn(restauranteControllerClass)
-				.inativar(restauranteId)).withRel(linkRelations);
+		return linkTo(methodOn(restauranteController)
+				.inativar(restauranteId)).withRel(linkRelations)
+				.withType(VERBO_PUT);
 	}
 
 	public Link linkToRestauranteAtivacao(Long restauranteId, String linkRelations) {
-		return linkTo(methodOn(restauranteControllerClass)
-				.ativar(restauranteId)).withRel(linkRelations);
+		return linkTo(methodOn(restauranteController)
+				.ativar(restauranteId)).withRel(linkRelations)
+				.withType(VERBO_PUT);
 	}
 
 	public Link linkToUsuario(Long usuarioId, String linkRelations) {
-		return linkTo(methodOn(usuarioControllerClass)
+		return linkTo(methodOn(usuarioController)
 				.buscar(usuarioId)).withRel(linkRelations);
 	}
 
@@ -149,7 +170,7 @@ public class AlgaLinks {
     Sem usar o methodOn, estará fazendo referência ao @RequestMapping que está anotado dentro do Controller,
     que dá na mesma do método listar(), já que o listar() não tem nenhum path diferente do @RequestMapping*/
 	public Link linkToUsuarios(String linkRelations) {
-		return linkTo(usuarioControllerClass).withRel(linkRelations);
+		return linkTo(usuarioController).withRel(linkRelations);
 	}
 
 	public Link linkToUsuarios() {
@@ -157,17 +178,17 @@ public class AlgaLinks {
 	}
 
 	public Link linkToUsuarioGrupoAssociacao(Long usuarioId, String linkRelations) {
-		return linkTo(methodOn(usuarioGrupoControllerClass)
+		return linkTo(methodOn(usuarioGrupoController)
 				.associar(usuarioId, null)).withRel(linkRelations);
 	}
 
 	public Link linkToUsuarioGrupoDesassociacao(Long usuarioId, Long grupoId, String linkRelations) {
-		return linkTo(methodOn(usuarioGrupoControllerClass)
+		return linkTo(methodOn(usuarioGrupoController)
 				.desassociar(usuarioId, grupoId)).withRel(linkRelations);
 	}
 
 	public Link linkToGruposUsuario(Long usuarioId, String linkRelations) {
-		return linkTo(methodOn(usuarioGrupoControllerClass)
+		return linkTo(methodOn(usuarioGrupoController)
 				.listar(usuarioId)).withRel(linkRelations);
 	}
 
@@ -184,7 +205,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToPermissoes(String linkRelations) {
-		return linkTo(grupoPermissaoControllerClass).withRel(linkRelations);
+		return linkTo(grupoPermissaoController).withRel(linkRelations);
 	}
 
 	public Link linkToPermissoes() {
@@ -192,7 +213,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToGrupoPermissoes(Long grupoId, String linkRelations) {
-		return linkTo(methodOn(grupoPermissaoControllerClass)
+		return linkTo(methodOn(grupoPermissaoController)
 				.listar(grupoId)).withRel(linkRelations);
 	}
 
@@ -201,17 +222,17 @@ public class AlgaLinks {
 	}
 
 	public Link linkToGrupoPermissaoAssociacao(Long grupoId, String linkRelations) {
-		return linkTo(methodOn(grupoPermissaoControllerClass)
+		return linkTo(methodOn(grupoPermissaoController)
 				.associar(grupoId, null)).withRel(linkRelations);
 	}
 
 	public Link linkToGrupoPermissaoDesassociacao(Long grupoId, Long permissaoId, String linkRelations) {
-		return linkTo(methodOn(grupoPermissaoControllerClass)
+		return linkTo(methodOn(grupoPermissaoController)
 				.desassociar(grupoId, permissaoId)).withRel(linkRelations);
 	}
 
 	public Link linkToRestauranteResponsaveis(Long restauranteId, String linkRelations) {
-		return linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
+		return linkTo(methodOn(restauranteUsuarioResponsavelController)
 				.listar(restauranteId)).withRel(linkRelations);
 	}
 
@@ -221,17 +242,17 @@ public class AlgaLinks {
 
 	public Link linkToRestauranteResponsavelDesassociacao(Long restauranteId, Long usuarioId, String linkRelations) {
 
-		return linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
+		return linkTo(methodOn(restauranteUsuarioResponsavelController)
 				.desassociar(restauranteId, usuarioId)).withRel(linkRelations);
 	}
 
 	public Link linkToRestauranteResponsavelAssociacao(Long restauranteId, String linkRelations) {
-		return linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
+		return linkTo(methodOn(restauranteUsuarioResponsavelController)
 				.associar(restauranteId, null)).withRel(linkRelations);
 	}
 
 	public Link linkToFormaPagamento(Long formaPagamentoId, String linkRelations) {
-		return linkTo(methodOn(FormaPagamentoController.class)
+		return linkTo(methodOn(formaPagamentoController)
 				.buscar(formaPagamentoId)).withRel(linkRelations);
 	}
 
@@ -240,7 +261,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToFormasPagamento(String linkRelations) {
-		return linkTo(FormaPagamentoController.class).withRel(linkRelations);
+		return linkTo(formaPagamentoController).withRel(linkRelations);
 	}
 
 	public Link linkToFormasPagamento() {
@@ -248,7 +269,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToCidade(Long cidadeId, String linkRelations) {
-		return linkTo(methodOn(CidadeController.class)
+		return linkTo(methodOn(cidadeController)
 				.buscar(cidadeId)).withRel(linkRelations);
 	}
 
@@ -257,7 +278,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToCidades(String linkRelations) {
-		return linkTo(CidadeController.class).withRel(linkRelations);
+		return linkTo(cidadeController).withRel(linkRelations);
 	}
 
 	public Link linkToCidades() {
@@ -265,7 +286,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToEstado(Long estadoId, String linkRelations) {
-		return linkTo(methodOn(EstadoController.class)
+		return linkTo(methodOn(estadoController)
 				.buscar(estadoId)).withRel(linkRelations);
 	}
 
@@ -274,7 +295,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToEstados(String linkRelations) {
-		return linkTo(EstadoController.class).withRel(linkRelations);
+		return linkTo(estadoController).withRel(linkRelations);
 	}
 
 	public Link linkToEstados() {
@@ -282,7 +303,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToProduto(Long restauranteId, Long produtoId, String linkRelations) {
-		return linkTo(methodOn(RestauranteProdutoController.class)
+		return linkTo(methodOn(restauranteProdutoController)
 				.buscar(restauranteId, produtoId))
 				.withRel(linkRelations);
 	}
@@ -292,7 +313,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToProdutos(Long restauranteId, String linkRelations) {
-		return linkTo(methodOn(RestauranteProdutoController.class)
+		return linkTo(methodOn(restauranteProdutoController)
 				.listar(restauranteId, null)).withRel(linkRelations);
 	}
 
@@ -301,7 +322,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToFotoProduto(Long restauranteId, Long produtoId, String linkRelations) {
-		return linkTo(methodOn(restauranteProdutoFotoControllerClass)
+		return linkTo(methodOn(restauranteProdutoFotoController)
 				.buscar(restauranteId, produtoId)).withRel(linkRelations);
 	}
 
@@ -310,7 +331,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToCozinhas(String linkRelations) {
-		return linkTo(cozinhaControllerClass).withRel(linkRelations);
+		return linkTo(cozinhaController).withRel(linkRelations);
 	}
 
 	public Link linkToCozinhas() {
@@ -318,7 +339,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToCozinha(Long cozinhaId, String linkRelations) {
-		return linkTo(methodOn(cozinhaControllerClass)
+		return linkTo(methodOn(cozinhaController)
 				.buscar(cozinhaId)).withRel(linkRelations);
 	}
 
@@ -327,7 +348,7 @@ public class AlgaLinks {
 	}
 
 	public Link linkToEstatisticas(String linkRelations) {
-		return linkTo(estatisticasControllerClass).withRel(linkRelations);
+		return linkTo(estatisticasController).withRel(linkRelations);
 	}
 
 	public Link linkToEstatisticasVendasDiarias(String linkRelations) {
@@ -337,10 +358,9 @@ public class AlgaLinks {
 				new TemplateVariable("dataCriacaoFim", VariableType.REQUEST_PARAM),
 				new TemplateVariable("timeOffset", VariableType.REQUEST_PARAM));
 
-		String pedidosUrl = linkTo(methodOn(estatisticasControllerClass)
+		String pedidosUrl = linkTo(methodOn(estatisticasController)
 				.consultarVendasDiarias(null, null)).toUri().toString();
 
 		return Link.of(UriTemplate.of(pedidosUrl, filtroVariables), linkRelations);
 	}
-
 }
