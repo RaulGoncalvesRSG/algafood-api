@@ -16,6 +16,8 @@ import java.util.List;
 public interface FormaPagamentoControllerOpenApi {
 
 	@ApiOperation("Lista as formas de pagamento")
+	@ApiResponses({@ApiResponse(code = 200, message = "OK")})
+	//@ApiResponses({@ApiResponse(code = 200, message = "OK", response = FormasPagamentoModelOpenApi.class)})		//Quando usa o ResponseEntity com CollectionModel, o ApiResponse precisa do parâmetro response
 	ResponseEntity<List<FormaPagamentoDTO>> listar();
 
 	@ApiOperation("Busca uma forma de pagamento por ID")

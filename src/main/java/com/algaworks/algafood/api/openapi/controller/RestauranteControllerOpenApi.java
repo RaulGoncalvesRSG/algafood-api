@@ -14,6 +14,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public interface RestauranteControllerOpenApi {
 	@JsonView(RestaruanteView.Resumo.class)
 	ResponseEntity<List<RestauranteDTO>> listar();
 
+	@ApiIgnore
 	@ApiOperation(value = "Lista restaurantes", hidden = true) //hidden = true oculta a ApiOperation
 	ResponseEntity<List<RestauranteDTO>> listarApenasNomes();
 

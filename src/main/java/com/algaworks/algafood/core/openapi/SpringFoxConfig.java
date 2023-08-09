@@ -1,9 +1,18 @@
 package com.algaworks.algafood.core.openapi;
 
+import com.algaworks.algafood.api.dto.response.CidadeDTO;
+import com.algaworks.algafood.api.dto.response.CozinhaDTO;
 import com.algaworks.algafood.api.dto.response.PedidoResumoDTO;
+import com.algaworks.algafood.api.dto.response.RestauranteBasicoDTO;
+import com.algaworks.algafood.api.dto.response.UsuarioDTO;
 import com.algaworks.algafood.api.exceptionhandler.Problem;
+import com.algaworks.algafood.api.openapi.model.CidadesModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.CozinhasModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.LinksModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PedidosResumoModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.RestaurantesBasicoModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.UsuariosModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +21,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Links;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -71,9 +83,49 @@ public class SpringFoxConfig {
                 .ignoredParameterTypes(getClasses())
                 //Classe original (1 param) e classe que irá subsituir (2 param). Substituição apenas para documentação
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+                .directModelSubstitute(Links.class, LinksModelOpenApi.class)
+
                 //Regra de substituição. Subistiui Page<PedidoResumoDTO> por PedidosResumoModelOpenApi. Caso precise em outra classe, é preciso usar um alternateTypeRules para cada casoz
                 .alternateTypeRules(AlternateTypeRules.newRule(
                         typeResolver.resolve(Page.class, PedidoResumoDTO.class), PedidosResumoModelOpenApi.class))
+
+                //Substitui a documentação do endpoint q retorna CozinhaDTO pela documentação de CozinhasModelOpenApi
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(PagedModel.class, CozinhaDTO.class),
+                        CozinhasModelOpenApi.class))
+
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, CidadeDTO.class),
+                        CidadesModelOpenApi.class))
+
+//                .alternateTypeRules(AlternateTypeRules.newRule(
+//                        typeResolver.resolve(CollectionModel.class, EstadoDTO.class),
+//                        EstadosModelOpenApi.class))
+//
+//                .alternateTypeRules(AlternateTypeRules.newRule(
+//                        typeResolver.resolve(CollectionModel.class, FormaPagamentoDTO.class),
+//                        FormasPagamentoModelOpenApi.class))
+//
+//                .alternateTypeRules(AlternateTypeRules.newRule(
+//                        typeResolver.resolve(CollectionModel.class, GrupoDTO.class),
+//                        GruposModelOpenApi.class))
+
+//                .alternateTypeRules(AlternateTypeRules.newRule(
+//                        typeResolver.resolve(CollectionModel.class, PermissaoDTO.class),
+//                        PermissoesModelOpenApi.class))
+//
+//                .alternateTypeRules(AlternateTypeRules.newRule(
+//                        typeResolver.resolve(CollectionModel.class, ProdutoDTO.class),
+//                        ProdutosModelOpenApi.class))
+
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, RestauranteBasicoDTO.class),
+                        RestaurantesBasicoModelOpenApi.class))
+
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, UsuarioDTO.class),
+                        UsuariosModelOpenApi.class))
+
                 .apiInfo(apiInfo())
                 .tags(new Tag("Cidades", "Gerencia as cidades"),
                         new Tag("Grupos", "Gerencia os grupos de usuários"),
