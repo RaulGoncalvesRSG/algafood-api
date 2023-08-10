@@ -1,7 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
-import com.algaworks.algafood.api.dto.request.FotoProdutoRequestDTO;
-import com.algaworks.algafood.api.dto.response.FotoProdutoDTO;
+import com.algaworks.algafood.api.v1.dto.request.FotoProdutoRequestDTO;
+import com.algaworks.algafood.api.v1.dto.response.FotoProdutoDTO;
 import com.algaworks.algafood.domain.exception.FotoProdutoNaoEncontradoException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.model.Produto;
