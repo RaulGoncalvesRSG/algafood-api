@@ -1,11 +1,10 @@
-package com.algaworks.algafood.api.v1.controller;
+package com.algaworks.algafood.api.v2.controller;
 
 import com.algaworks.algafood.api.ResourceUriHelper;
-import com.algaworks.algafood.api.v1.converter.CidadeDTOAssembler;
-import com.algaworks.algafood.api.v1.converter.CidadeRequestDTODisassembler;
-import com.algaworks.algafood.api.v1.dto.request.CidadeRequestDTO;
-import com.algaworks.algafood.api.v1.dto.response.CidadeDTO;
-import com.algaworks.algafood.api.v1.openapi.controller.CidadeControllerOpenApi;
+import com.algaworks.algafood.api.v2.converter.CidadeDTOAssemblerV2;
+import com.algaworks.algafood.api.v2.converter.CidadeRequestDTODisassemblerV2;
+import com.algaworks.algafood.api.v2.dto.request.CidadeRequestDTOV2;
+import com.algaworks.algafood.api.v2.dto.response.CidadeDTOV2;
 import com.algaworks.algafood.core.web.AlgaMediaTypes;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -14,7 +13,6 @@ import com.algaworks.algafood.domain.service.CidadeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,32 +28,32 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/cidades")       //Versionamento com MediaType
-public class CidadeController implements CidadeControllerOpenApi {
+public class CidadeControllerV2 {
 
     private final CidadeService service;
-    private final CidadeDTOAssembler assembler;
-    private final CidadeRequestDTODisassembler disassembler;
+    private final CidadeDTOAssemblerV2 assembler;
+    private final CidadeRequestDTODisassemblerV2 disassembler;
 
-    @GetMapping(produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
-    public ResponseEntity<CollectionModel<CidadeDTO>> listar(){
+    @GetMapping(produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+    public ResponseEntity<CollectionModel<CidadeDTOV2>> listar(){
         List<Cidade> cidades = service.listar();
-        CollectionModel<CidadeDTO> dtos = assembler.toCollectionModel(cidades);
+        CollectionModel<CidadeDTOV2> dtos = assembler.toCollectionModel(cidades);
         return ResponseEntity.ok(dtos);
     }
 
-    @GetMapping(path = "/{id}", produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
-    public ResponseEntity<CidadeDTO> buscar(@PathVariable Long id){
+    @GetMapping(path = "/{id}", produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+    public ResponseEntity<CidadeDTOV2> buscar(@PathVariable Long id){
         Cidade cidade = service.buscarOuFalhar(id);
-        CidadeDTO dto = assembler.toModel(cidade);
+        CidadeDTOV2 dto = assembler.toModel(cidade);
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping(produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
-    public ResponseEntity<CidadeDTO> adicionar(@RequestBody @Valid CidadeRequestDTO requestDTO){
+    @PostMapping(produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+    public ResponseEntity<CidadeDTOV2> adicionar(@RequestBody @Valid CidadeRequestDTOV2 requestDTO){
         try {
             Cidade cidade = disassembler.toDomainObject(requestDTO);
             cidade = service.salvar(cidade);
-            CidadeDTO dto = assembler.toModel(cidade);
+            CidadeDTOV2 dto = assembler.toModel(cidade);
             URI uri = ResourceUriHelper.generateURI(dto.getId());
 
             return ResponseEntity.created(uri).body(dto);
@@ -64,13 +62,13 @@ public class CidadeController implements CidadeControllerOpenApi {
         }
     }
 
-    @PutMapping(path = "/{id}", produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
-    public ResponseEntity<CidadeDTO> atualizar(@PathVariable Long id, @RequestBody  @Valid CidadeRequestDTO requestDTO) {
+    @PutMapping(path = "/{id}", produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+    public ResponseEntity<CidadeDTOV2> atualizar(@PathVariable Long id, @RequestBody  @Valid CidadeRequestDTOV2 requestDTO) {
         try {
             Cidade cidadeAtual = service.buscarOuFalhar(id);
             disassembler.copyToDomainObject(requestDTO, cidadeAtual);
             cidadeAtual = service.salvar(cidadeAtual);
-            CidadeDTO dto = assembler.toModel(cidadeAtual);
+            CidadeDTOV2 dto = assembler.toModel(cidadeAtual);
 
             return ResponseEntity.ok(dto);
         } catch (EstadoNaoEncontradoException e) {
@@ -78,9 +76,10 @@ public class CidadeController implements CidadeControllerOpenApi {
         }
     }
 
-    @DeleteMapping("/{id}")
+    //  Não pode ser mapeado na mesma URL em um MediaType diferente, já que não aceita entrada e retorna void.
+/*	@DeleteMapping("/{id}")
     public ResponseEntity<Void> remover(@PathVariable Long id) {
         service.excluir(id);
         return ResponseEntity.noContent().build();
-    }
+    }*/
 }

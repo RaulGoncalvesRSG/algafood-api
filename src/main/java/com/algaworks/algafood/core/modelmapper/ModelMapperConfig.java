@@ -2,6 +2,8 @@ package com.algaworks.algafood.core.modelmapper;
 
 import com.algaworks.algafood.api.v1.dto.request.ItemPedidoRequestDTO;
 import com.algaworks.algafood.api.v1.dto.response.EnderecoDTO;
+import com.algaworks.algafood.api.v2.dto.request.CidadeRequestDTOV2;
+import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Endereco;
 import com.algaworks.algafood.domain.model.ItemPedido;
 import org.modelmapper.ModelMapper;
@@ -28,6 +30,10 @@ public class ModelMapperConfig {
         enderecoDTOTypeMap.<String>addMapping(
                 enderecoSource -> enderecoSource.getCidade().getEstado().getNome(),
                 (enderecoDtoDestine, valueSource) -> enderecoDtoDestine.getCidade().setEstado(valueSource));
+
+        //Quando converter de CidadeRequestDTOV2 para Cidade, não atribui o id da Cidade, de forma q id Cidade fique nulo
+        modelMapper.createTypeMap(CidadeRequestDTOV2.class, Cidade.class)
+                .addMappings(mapper -> mapper.skip(Cidade::setId));
 
         return modelMapper;
     }
