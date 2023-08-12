@@ -6,7 +6,7 @@ import org.springframework.hateoas.mediatype.hal.HalConfiguration;
 import org.springframework.http.MediaType;
 
 @Configuration
-public class AlgaHalConfiguration {
+public class AlgaHalConfiguration {		//Classe utilizada apenas quando utiliza versionamento por MediaType
 
 	@Bean		//Habilita o formato MediaTypes.HAL_JSON. Informa quais os media types aceitos para o HAL
 	public HalConfiguration globalPolicy() {
