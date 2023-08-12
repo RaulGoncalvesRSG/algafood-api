@@ -35,7 +35,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/pedidos")
+@RequestMapping("/v1/pedidos")
 public class PedidoController implements PedidoControllerOpenApi {
 
     private final EmissaoPedidoService emissaoPedidoService;

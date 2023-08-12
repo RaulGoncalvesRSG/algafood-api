@@ -1,10 +1,10 @@
-package com.algaworks.algafood.api.v1.controller;
+package com.algaworks.algafood.api.v2.controller;
 
 import com.algaworks.algafood.api.v1.converter.FormaPagamentoDTOAssembler;
 import com.algaworks.algafood.api.v1.converter.FormaPagamentoRequestDTODisassembler;
 import com.algaworks.algafood.api.v1.dto.request.FormaPagamentoRequestDTO;
 import com.algaworks.algafood.api.v1.dto.response.FormaPagamentoDTO;
-import com.algaworks.algafood.api.v1.openapi.controller.FormaPagamentoControllerOpenApi;
+import com.algaworks.algafood.api.v2.openpai.controller.FormaPagamentoControllerV2OpenApi;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.service.FormaPagamentoService;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/v1/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
-public class FormaPagamentoController implements FormaPagamentoControllerOpenApi {
+@RequestMapping(path = "/v2/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
+public class FormaPagamentoControllerV2 implements FormaPagamentoControllerV2OpenApi {
 
     private final FormaPagamentoService service;
     private final FormaPagamentoDTOAssembler assembler;

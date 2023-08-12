@@ -28,7 +28,7 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/cozinhas")
+@RequestMapping("/v1/cozinhas")
 public class CozinhaController implements CozinhaControllerOpenApi {
 
     private final CozinhaService service;

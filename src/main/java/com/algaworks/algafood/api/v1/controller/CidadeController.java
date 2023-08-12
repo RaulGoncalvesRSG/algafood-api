@@ -6,7 +6,6 @@ import com.algaworks.algafood.api.v1.converter.CidadeRequestDTODisassembler;
 import com.algaworks.algafood.api.v1.dto.request.CidadeRequestDTO;
 import com.algaworks.algafood.api.v1.dto.response.CidadeDTO;
 import com.algaworks.algafood.api.v1.openapi.controller.CidadeControllerOpenApi;
-import com.algaworks.algafood.core.web.AlgaMediaTypes;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -29,28 +28,31 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/cidades")       //Versionamento com MediaType
+@RequestMapping("/v2/cidades")
 public class CidadeController implements CidadeControllerOpenApi {
 
     private final CidadeService service;
     private final CidadeDTOAssembler assembler;
     private final CidadeRequestDTODisassembler disassembler;
 
-    @GetMapping(produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
+ //   @GetMapping(produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<CollectionModel<CidadeDTO>> listar(){
         List<Cidade> cidades = service.listar();
         CollectionModel<CidadeDTO> dtos = assembler.toCollectionModel(cidades);
         return ResponseEntity.ok(dtos);
     }
 
-    @GetMapping(path = "/{id}", produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
+   // @GetMapping(path = "/{id}", produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
+    @GetMapping("/{id}")
     public ResponseEntity<CidadeDTO> buscar(@PathVariable Long id){
         Cidade cidade = service.buscarOuFalhar(id);
         CidadeDTO dto = assembler.toModel(cidade);
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping(produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
+  //  @PostMapping(produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<CidadeDTO> adicionar(@RequestBody @Valid CidadeRequestDTO requestDTO){
         try {
             Cidade cidade = disassembler.toDomainObject(requestDTO);
@@ -64,7 +66,8 @@ public class CidadeController implements CidadeControllerOpenApi {
         }
     }
 
-    @PutMapping(path = "/{id}", produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
+ //   @PutMapping(path = "/{id}", produces = AlgaMediaTypes.V1_APPLICATION_JSON_VALUE)
+    @PutMapping("/{id}")
     public ResponseEntity<CidadeDTO> atualizar(@PathVariable Long id, @RequestBody  @Valid CidadeRequestDTO requestDTO) {
         try {
             Cidade cidadeAtual = service.buscarOuFalhar(id);

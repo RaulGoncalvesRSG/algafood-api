@@ -20,7 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/grupos/{grupoId}/permissoes")
+@RequestMapping("/v1/grupos/{grupoId}/permissoes")
 public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi {
 
     private final PermissaoService permissaoService;

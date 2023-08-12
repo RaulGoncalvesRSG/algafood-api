@@ -25,7 +25,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/produtos")
+@RequestMapping("/v1/restaurantes/{restauranteId}/produtos")
 public class RestauranteProdutoController implements RestauranteProdutoControllerOpenApi {
 
     private final ProdutoService produtoService;

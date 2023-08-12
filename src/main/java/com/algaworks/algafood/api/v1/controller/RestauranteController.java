@@ -29,7 +29,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/restaurantes")
+@RequestMapping("/v1/restaurantes")
 public class RestauranteController implements RestauranteControllerOpenApi {
 
     private final RestauranteService service;

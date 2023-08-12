@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/pedidos/{codigo}")
+@RequestMapping("/v1/pedidos/{codigo}")
 public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
 
     private final FluxoPedidoService fluxoPedidoService;

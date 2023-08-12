@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/permissoes")
+@RequestMapping("/v1/permissoes")
 public class PermissaoController implements PermissaoControllerOpenApi {
 
 	private final PermissaoRepository permissaoRepository;

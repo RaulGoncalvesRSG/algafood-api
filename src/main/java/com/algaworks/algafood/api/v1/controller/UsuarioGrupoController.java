@@ -20,7 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/usuarios/{usuarioId}/grupos")
+@RequestMapping("/v1/usuarios/{usuarioId}/grupos")
 public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 
     private final UsuarioService usuarioService;

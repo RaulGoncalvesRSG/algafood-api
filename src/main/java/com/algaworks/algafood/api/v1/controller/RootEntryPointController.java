@@ -3,13 +3,14 @@ package com.algaworks.algafood.api.v1.controller;
 import com.algaworks.algafood.api.v1.AlgaLinks;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping
+@RequestMapping(path = "/v1/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RootEntryPointController {
 
     private final AlgaLinks algaLinks;

@@ -13,6 +13,8 @@ import com.algaworks.algafood.api.v1.openapi.model.PageableModelOpenApi;
 import com.algaworks.algafood.api.v1.openapi.model.PedidosResumoModelOpenApi;
 import com.algaworks.algafood.api.v1.openapi.model.RestaurantesBasicoModelOpenApi;
 import com.algaworks.algafood.api.v1.openapi.model.UsuariosModelOpenApi;
+import com.algaworks.algafood.api.v2.dto.response.CidadeDTOV2;
+import com.algaworks.algafood.api.v2.openpai.model.CidadesModelV2OpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
@@ -60,15 +62,16 @@ import java.util.function.Consumer;
 public class SpringFoxConfig {
 
     @Bean
-    public Docket apiDocket() {
+    public Docket apiDocketV1() {
         TypeResolver typeResolver = new TypeResolver();
 
         return new Docket(DocumentationType.OAS_30)
+                .groupName("V1")  //Opção "Select a spec" do Swagger UI é apenas default qnd n especifica o groupName
                 .select()
                     //Escane apenas controladores do pacote especificado para gerar o JSON
                     .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
                     //paths filtra os caminhos. Ex: PathSelectors.ant("/restaurantes/*)
-                    .paths(PathSelectors.any())
+                    .paths(PathSelectors.ant("/v1/**")) //"/cidades"
                     .build()
                 //Desabilita os códigos de status que aparecem automaticamente (401, 403 e 404)
                 .useDefaultResponseMessages(false)
@@ -126,7 +129,7 @@ public class SpringFoxConfig {
                         typeResolver.resolve(CollectionModel.class, UsuarioDTO.class),
                         UsuariosModelOpenApi.class))
 
-                .apiInfo(apiInfo())
+                .apiInfo(apiInfoV1())
                 .tags(new Tag("Cidades", "Gerencia as cidades"),
                         new Tag("Grupos", "Gerencia os grupos de usuários"),
                         new Tag("Cozinhas", "Gerencia as cozinhas"),
@@ -137,6 +140,39 @@ public class SpringFoxConfig {
                         new Tag("Produtos", "Gerencia os produtos de restaurantes"),
                         new Tag("Usuários", "Gerencia os usuários"),
                         new Tag("Estatísticas", "Estatísticas da AlgaFood"));
+    }
+
+    @Bean
+    public Docket apiDocketV2() {
+        var typeResolver = new TypeResolver();
+
+        return new Docket(DocumentationType.OAS_30)
+                .groupName("V2")
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
+                .paths(PathSelectors.ant("/v2/**"))     //"/cidades"
+           //     .paths(PathSelectors.regex("^/(v2|cidades/v2).*$"))
+                .build()
+                .useDefaultResponseMessages(false)
+                .globalResponses(HttpMethod.GET, globalGetResponseMessages())
+                .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
+                .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
+                .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+                .additionalModels(typeResolver.resolve(Problem.class))
+                .ignoredParameterTypes(ServletWebRequest.class,
+                        URL.class, URI.class, URLStreamHandler.class, Resource.class,
+                        File.class, InputStream.class)
+                .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+                .directModelSubstitute(Links.class, LinksModelOpenApi.class)
+
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, CidadeDTOV2.class),
+                        CidadesModelV2OpenApi.class))
+
+                .apiInfo(apiInfoV2())
+
+                .tags(new Tag("Cidades", "Gerencia as cidades"),
+                        new Tag("Formas de pagamento", "Gerencia as formas de pagamento"));
     }
 
     private Class getClasses(){
@@ -217,11 +253,20 @@ public class SpringFoxConfig {
     }
 
     //Informações do Swagger UI
-    private ApiInfo apiInfo() {
+    private ApiInfo apiInfoV1() {
         return new ApiInfoBuilder()
                 .title("AlgaFood API")
                 .description("API aberta para clientes e restaurantes")
-                .version("1")
+                .version("1")       //Versionamento da API
+                .contact(new Contact("AlgaWorks", "https://www.algaworks.com", "contato@algaworks.com"))
+                .build();
+    }
+
+    private ApiInfo apiInfoV2() {
+        return new ApiInfoBuilder()
+                .title("AlgaFood API")
+                .description("API aberta para clientes e restaurantes")
+                .version("2")       //Versionamento da API
                 .contact(new Contact("AlgaWorks", "https://www.algaworks.com", "contato@algaworks.com"))
                 .build();
     }

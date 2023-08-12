@@ -18,7 +18,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/restaurantes/{restauranteId}/formas-pagamento")
+@RequestMapping("/v1/restaurantes/{restauranteId}/formas-pagamento")
 public class RestauranteFormaPagamentoController implements RestauranteFormaPagamentoControllerOpenApi {
 
     private final RestauranteService service;
