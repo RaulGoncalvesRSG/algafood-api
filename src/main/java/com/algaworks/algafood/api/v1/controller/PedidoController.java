@@ -8,6 +8,7 @@ import com.algaworks.algafood.api.v1.dto.response.PedidoDTO;
 import com.algaworks.algafood.api.v1.dto.response.PedidoResumoDTO;
 import com.algaworks.algafood.api.v1.openapi.controller.PedidoControllerOpenApi;
 import com.algaworks.algafood.core.data.PageableTranslator;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.filter.PedidoFilter;
@@ -43,6 +44,7 @@ public class PedidoController implements PedidoControllerOpenApi {
     private final PedidoRequestDTODisassembler pedidoRequestDTODisassembler;
     private final PedidoResumoDTOAssembler pedidoResumoDTOAssembler;
     private final PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
+    private final AlgaSecurity algaSecurity;
 
     @GetMapping     //Apenas em add o parâmetro PedidoFilter, a pesquisa será feita sem anotação
     public ResponseEntity<PagedModel<PedidoResumoDTO>> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
@@ -67,9 +69,8 @@ public class PedidoController implements PedidoControllerOpenApi {
         try {
             Pedido novoPedido = pedidoRequestDTODisassembler.toDomainObject(pedidoInput);
 
-            // TODO pegar usuário autenticado
             novoPedido.setCliente(new Usuario());
-            novoPedido.getCliente().setId(1L);
+            novoPedido.getCliente().setId(algaSecurity.getUsuarioId());
 
             novoPedido = emissaoPedidoService.emitir(novoPedido);
             PedidoDTO dto = pedidoDTOAssembler.toDTO(novoPedido);

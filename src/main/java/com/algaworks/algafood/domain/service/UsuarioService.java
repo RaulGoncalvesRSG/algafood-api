@@ -6,7 +6,7 @@ import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class UsuarioService {
 
     private final UsuarioRepository repository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     private static final String SENHA_INVALIDA = "Senha atual informada não coincide com a senha do usuário.";
     private static final String EMAIL_EXISTENTE = "Já existe um usuário cadastrado com o e-mail %s";
