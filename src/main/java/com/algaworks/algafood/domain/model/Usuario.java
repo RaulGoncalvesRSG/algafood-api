@@ -16,6 +16,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -49,13 +50,6 @@ public class Usuario {
             inverseJoinColumns = @JoinColumn(name = "grupo_id"))
     private Set<Grupo> grupos = new HashSet<>();
 
-    public boolean senhaCoincideCom(String senha) {
-        return getSenha().equals(senha);
-    }
-
-    public boolean senhaNaoCoincideCom(String senha) {
-        return !senhaCoincideCom(senha);
-    }
 
     public void adicionarGrupo(Grupo grupo){
         grupos.add(grupo);
@@ -63,5 +57,9 @@ public class Usuario {
 
     public void removerGrupo(Grupo grupo){
         grupos.remove(grupo);
+    }
+
+    public boolean isNovo() {
+        return Objects.isNull(getId());
     }
 }

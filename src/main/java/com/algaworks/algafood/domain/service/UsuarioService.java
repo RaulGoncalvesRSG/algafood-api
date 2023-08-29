@@ -6,6 +6,7 @@ import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class UsuarioService {
 
     private final UsuarioRepository repository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     private static final String SENHA_INVALIDA = "Senha atual informada não coincide com a senha do usuário.";
     private static final String EMAIL_EXISTENTE = "Já existe um usuário cadastrado com o e-mail %s";
@@ -39,16 +41,20 @@ public class UsuarioService {
         if (usuarioExistente.isPresent() && !usuarioExistente.get().equals(usuario)) {
             throw new NegocioException(String.format(EMAIL_EXISTENTE, usuario.getEmail()));
         }
+
+        if (usuario.isNovo()){
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        }
     }
 
     @Transactional
     public void alterarSenha(Long id, String senhaAtual, String novaSenha) {
         Usuario usuario = buscarOuFalhar(id);
 
-        if (usuario.senhaNaoCoincideCom(senhaAtual)) {
+        if (!passwordEncoder.matches(senhaAtual, usuario.getSenha())) {
             throw new NegocioException(SENHA_INVALIDA);
         }
-        usuario.setSenha(novaSenha);
+        usuario.setSenha(passwordEncoder.encode(novaSenha));
     }
 
     public Usuario buscarOuFalhar(Long usuarioId) {
