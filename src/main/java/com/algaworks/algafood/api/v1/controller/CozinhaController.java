@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.v1.converter.CozinhaRequestDTODisassembler;
 import com.algaworks.algafood.api.v1.dto.request.CozinhaRequestDTO;
 import com.algaworks.algafood.api.v1.dto.response.CozinhaDTO;
 import com.algaworks.algafood.api.v1.openapi.controller.CozinhaControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CozinhaService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,6 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +37,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
     private final CozinhaRequestDTODisassembler disassembler;
     private final PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
-    @PreAuthorize("isAuthenticated()")      //Acessa este método apenas se estiver autenticado
+    @CheckSecurity.Cozinhas.PodeConsultar      //Acessa este método apenas se estiver autenticado
     @GetMapping     //PagedModel é um Page que aceita hateoas
     public ResponseEntity<PagedModel<CozinhaDTO>> listar(@PageableDefault(size = 10) Pageable pageable){
         Page<Cozinha> cozinhas = service.listar(pageable);
@@ -48,7 +48,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return ResponseEntity.ok(cozinhasPagedModel);
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @CheckSecurity.Cozinhas.PodeConsultar
     @GetMapping("/{id}")
     public ResponseEntity<CozinhaDTO> buscar(@PathVariable Long id){
         Cozinha cozinha = service.buscarOuFalhar(id);
@@ -56,7 +56,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return ResponseEntity.ok(dto);
     }
 
-    @PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+    @CheckSecurity.Cozinhas.PodeEditar
     @PostMapping
     public ResponseEntity<CozinhaDTO> adicionar(@RequestBody @Valid CozinhaRequestDTO requestDTO){
         Cozinha cozinha = disassembler.toDomainObject(requestDTO);
@@ -65,7 +65,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    @PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+    @CheckSecurity.Cozinhas.PodeEditar
     @PutMapping("/{id}")
     public ResponseEntity<CozinhaDTO> atualizar(@PathVariable Long id, @RequestBody @Valid CozinhaRequestDTO requestDTO) {
         Cozinha cozinhaAtual = service.buscarOuFalhar(id);
@@ -76,7 +76,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return ResponseEntity.ok(dto);
     }
 
-    @PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+    @CheckSecurity.Cozinhas.PodeEditar
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remover(@PathVariable Long id) {
         service.excluir(id);
