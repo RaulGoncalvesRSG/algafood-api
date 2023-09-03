@@ -1,5 +1,6 @@
 package com.algaworks.algafood.core.security;
 
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.lang.annotation.ElementType;
@@ -41,9 +42,45 @@ public @interface CheckSecurity {
          @Target(METHOD)
          @interface PodeGerenciarFuncionamento { }
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+
+         //hasAuthority('SCOPE_READ') and isAuthenticated() - Para haver escopo, é preciso estar autenticado, então n precisa deixar a verificação de forma explícita
+        @PreAuthorize("hasAuthority('SCOPE_READ')")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeConsultar { }
+    }
+
+   @interface Pedidos {
+
+        /*PreAuthorize verifica o comando antes da execução do método
+        PostAuthorize deixa o método ser executado, mas ele faz a verificação depois da sua execução
+        Usa PostAuthorize somente qnd tem ctz q a execução do método n gera algum efeito colateral (ex: altera estado do pedido no BD
+
+        returnObject é uma variável implícita na expressão para obter a instância do obj retornado no método. Isso funciona no PostAuthorize*/
+        @PreAuthorize("hasAuthority('SCOPE_READ')")
+        @PostAuthorize("hasAuthority('CONSULTAR_PEDIDOS') or "
+                + "@algaSecurity.getUsuarioId() == returnObject.body.cliente.id or "         //O cliente do pedido pode consultar o pedido dele
+                + "@algaSecurity.gerenciaRestaurante(returnObject.body.restaurante.id)")     //O usuário autenticado gerencia o restaurante do pedido que está sendo retornado
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeBuscar { }           //Para pedido único
+
+        @PreAuthorize("hasAuthority('SCOPE_READ') and (hasAuthority('CONSULTAR_PEDIDOS') or "
+                + "@algaSecurity.getUsuarioId() == #filtro.clienteId or"
+                + "@algaSecurity.gerenciaRestaurante(#filtro.restauranteId))")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodePesquisar { }         //Para lista de pedidos
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeCriar { }
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and (hasAuthority('GERENCIAR_PEDIDOS') or "
+                + "@algaSecurity.gerenciaRestauranteDoPedido(#codigoPedido))")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeGerenciarPedidos { }
     }
 }

@@ -9,6 +9,7 @@ import com.algaworks.algafood.api.v1.dto.response.PedidoResumoDTO;
 import com.algaworks.algafood.api.v1.openapi.controller.PedidoControllerOpenApi;
 import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.core.security.AlgaSecurity;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.filter.PedidoFilter;
@@ -46,6 +47,7 @@ public class PedidoController implements PedidoControllerOpenApi {
     private final PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
     private final AlgaSecurity algaSecurity;
 
+    @CheckSecurity.Pedidos.PodePesquisar
     @GetMapping     //Apenas em add o parâmetro PedidoFilter, a pesquisa será feita sem anotação
     public ResponseEntity<PagedModel<PedidoResumoDTO>> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
         Pageable pageableTraduzido = traduzirPageable(pageable);
@@ -57,6 +59,7 @@ public class PedidoController implements PedidoControllerOpenApi {
         return ResponseEntity.ok(pedidosPagedModel);
     }
 
+    @CheckSecurity.Pedidos.PodeBuscar
     @GetMapping("/{codigo}")
     public ResponseEntity<PedidoDTO> buscar(@PathVariable String codigo) {
         Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigo);
@@ -64,6 +67,7 @@ public class PedidoController implements PedidoControllerOpenApi {
         return ResponseEntity.ok(dto);
     }
 
+    @CheckSecurity.Pedidos.PodeCriar
     @PostMapping
     public ResponseEntity<PedidoDTO> adicionar(@Valid @RequestBody PedidoRequestDTO pedidoInput) {
         try {

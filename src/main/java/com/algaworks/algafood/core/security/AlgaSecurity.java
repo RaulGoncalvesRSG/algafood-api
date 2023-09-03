@@ -1,5 +1,6 @@
 package com.algaworks.algafood.core.security;
 
+import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import java.util.Objects;
 public class AlgaSecurity {
 
     private final RestauranteRepository restauranteRepository;
+    private final PedidoRepository pedidoRepository;
 
     public Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();  //Representa o obj Token da requição atual
@@ -29,5 +31,9 @@ public class AlgaSecurity {
             return false;
         }
         return restauranteRepository.existsResponsavel(restauranteId, getUsuarioId());
+    }
+
+    public boolean gerenciaRestauranteDoPedido(String codigoPedido) {
+        return pedidoRepository.isPedidoGerenciadoPor(codigoPedido, getUsuarioId());
     }
 }
