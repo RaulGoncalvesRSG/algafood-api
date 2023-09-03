@@ -45,8 +45,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	private final MessageSource messageSource;
 
 	public static final String MSG_ERRO_GENERICA_USUARIO_FINAL
-		= "Ocorreu um erro interno inesperado no sistema. Tente novamente e se "
-				+ "o problema persistir, entre em contato com o administrador do sistema.";
+		= "Ocorreu um erro interno inesperado no sistema. Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
 
 	@Override  //Entra neste método quando ocorrer BindException
 	protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status,

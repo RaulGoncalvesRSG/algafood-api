@@ -16,7 +16,7 @@ public interface RestauranteFormaPagamentoControllerOpenApi {
 
 	@ApiOperation("Lista as formas de pagamento associadas a restaurante")
 	@ApiResponses({@ApiResponse(code = 404, message = "Restaurante não encontrado", response = Problem.class)})
-	ResponseEntity<List<FormaPagamentoDTO>> listarFormasPagamento(@ApiParam(value = "ID do restaurante", example = "1", required = true) Long restauranteId);
+	ResponseEntity<List<FormaPagamentoDTO>> listar(@ApiParam(value = "ID do restaurante", example = "1", required = true) Long restauranteId);
 
 	@ApiOperation("Desassociação de restaurante com forma de pagamento")
 	@ApiResponses({

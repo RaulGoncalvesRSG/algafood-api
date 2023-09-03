@@ -115,7 +115,7 @@ public class AlgaLinks {
 
 	public Link linkToRestauranteFormasPagamento(Long restauranteId, String linkRelations) {
 		return linkTo(methodOn(restauranteFormaPagamentoController)
-				.listarFormasPagamento(restauranteId)).withRel(linkRelations);
+				.listar(restauranteId)).withRel(linkRelations);
 	}
 
 	public Link linkToRestauranteFormasPagamento(Long restauranteId) {

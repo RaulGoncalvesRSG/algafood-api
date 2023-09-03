@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.converter.UsuarioDTOAssembler;
 import com.algaworks.algafood.api.v1.dto.response.UsuarioDTO;
 import com.algaworks.algafood.api.v1.openapi.controller.RestauranteUsuarioResponsavelControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
     private final UsuarioDTOAssembler assembler;
     private final AlgaLinks algaLinks;
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @GetMapping
     public ResponseEntity<CollectionModel<UsuarioDTO>> listar(@PathVariable Long restauranteId){
         Restaurante restaurante = service.buscarOuFalhar(restauranteId);
@@ -36,12 +38,14 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
         return ResponseEntity.ok(dtos);
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PutMapping("/{usuarioId}")
     public ResponseEntity<Void> associar(@PathVariable Long restauranteId, @PathVariable Long usuarioId){
         service.associarResponsavel(restauranteId, usuarioId);
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @DeleteMapping("/{usuarioId}")
     public ResponseEntity<Void> desassociar(@PathVariable Long restauranteId, @PathVariable Long usuarioId){
         service.desassociarResponsavel(restauranteId, usuarioId);

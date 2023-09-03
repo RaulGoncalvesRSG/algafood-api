@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v1.controller;
 import com.algaworks.algafood.api.v1.converter.FormaPagamentoDTOAssembler;
 import com.algaworks.algafood.api.v1.dto.response.FormaPagamentoDTO;
 import com.algaworks.algafood.api.v1.openapi.controller.RestauranteFormaPagamentoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
@@ -24,19 +25,22 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
     private final RestauranteService service;
     private final FormaPagamentoDTOAssembler assembler;
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @GetMapping
-    public ResponseEntity<List<FormaPagamentoDTO>> listarFormasPagamento(@PathVariable Long restauranteId){
+    public ResponseEntity<List<FormaPagamentoDTO>> listar(@PathVariable Long restauranteId){
         Restaurante restaurante = service.buscarOuFalhar(restauranteId);
         List<FormaPagamentoDTO> dtos = assembler.toCollectionDTO(restaurante.getFormasPagamento());
         return ResponseEntity.ok(dtos);
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PutMapping("/{formaPagamentoId}")
     public ResponseEntity<Void> associar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId){
         service.associarFormaPagamento(restauranteId, formaPagamentoId);
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @DeleteMapping("/{formaPagamentoId}")
     public ResponseEntity<Void> desassociar(@PathVariable Long restauranteId, @PathVariable Long formaPagamentoId){
         service.desassociarFormaPagamento(restauranteId, formaPagamentoId);

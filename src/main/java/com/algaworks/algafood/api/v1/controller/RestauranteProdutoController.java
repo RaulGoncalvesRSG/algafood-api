@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.v1.converter.ProdutoRequestDTODisassembler;
 import com.algaworks.algafood.api.v1.dto.request.ProdutoRequestDTO;
 import com.algaworks.algafood.api.v1.dto.response.ProdutoDTO;
 import com.algaworks.algafood.api.v1.openapi.controller.RestauranteProdutoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.ProdutoService;
@@ -33,6 +34,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
     private final ProdutoDTOAssembler assembler;
     private final ProdutoRequestDTODisassembler disassembler;
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @GetMapping
     public ResponseEntity<List<ProdutoDTO>> listar(@PathVariable Long restauranteId,
                                                    @RequestParam(required = false) Boolean incluirInativos) {
@@ -44,6 +46,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
         return ResponseEntity.ok(dtos);
     }
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @GetMapping("/{produtoId}")
     public ResponseEntity<ProdutoDTO> buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId){
         Produto produto = produtoService.buscarOuFalhar(restauranteId, produtoId);
@@ -51,6 +54,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
         return ResponseEntity.ok(dto);
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PostMapping
     public ResponseEntity<ProdutoDTO> salvar(@PathVariable Long restauranteId, @RequestBody ProdutoRequestDTO requestDTO){
         Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
@@ -64,6 +68,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PutMapping("/{produtoId}")
     public ResponseEntity<ProdutoDTO> atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId, @RequestBody ProdutoRequestDTO requestDTO){
         Produto produtoAtual = produtoService.buscarOuFalhar(restauranteId, produtoId);

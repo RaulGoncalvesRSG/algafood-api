@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v1.controller;
 import com.algaworks.algafood.api.v1.dto.request.FotoProdutoRequestDTO;
 import com.algaworks.algafood.api.v1.dto.response.FotoProdutoDTO;
 import com.algaworks.algafood.api.v1.openapi.controller.RestauranteProdutoFotoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.model.Produto;
@@ -44,6 +45,7 @@ public class RestauranteProdutoFotoController implements RestauranteProdutoFotoC
    // private final FotoProdutoDTOAssembler fotoProdutoDTOAssembler;
 
     //Parâmetro com @RequestPart MultipartFile, pois o swagger não estava enviando content-type com multipart/form-data ao enviar arquivo
+    @CheckSecurity.Restaurantes.PodeEditar
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FotoProdutoDTO> atualizarFoto(@PathVariable Long restauranteId,
                                                         @PathVariable Long produtoId,
@@ -56,6 +58,7 @@ public class RestauranteProdutoFotoController implements RestauranteProdutoFotoC
         return ResponseEntity.ok(dto);
     }
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FotoProdutoDTO> buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId){
         FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
@@ -96,6 +99,7 @@ public class RestauranteProdutoFotoController implements RestauranteProdutoFotoC
         }
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @DeleteMapping
     public ResponseEntity<Void> excluir(@PathVariable Long restauranteId, @PathVariable Long produtoId){
         restauranteService.buscarOuFalhar(restauranteId);

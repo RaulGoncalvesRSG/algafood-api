@@ -6,6 +6,7 @@ import com.algaworks.algafood.api.v1.dto.request.RestauranteRequestDTO;
 import com.algaworks.algafood.api.v1.dto.response.RestauranteDTO;
 import com.algaworks.algafood.api.v1.dto.view.RestaruanteView;
 import com.algaworks.algafood.api.v1.openapi.controller.RestauranteControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
@@ -36,6 +37,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     private final RestauranteDTOAssembler assembler;
     private final RestauranteRequestDTODisassembler disassembler;
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @JsonView(RestaruanteView.Resumo.class)     //O JsonView faz retornar apenas os atributos do DTO com @JsonView(Nome_classe_especificado)
     @GetMapping
     public ResponseEntity<List<RestauranteDTO>> listar(){
@@ -44,12 +46,14 @@ public class RestauranteController implements RestauranteControllerOpenApi {
         return ResponseEntity.ok(dtos);
     }
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @JsonView(RestaruanteView.ApenasNome.class)     //Retorna apenas os canpos com a anotação e a classe indicada
     @GetMapping(params = "projecao=apenas-nome")     //Se passar parâmetros no GET, chama este método
     public ResponseEntity<List<RestauranteDTO>> listarApenasNomes(){
         return listar();
     }
 
+    @CheckSecurity.Restaurantes.PodeConsultar
     @GetMapping("/{id}")
     public ResponseEntity<RestauranteDTO> buscar(@PathVariable Long id){
         Restaurante restaurante = service.buscarOuFalhar(id);
@@ -57,6 +61,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
         return ResponseEntity.ok(dto);
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PostMapping
     public ResponseEntity<RestauranteDTO> adicionar(@RequestBody @Valid RestauranteRequestDTO requestDTO){
         try {
@@ -70,6 +75,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
         }
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PutMapping("/{id}")
     public ResponseEntity<RestauranteDTO> atualizar(@PathVariable Long id, @RequestBody @Valid RestauranteRequestDTO requestDTO){
         try {
@@ -84,18 +90,21 @@ public class RestauranteController implements RestauranteControllerOpenApi {
         }
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PutMapping("/{restauranteId}/ativo")
     public ResponseEntity<Void> ativar(@PathVariable Long restauranteId) {
         service.ativar(restauranteId);
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PutMapping("/{restauranteId}/inativo")
     public ResponseEntity<Void> inativar(@PathVariable Long restauranteId) {
         service.inativar(restauranteId);
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PutMapping("/ativacoes")
     public ResponseEntity<Void> ativarMultiplos(@RequestBody List<Long> restauranteIds) {
         try {
@@ -106,6 +115,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @DeleteMapping("/ativacoes")
     public ResponseEntity<Void> inativarMultiplos(@RequestBody List<Long> restauranteIds) {
         try {
@@ -116,12 +126,14 @@ public class RestauranteController implements RestauranteControllerOpenApi {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PutMapping("/{restauranteId}/abertura")
     public ResponseEntity<Void> abrir(@PathVariable Long restauranteId) {
         service.abrir(restauranteId);
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PutMapping("/{restauranteId}/fechamento")
     public ResponseEntity<Void> fechar(@PathVariable Long restauranteId) {
         service.fechar(restauranteId);
