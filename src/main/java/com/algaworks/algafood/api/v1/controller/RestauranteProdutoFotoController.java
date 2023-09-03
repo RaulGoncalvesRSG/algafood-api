@@ -45,7 +45,7 @@ public class RestauranteProdutoFotoController implements RestauranteProdutoFotoC
    // private final FotoProdutoDTOAssembler fotoProdutoDTOAssembler;
 
     //Parâmetro com @RequestPart MultipartFile, pois o swagger não estava enviando content-type com multipart/form-data ao enviar arquivo
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FotoProdutoDTO> atualizarFoto(@PathVariable Long restauranteId,
                                                         @PathVariable Long produtoId,
@@ -99,7 +99,7 @@ public class RestauranteProdutoFotoController implements RestauranteProdutoFotoC
         }
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @DeleteMapping
     public ResponseEntity<Void> excluir(@PathVariable Long restauranteId, @PathVariable Long produtoId){
         restauranteService.buscarOuFalhar(restauranteId);

@@ -72,7 +72,7 @@ public class Restaurante {
     @JoinTable(name = "restaurante_usuario_responsavel",
             joinColumns = @JoinColumn(name = "restaurante_id"),
             inverseJoinColumns = @JoinColumn(name = "usuarioId"))
-    private Set<Usuario> usuarios = new HashSet<>();
+    private Set<Usuario> responsaveis  = new HashSet<>();
 
     public void ativar() {
         setAtivo(true);
@@ -109,11 +109,11 @@ public class Restaurante {
     }
 
     public void adicionarResponsavel(Usuario usuario){
-        usuarios.add(usuario);
+        responsaveis.add(usuario);
     }
 
     public void removerResponsavel(Usuario usuario){
-        usuarios.remove(usuario);
+        responsaveis.remove(usuario);
     }
 
     public boolean responsavelNaoAssociado(Long usuarioId){
@@ -121,7 +121,7 @@ public class Restaurante {
     }
 
     public Optional<Usuario> encontrarResponsavel(Long usuarioId) {
-        return usuarios.stream()
+        return responsaveis.stream()
                 .filter(usuario -> usuario.getId().equals(usuarioId))
                 .findFirst();
     }

@@ -26,11 +26,11 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
     private final UsuarioDTOAssembler assembler;
     private final AlgaLinks algaLinks;
 
-    @CheckSecurity.Restaurantes.PodeConsultar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     @GetMapping
     public ResponseEntity<CollectionModel<UsuarioDTO>> listar(@PathVariable Long restauranteId){
         Restaurante restaurante = service.buscarOuFalhar(restauranteId);
-        CollectionModel<UsuarioDTO> dtos = assembler.toCollectionModel(restaurante.getUsuarios());
+        CollectionModel<UsuarioDTO> dtos = assembler.toCollectionModel(restaurante.getResponsaveis());
 
         //assembler.toCollectionModel retorna a coleção com self href de link de usuários. Então é preciso remover o link e add um correto
         dtos.removeLinks().add(algaLinks.linkToRestauranteResponsaveis(restauranteId));
@@ -38,14 +38,14 @@ public class RestauranteUsuarioResponsavelController implements RestauranteUsuar
         return ResponseEntity.ok(dtos);
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     @PutMapping("/{usuarioId}")
     public ResponseEntity<Void> associar(@PathVariable Long restauranteId, @PathVariable Long usuarioId){
         service.associarResponsavel(restauranteId, usuarioId);
         return ResponseEntity.noContent().build();
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     @DeleteMapping("/{usuarioId}")
     public ResponseEntity<Void> desassociar(@PathVariable Long restauranteId, @PathVariable Long usuarioId){
         service.desassociarResponsavel(restauranteId, usuarioId);

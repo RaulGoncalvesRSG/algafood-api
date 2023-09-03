@@ -30,7 +30,16 @@ public @interface CheckSecurity {
         @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_RESTAURANTES')")
         @Retention(RUNTIME)
         @Target(METHOD)
-        @interface PodeEditar { }
+        @interface PodeGerenciarCadastro { }
+
+         //O responsável pelo seu restaurante n pode editar os dados do seu próprio restaurante
+         //O @ no @algaSecurity dá acesso a instância de um Bean, então consegue fazer a chamada de algum método. O padrão do bean é inicial minúsculo
+         @PreAuthorize("hasAuthority('SCOPE_WRITE') and "
+                 + "(hasAuthority('EDITAR_RESTAURANTES') or "
+                 + "@algaSecurity.gerenciaRestaurante(#restauranteId))")
+         @Retention(RUNTIME)
+         @Target(METHOD)
+         @interface PodeGerenciarFuncionamento { }
 
         @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
         @Retention(RUNTIME)

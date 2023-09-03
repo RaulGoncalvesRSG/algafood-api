@@ -54,7 +54,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
         return ResponseEntity.ok(dto);
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @PostMapping
     public ResponseEntity<ProdutoDTO> salvar(@PathVariable Long restauranteId, @RequestBody ProdutoRequestDTO requestDTO){
         Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
@@ -68,7 +68,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @PutMapping("/{produtoId}")
     public ResponseEntity<ProdutoDTO> atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId, @RequestBody ProdutoRequestDTO requestDTO){
         Produto produtoAtual = produtoService.buscarOuFalhar(restauranteId, produtoId);
