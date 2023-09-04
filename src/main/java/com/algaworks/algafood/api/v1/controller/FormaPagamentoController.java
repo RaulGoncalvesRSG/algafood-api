@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.v1.converter.FormaPagamentoRequestDTODisassemb
 import com.algaworks.algafood.api.v1.dto.request.FormaPagamentoRequestDTO;
 import com.algaworks.algafood.api.v1.dto.response.FormaPagamentoDTO;
 import com.algaworks.algafood.api.v1.openapi.controller.FormaPagamentoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.service.FormaPagamentoService;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
         return ResponseEntity.ok(dtos);
     }
 
+    @CheckSecurity.FormasPagamento.PodeConsultar
     @Cacheable(value = "forma-pagamento-buscar")
     @GetMapping("/{id}")
     public ResponseEntity<FormaPagamentoDTO> buscar(@PathVariable Long id){
@@ -48,6 +50,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
         return ResponseEntity.ok(dto);
     }
 
+    @CheckSecurity.FormasPagamento.PodeEditar
     @PostMapping
     public ResponseEntity<FormaPagamentoDTO> adicionar(@RequestBody @Valid FormaPagamentoRequestDTO requestDTO){
         FormaPagamento formaPagamento = disassembler.toDomainObject(requestDTO);
@@ -57,6 +60,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
+    @CheckSecurity.FormasPagamento.PodeEditar
     @PutMapping("/{id}")
     public ResponseEntity<FormaPagamentoDTO> atualizar(@PathVariable Long id, @RequestBody  @Valid FormaPagamentoRequestDTO requestDTO) {
         FormaPagamento formaPagamentoAtual = service.buscarOuFalhar(id);
@@ -67,6 +71,7 @@ public class FormaPagamentoController implements FormaPagamentoControllerOpenApi
         return ResponseEntity.ok(dto);
     }
 
+    @CheckSecurity.FormasPagamento.PodeEditar
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remover(@PathVariable Long id) {
         service.excluir(id);

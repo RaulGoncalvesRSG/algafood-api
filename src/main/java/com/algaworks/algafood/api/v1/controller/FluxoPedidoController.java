@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.v1.controller;
 
 import com.algaworks.algafood.api.v1.openapi.controller.FluxoPedidoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.service.FluxoPedidoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +17,21 @@ public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
 
     private final FluxoPedidoService fluxoPedidoService;
 
+    @CheckSecurity.Pedidos.PodeGerenciarPedidos
     @PutMapping("/confirmacao")
     public ResponseEntity<Void> confirmar(@PathVariable String codigo){
         fluxoPedidoService.confirmar(codigo);
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Pedidos.PodeGerenciarPedidos
     @PutMapping("/cancelamento")
     public ResponseEntity<Void> cancelar(@PathVariable String codigo){
         fluxoPedidoService.cancelar(codigo);
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Pedidos.PodeGerenciarPedidos
     @PutMapping("/entrega")
     public ResponseEntity<Void> entregar(@PathVariable String codigo){
         fluxoPedidoService.entregar(codigo);

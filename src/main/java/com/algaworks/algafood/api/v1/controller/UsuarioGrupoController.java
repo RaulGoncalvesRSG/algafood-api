@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v1.controller;
 import com.algaworks.algafood.api.v1.converter.GrupoDTOAssembler;
 import com.algaworks.algafood.api.v1.dto.response.GrupoDTO;
 import com.algaworks.algafood.api.v1.openapi.controller.UsuarioGrupoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.GrupoService;
@@ -27,6 +28,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
     private final GrupoService grupoService;
     private final GrupoDTOAssembler assembler;
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     @GetMapping
     public ResponseEntity<List<GrupoDTO>> listar(@PathVariable Long usuarioId){
         Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
@@ -34,6 +36,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
         return ResponseEntity.ok(dtos);
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     @PutMapping("/{grupoId}")
     public ResponseEntity<Void> associar(@PathVariable Long usuarioId, @PathVariable Long grupoId){
         Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
@@ -44,6 +47,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     @DeleteMapping("/{grupoId}")
     public ResponseEntity<Void> desassociar(@PathVariable Long usuarioId, @PathVariable Long grupoId){
         Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);

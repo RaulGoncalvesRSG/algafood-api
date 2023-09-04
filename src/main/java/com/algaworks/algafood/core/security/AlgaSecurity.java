@@ -33,6 +33,7 @@ public class AlgaSecurity {
         return restauranteRepository.existsResponsavel(restauranteId, getUsuarioId());
     }
 
+    //Verifica se o usuário logado é responsácvel pelo restaurante do pedido
     public boolean gerenciaRestauranteDoPedido(String codigoPedido) {
         return pedidoRepository.isPedidoGerenciadoPor(codigoPedido, getUsuarioId());
     }

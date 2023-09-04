@@ -7,6 +7,7 @@ import com.algaworks.algafood.api.v1.dto.request.UsuarioComSenhaResquestDTO;
 import com.algaworks.algafood.api.v1.dto.request.UsuarioRequestDTO;
 import com.algaworks.algafood.api.v1.dto.response.UsuarioDTO;
 import com.algaworks.algafood.api.v1.openapi.controller.UsuarioControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     private final UsuarioDTOAssembler assembler;
     private final UsuarioRequestDTODisassembler disassembler;
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     @GetMapping
     public ResponseEntity<CollectionModel<UsuarioDTO>> listar(){
         List<Usuario> usuarios = service.listar();
@@ -40,6 +42,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
         return ResponseEntity.ok(dtos);
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> buscar(@PathVariable Long id) {
         Usuario usuario = service.buscarOuFalhar(id);
@@ -55,6 +58,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeAlterarUsuario
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioDTO> atualizar(@PathVariable Long id, @RequestBody @Valid UsuarioRequestDTO requestDTO) {
         Usuario usuarioAtual = service.buscarOuFalhar(id);
@@ -64,6 +68,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
         return ResponseEntity.ok(dto);
     }
 
+    @CheckSecurity.UsuariosGruposPermissoes.PodeAlterarPropriaSenha
     @PutMapping("/{id}/senha")
     public ResponseEntity<Void> alterarSenha(@PathVariable Long id, @RequestBody @Valid SenhaRequestDTO senhaDTO) {
         service.alterarSenha(id, senhaDTO.getSenhaAtual(), senhaDTO.getNovaSenha());

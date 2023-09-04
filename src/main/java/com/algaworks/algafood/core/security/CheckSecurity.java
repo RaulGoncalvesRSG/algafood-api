@@ -20,7 +20,7 @@ public @interface CheckSecurity {
         @Target(ElementType.METHOD)             //Target permitindo usar a anotação apenas em métodos
         @interface PodeEditar {}
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("hasAuthority('SCOPE_READ')")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeConsultar { }
@@ -42,8 +42,7 @@ public @interface CheckSecurity {
          @Target(METHOD)
          @interface PodeGerenciarFuncionamento { }
 
-
-         //hasAuthority('SCOPE_READ') and isAuthenticated() - Para haver escopo, é preciso estar autenticado, então n precisa deixar a verificação de forma explícita
+         //@PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()") - Para haver escopo, é preciso estar autenticado, então n precisa deixar a verificação de autenticação
         @PreAuthorize("hasAuthority('SCOPE_READ')")
         @Retention(RUNTIME)
         @Target(METHOD)
@@ -82,5 +81,76 @@ public @interface CheckSecurity {
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeGerenciarPedidos { }
+    }
+
+    @interface FormasPagamento {
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_FORMAS_PAGAMENTO')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeEditar { }
+
+        @PreAuthorize("hasAuthority('SCOPE_READ')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeConsultar { }
+    }
+
+    @interface Cidades {
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_CIDADES')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeEditar { }
+
+        @PreAuthorize("hasAuthority('SCOPE_READ')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeConsultar { }
+    }
+
+    @interface Estados {
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_ESTADOS')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeEditar { }
+
+        @PreAuthorize("hasAuthority('SCOPE_READ')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeConsultar { }
+    }
+
+    @interface UsuariosGruposPermissoes {
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and @algaSecurity.getUsuarioId() == #usuarioId")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeAlterarPropriaSenha { }
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and (hasAuthority('EDITAR_USUARIOS_GRUPOS_PERMISSOES') or "
+                + "@algaSecurity.getUsuarioId() == #usuarioId)")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeAlterarUsuario { }
+
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_USUARIOS_GRUPOS_PERMISSOES')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeEditar { }
+
+        @PreAuthorize("hasAuthority('SCOPE_READ') and hasAuthority('CONSULTAR_USUARIOS_GRUPOS_PERMISSOES')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeConsultar { }
+    }
+
+    @interface Estatisticas {
+
+        @PreAuthorize("hasAuthority('SCOPE_READ') and hasAuthority('GERAR_RELATORIOS')")
+        @Retention(RUNTIME)
+        @Target(METHOD)
+        @interface PodeConsultar { }
     }
 }

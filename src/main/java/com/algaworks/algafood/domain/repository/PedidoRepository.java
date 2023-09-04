@@ -15,7 +15,6 @@ public interface PedidoRepository extends CustomJpaRepository<Pedido, Long>, Jpa
     @Query("from Pedido p join fetch p.cliente join fetch p.restaurante r join fetch r.cozinha")
     List<Pedido> findAll();
 
-
     @Query("select case when count(1) > 0 then true else false end " +
             "from Pedido ped " +
             "join ped.restaurante rest " +

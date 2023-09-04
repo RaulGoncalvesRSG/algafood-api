@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.converter.EstadoDTOAssembler;
 import com.algaworks.algafood.api.v1.dto.request.EstadoRequestDTO;
 import com.algaworks.algafood.api.v1.dto.response.EstadoDTO;
 import com.algaworks.algafood.api.v1.openapi.controller.EstadoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.service.EstadoService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class EstadoController implements EstadoControllerOpenApi {
     private final EstadoService service;
     private final EstadoDTOAssembler assembler;
 
+    @CheckSecurity.Estados.PodeConsultar
     @GetMapping
     public ResponseEntity<CollectionModel<EstadoDTO>> listar(){
         List<Estado> estados = service.listar();
@@ -37,6 +39,7 @@ public class EstadoController implements EstadoControllerOpenApi {
         return ResponseEntity.ok(dtos);
     }
 
+    @CheckSecurity.Estados.PodeConsultar
     @GetMapping("/{id}")
     public ResponseEntity<EstadoDTO> buscar(@PathVariable Long id){
         Estado estado = service.buscarOuFalhar(id);
@@ -44,6 +47,7 @@ public class EstadoController implements EstadoControllerOpenApi {
         return ResponseEntity.ok(dto);
     }
 
+    @CheckSecurity.Estados.PodeEditar
     @PostMapping
     public ResponseEntity<EstadoDTO> adicionar(@RequestBody @Valid EstadoRequestDTO requestDTO){
         Estado estado = assembler.toDomainObject(requestDTO);
@@ -52,6 +56,7 @@ public class EstadoController implements EstadoControllerOpenApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
+    @CheckSecurity.Estados.PodeEditar
     @PutMapping("/{id}")
     public ResponseEntity<EstadoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid EstadoRequestDTO requestDTO) {
         Estado estadoAtual = service.buscarOuFalhar(id);
@@ -62,6 +67,7 @@ public class EstadoController implements EstadoControllerOpenApi {
         return ResponseEntity.ok(dto);
     }
 
+    @CheckSecurity.Estados.PodeEditar
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remover(@PathVariable Long id) {
         service.excluir(id);
