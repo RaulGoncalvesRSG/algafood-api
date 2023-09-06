@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.controller.PedidoController;
 import com.algaworks.algafood.api.v1.converter.generic.ObjectRepresentationDTOGenericConverter;
 import com.algaworks.algafood.api.v1.dto.response.PedidoDTO;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.domain.model.Pedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,9 @@ public class PedidoDTOAssembler extends ObjectRepresentationDTOGenericConverter<
 
     @Autowired
     private AlgaLinks algaLinks;
+
+    @Autowired
+    private AlgaSecurity algaSecurity;
 
     private static final String PEDIDOS = "pedidos";
     private static final String PRODUTOS = "produtos";
@@ -31,16 +35,18 @@ public class PedidoDTOAssembler extends ObjectRepresentationDTOGenericConverter<
 
         dto.add(algaLinks.linkToPedidos(PEDIDOS));
 
-        if (pedido.podeSerConfirmado()) {
-            dto.add(algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), CONFIRMAR));
-        }
+        if (algaSecurity.podeGerenciarPedidos(pedido.getCodigo())) {
+            if (pedido.podeSerConfirmado()) {
+                dto.add(algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), CONFIRMAR));
+            }
 
-        if (pedido.podeSerCancelado()) {
-            dto.add(algaLinks.linkToCancelamentoPedido(pedido.getCodigo(), CANCELAR));
-        }
+            if (pedido.podeSerCancelado()) {
+                dto.add(algaLinks.linkToCancelamentoPedido(pedido.getCodigo(), CANCELAR));
+            }
 
-        if (pedido.podeSerEntregue()) {
-            dto.add(algaLinks.linkToEntregaPedido(pedido.getCodigo(), ENTREGAR));
+            if (pedido.podeSerEntregue()) {
+                dto.add(algaLinks.linkToEntregaPedido(pedido.getCodigo(), ENTREGAR));
+            }
         }
 
         dto.getRestaurante().add(algaLinks.linkToRestaurante(pedido.getRestaurante().getId()));
