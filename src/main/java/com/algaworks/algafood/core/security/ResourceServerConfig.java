@@ -23,11 +23,12 @@ import java.util.stream.Collectors;
 //EnableGlobalMethodSecurity habita restrição de acesso nos métodos. prePostEnabled = true para @PreAuthorize funcionar
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
+	private static final String LOGIN_PAGE = "/login";
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-				.formLogin()
+				.formLogin().loginPage(LOGIN_PAGE)		//Pode ser qualquer URL
 				.and()
 				//Precisa estar autenticado para fazer uma requisição que inicia com "",
 				.authorizeRequests()
@@ -48,7 +49,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 
 	//Converte as claims authorities do token do usuário logado em SimpleGrantedAuthority
 	private JwtAuthenticationConverter jwtAuthenticationConverter() {
-		var jwtAuthenticationConverter = new JwtAuthenticationConverter();
+		JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
 		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
 			List<String> authorities = jwt.getClaimAsStringList("authorities");
 
