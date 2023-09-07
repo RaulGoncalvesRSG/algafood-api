@@ -38,10 +38,14 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.ResponseBuilder;
 import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.HttpAuthenticationScheme;
 import springfox.documentation.service.Response;
+import springfox.documentation.service.SecurityReference;
 import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.json.JacksonModuleRegistrar;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -130,6 +134,12 @@ public class SpringFoxConfig {
                         UsuariosModelOpenApi.class))
 
                 .apiInfo(apiInfoV1())
+
+                .securityContexts(Arrays.asList(securityContext()))
+                //securitySchemes é uma instância que descreve qual a técnica de segurança utilizada para proteger a API
+                .securitySchemes(List.of(authenticationScheme()))
+                .securityContexts(List.of(securityContext()))
+
                 .tags(new Tag("Cidades", "Gerencia as cidades"),
                         new Tag("Grupos", "Gerencia os grupos de usuários"),
                         new Tag("Cozinhas", "Gerencia as cozinhas"),
@@ -170,6 +180,10 @@ public class SpringFoxConfig {
                         CidadesModelV2OpenApi.class))
 
                 .apiInfo(apiInfoV2())
+
+                .securityContexts(Arrays.asList(securityContext()))
+                .securitySchemes(List.of(authenticationScheme()))
+                .securityContexts(List.of(securityContext()))
 
                 .tags(new Tag("Cidades", "Gerencia as cidades"),
                         new Tag("Formas de pagamento", "Gerencia as formas de pagamento"));
@@ -272,5 +286,23 @@ public class SpringFoxConfig {
                 .version("2")       //Versionamento da API
                 .contact(new Contact("AlgaWorks", "https://www.algaworks.com", "contato@algaworks.com"))
                 .build();
+    }
+
+    //securityContext descreve quais caminhos da APi estão protegidos por quais Schemes
+    private SecurityContext securityContext() {
+        return SecurityContext.builder()
+                .securityReferences(securityReference()).build();
+    }
+
+    private List<SecurityReference> securityReference() {
+        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+        //AuthorizationScope - escopos disponíveis no momento de emitir token
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return List.of(new SecurityReference("Authorization", authorizationScopes));
+    }
+
+    private HttpAuthenticationScheme authenticationScheme() {   //Pode ser qualquer nome
+        return HttpAuthenticationScheme.JWT_BEARER_BUILDER.name("Authorization").build();
     }
 }
