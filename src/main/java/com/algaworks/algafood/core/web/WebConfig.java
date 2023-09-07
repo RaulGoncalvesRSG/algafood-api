@@ -3,7 +3,6 @@ package com.algaworks.algafood.core.web;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.Filter;
@@ -14,13 +13,13 @@ public class WebConfig implements WebMvcConfigurer {
 //    @Autowired
 //    private ApiRetirementHandler apiRetirementHandler;
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")          //Qualquer URI do projeto q for chamada, o Spring irá habilitar o Cors
-                .allowedMethods("*");      //Define q todos métodos são acessíveis (GET, PUT, POST, etc)
-//			.allowedOrigins("*")        //Por padrão aceita qualquer origin
-//			.maxAge(30);
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")          //Qualquer URI do projeto q for chamada, o Spring irá habilitar o Cors
+//                .allowedMethods("*");      //Define q todos métodos são acessíveis (GET, PUT, POST, etc)
+////			.allowedOrigins("*")        //Por padrão aceita qualquer origin
+////			.maxAge(30);
+//    }
 
 //    @Override       //Método para versionamento de API utilizando MediaType
 //    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {

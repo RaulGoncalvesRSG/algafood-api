@@ -1,6 +1,8 @@
 package com.algaworks.algafood.core.security;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,6 +27,12 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+				.formLogin()
+				.and()
+				//Precisa estar autenticado para fazer uma requisição que inicia com "",
+				.authorizeRequests()
+					.antMatchers("/oauth/**").authenticated()
+				.and()
 				//.authorizeRequests()
 				//.anyRequest().authenticated()		//Qualquer requisição autenticada (com qualquer role/autorização) pode acessar qualquer endpoint da API
 				.csrf().disable()
@@ -33,7 +41,6 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 				.oauth2ResourceServer().jwt()
 				.jwtAuthenticationConverter(jwtAuthenticationConverter());
 		http
-
 				.cors().and()
 			.oauth2ResourceServer().jwt()
 				.jwtAuthenticationConverter(jwtAuthenticationConverter());
@@ -63,6 +70,12 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 			return grantedAuthorities;
 		});
 		return jwtAuthenticationConverter;
+	}
+
+	@Bean
+	@Override
+	protected AuthenticationManager authenticationManager() throws Exception {
+		return super.authenticationManager();
 	}
 
 //	@Bean		//Chave secreta simétrica
