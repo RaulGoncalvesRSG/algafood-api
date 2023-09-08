@@ -1,9 +1,12 @@
 package com.algaworks.algafood.core.security.authorizationserver;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jose.jwk.RSAKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -22,6 +25,7 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 
 import javax.sql.DataSource;
 import java.security.KeyPair;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 
 @Configuration
@@ -40,12 +44,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Autowired
 	private DataSource dataSource;
 
+	private static final String KEY_ID = "algafood-key-id";
+
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.jdbc(dataSource);
 	}
 
-//	@Override
+//	@Override		//Clients em memória
 //	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 //		clients
 //			.inMemory()
@@ -103,27 +109,38 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 			.tokenGranter(tokenGranter(endpoints));
 	}
 
-	@Bean
-	public JwtAccessTokenConverter jwtAccessTokenConverter(){
-		JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
-		//O algoritmo usado no SigningKey por padrão é o HmacSHA256 (chave simétrica)
-	//	jwtAccessTokenConverter.setSigningKey("89a7sd89f7as98f7dsa98fds7fd89sasd9898asdf98s");		//Chave secreta tbm conhecida como mac - message authenticator code
-
-		Resource jksLocation = jwtKeyStoreProperties.getJksLocation();
-		String keyStorePass = jwtKeyStoreProperties.getPassword();		//Senha para abrir o arquivo jks
-		String keyPairAlias = jwtKeyStoreProperties.getKeypairAlias();	//Dentro do arquivo jks pode conter vários pares de chaves, então especifica qual é
-
-		KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(jksLocation, keyStorePass.toCharArray());
-		KeyPair keyPair = keyStoreKeyFactory.getKeyPair(keyPairAlias);
-
-		jwtAccessTokenConverter.setKeyPair(keyPair);
-		return jwtAccessTokenConverter;
-	}
-
 	private ApprovalStore approvalStore(TokenStore tokenStore){
 		TokenApprovalStore approvalStore = new TokenApprovalStore();		//Permite aprovação granular dos escopos
 		approvalStore.setTokenStore(tokenStore);
 		return approvalStore;
+	}
+
+	@Bean
+	public JWKSet jwkSet() {
+		RSAKey.Builder builder = new RSAKey.Builder((RSAPublicKey) keyPair().getPublic())
+				.keyUse(KeyUse.SIGNATURE)  			//SIGNATURE pq a chave é do tipo de assinatura
+				.algorithm(JWSAlgorithm.RS256)
+				.keyID(KEY_ID);
+
+		return new JWKSet(builder.build());
+	}
+
+	@Bean
+	public JwtAccessTokenConverter jwtAccessTokenConverter() {
+		var jwtAccessTokenConverter = new JwtAccessTokenConverter();
+		jwtAccessTokenConverter.setKeyPair(keyPair());
+
+		return jwtAccessTokenConverter;
+	}
+
+	private KeyPair keyPair() {
+		var keyStorePass = jwtKeyStoreProperties.getPassword();
+		var keyPairAlias = jwtKeyStoreProperties.getKeypairAlias();
+
+		var keyStoreKeyFactory = new KeyStoreKeyFactory(
+				jwtKeyStoreProperties.getJksLocation(), keyStorePass.toCharArray());
+
+		return keyStoreKeyFactory.getKeyPair(keyPairAlias);
 	}
 	
 	private TokenGranter tokenGranter(AuthorizationServerEndpointsConfigurer endpoints) {
@@ -136,5 +153,4 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		
 		return new CompositeTokenGranter(granters);
 	}
-	
 }
