@@ -1,6 +1,6 @@
 package com.algaworks.algafood.api.v1.dto.response;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,9 +15,9 @@ import org.springframework.hateoas.server.core.Relation;
 @NoArgsConstructor
 public class FormaPagamentoDTO extends RepresentationModel<FormaPagamentoDTO> {
 
-    @ApiModelProperty(example = "1")
+    @Schema(example = "1")
     private Long id;
 
-    @ApiModelProperty(example = "Cartão de crédito")
+    @Schema(example = "Cartão de crédito")
     private String descricao;
 }

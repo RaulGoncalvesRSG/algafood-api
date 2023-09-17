@@ -1,51 +1,51 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
+import com.algaworks.algafood.domain.util.Constants;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
-@ApiModel("Problema")
+@Schema(name = Constants.SCHEMA_PROBLEMA)
 @JsonInclude(Include.NON_NULL)
 @Getter
 @Builder
 public class Problem {
 
-	@ApiModelProperty(example = "400", position = 1)
+	@Schema(example = "400", required = true)
 	private Integer status;
 
-	@ApiModelProperty(example = "2019-12-01T18:09:02.70844Z", position = 2)
+	@Schema(example = "2023-08-15T18:09:02.70844Z")
 	private OffsetDateTime timestamp;
 
-	@ApiModelProperty(example = "https://algafood.com.br/dados-invalidos", position = 3)
+	@Schema(example = "https://algafood.com.br/dados-invalidos")
 	private String type;
 
-	@ApiModelProperty(example = "Dados inválidos", position = 4)
+	@Schema(example = "Dados inválidos")
 	private String title;
 
-	@ApiModelProperty(example = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.", position = 5)
+	@Schema(example = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.")
 	private String detail;
 
-	@ApiModelProperty(example = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.", position = 6)
+	@Schema(example = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.")
 	private String userMessage;
 
-	@ApiModelProperty(value = "Lista de objetos ou campos que geraram o erro (opcional)", position = 7)
+	@Schema(description = "Lista de objetos ou campos que geraram o erro (opcional)")
 	private List<Field> fields;
 
-	@ApiModel("ObjetoProblema")
+	@Schema(name = Constants.SCHEMA_OBJETO_PROBLEMA)
 	@Getter
 	@Builder
 	public static class Field {
 
-		@ApiModelProperty(example = "preco", position = 1)
+		@Schema(example = "Preço")
 		private String name;
 
-		@ApiModelProperty(example = "O preço é obrigatório", position = 1)
+		@Schema(example = "O preço é inválido")
 		private String userMessage;
 	}
 }

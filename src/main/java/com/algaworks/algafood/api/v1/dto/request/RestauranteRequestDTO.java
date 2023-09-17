@@ -1,6 +1,6 @@
 package com.algaworks.algafood.api.v1.dto.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,11 +18,11 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class RestauranteRequestDTO {
 
-    @ApiModelProperty(example = "Thai Gourmet", required = true)
-    @NotBlank       //Não pode ser null (NotNull), vazio ou conter apenas espaço em branco (NotEmpty)
+    @Schema(example = "Thai Gourmet")
+    @NotBlank       //NotBlank - Não pode ser null (NotNull), vazio ou conter apenas espaço em branco (NotEmpty)
     private String nome;
 
-    @ApiModelProperty(example = "12.00", required = true)
+    @Schema(example = "12.00")
     @NotNull
     @PositiveOrZero
     private BigDecimal taxaFrete;

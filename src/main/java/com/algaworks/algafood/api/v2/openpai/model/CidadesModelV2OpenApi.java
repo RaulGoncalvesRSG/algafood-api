@@ -1,20 +1,20 @@
 package com.algaworks.algafood.api.v2.openpai.model;
 
 import com.algaworks.algafood.api.v2.dto.response.CidadeDTOV2;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.hateoas.Links;
 
 import java.util.List;
 
-@ApiModel("CidadesModel")
+@Schema(description = "CidadesModel")
 @Data
 public class CidadesModelV2OpenApi {
 
 	private CidadesEmbeddedModelOpenApi _embedded;
 	private Links _links;
-	
-	@ApiModel("CidadesEmbeddedModel")
+
+	@Schema(description = "CidadesEmbeddedModel")
 	@Data
 	public class CidadesEmbeddedModelOpenApi {
 		

@@ -1,6 +1,6 @@
 package com.algaworks.algafood.api.v1.dto.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class EstadoRequestDTO {
 
-    @ApiModelProperty(example = "Minas Gerais", required = true)
+    @Schema(example = "Minas Gerais")
     @NotBlank
     private String nome;
 }

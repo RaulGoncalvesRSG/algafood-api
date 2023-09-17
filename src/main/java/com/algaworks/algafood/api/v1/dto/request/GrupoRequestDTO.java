@@ -1,6 +1,6 @@
 package com.algaworks.algafood.api.v1.dto.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class GrupoRequestDTO {
 
-    @ApiModelProperty(example = "Gerente", required = true)
+    @Schema(example = "Gerente")
     @NotBlank
     private String nome;
 }

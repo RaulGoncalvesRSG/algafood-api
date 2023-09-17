@@ -1,7 +1,6 @@
 package com.algaworks.algafood.api.v2.dto.request;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,18 +9,18 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@ApiModel("CidadeRequestDTO")
+@Schema(description = "CidadeRequestDTO")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class CidadeRequestDTOV2 {
 
-    @ApiModelProperty(example = "Uberlândia", required = true)
+    @Schema(example = "Uberlândia")
     @NotBlank
     private String nomeCidade;
 
-    @ApiModelProperty(example = "1", required = true)
+    @Schema(example = "1")
     @NotNull
     private Long idEstado;
 }

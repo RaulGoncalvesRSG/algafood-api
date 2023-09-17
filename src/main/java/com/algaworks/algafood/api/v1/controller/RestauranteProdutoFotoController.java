@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,9 +48,11 @@ public class RestauranteProdutoFotoController implements RestauranteProdutoFotoC
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FotoProdutoDTO> atualizarFoto(@PathVariable Long restauranteId,
                                                         @PathVariable Long produtoId,
-                                                        @Valid FotoProdutoRequestDTO fotoProdutoInput,
-                                                        @RequestPart MultipartFile arquivo) throws IOException {
+                                                        @Valid FotoProdutoRequestDTO fotoProdutoInput) throws IOException {
         Produto produto = produtoService.buscarOuFalhar(restauranteId, produtoId);
+
+        MultipartFile arquivo = fotoProdutoInput.getArquivo();
+
         FotoProduto foto = catalogoFotoProdutoService.buildFotoProduto(produto, fotoProdutoInput, arquivo);
         FotoProduto fotoSalva = catalogoFotoProdutoService.salvar(foto, arquivo.getInputStream());
         FotoProdutoDTO dto = catalogoFotoProdutoService.toDTO(fotoSalva);

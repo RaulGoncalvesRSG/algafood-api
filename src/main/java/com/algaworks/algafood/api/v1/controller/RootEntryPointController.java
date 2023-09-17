@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.v1.controller;
 
 import com.algaworks.algafood.api.v1.AlgaLinks;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.MediaType;
@@ -26,6 +27,7 @@ public class RootEntryPointController {
     private static final String CIDADES = "cidades";
     private static final String ESTATISTICAS = "estatisticas";
 
+    @Operation(hidden = true)       //hidden = true faz o endpoint não ser apresentado no swagger
     @GetMapping     //Retorna os links do projeto como se fosse um menu principal
     public RootEntryPointModel root() {
         RootEntryPointModel rootEntryPointModel = new RootEntryPointModel();

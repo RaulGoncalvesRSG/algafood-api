@@ -1,13 +1,13 @@
 package com.algaworks.algafood.api.v1.dto.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 
 @Data
 @Builder
@@ -15,15 +15,15 @@ import javax.validation.constraints.Positive;
 @NoArgsConstructor
 public class ItemPedidoRequestDTO {
 
-    @ApiModelProperty(example = "1", required = true)
+    @Schema(example = "1")
     @NotNull
     private Long produtoId;
 
-    @ApiModelProperty(example = "2", required = true)
+    @Schema(example = "2")
+    @Min(1)
     @NotNull
-    @Positive
     private Integer quantidade;
 
-    @ApiModelProperty(example = "Menos doce, por favor")
+    @Schema(example = "Menos picante, por favor")
     private String observacao;
 }

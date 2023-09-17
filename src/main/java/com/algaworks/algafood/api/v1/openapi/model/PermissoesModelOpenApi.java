@@ -1,20 +1,20 @@
 package com.algaworks.algafood.api.v1.openapi.model;
 
 import com.algaworks.algafood.api.v1.dto.response.PermissaoDTO;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.hateoas.Links;
 
 import java.util.List;
 
-@ApiModel("PermissoesModel")
+@Schema(description = "PermissoesModel")
 @Data
 public class PermissoesModelOpenApi {
 
 	private PermissoesEmbeddedModelOpenApi _embedded;
 	private Links _links;
 
-	@ApiModel("PermissoesEmbeddedModel")
+	@Schema(description = "PermissoesEmbeddedModel")
 	@Data
 	public class PermissoesEmbeddedModelOpenApi {
 

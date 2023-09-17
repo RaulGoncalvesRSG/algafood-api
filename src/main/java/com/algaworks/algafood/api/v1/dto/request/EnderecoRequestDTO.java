@@ -1,6 +1,6 @@
 package com.algaworks.algafood.api.v1.dto.request;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,22 +16,22 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class EnderecoRequestDTO {
 
-    @ApiModelProperty(example = "38400-000", required = true)
+    @Schema(example = "38400-000")
     @NotBlank
     private String cep;
 
-    @ApiModelProperty(example = "Rua Floriano Peixoto", required = true)
+    @Schema(example = "Rua Floriano Peixoto")
     @NotBlank
     private String logradouro;
 
-    @ApiModelProperty(example = "1500", required = true)
+    @Schema(example = "1500")
     @NotBlank
     private String numero;
 
-    @ApiModelProperty(example = "Apto 901")
+    @Schema(example = "Apto 901")
     private String complemento;
 
-    @ApiModelProperty(example = "Centro", required = true)
+    @Schema(example = "Centro")
     @NotBlank
     private String bairro;
 
