@@ -1,0 +1,30 @@
+version: "3.9"
+
+networks:                 #Cria a rede
+  algafood-network:       #Nome do network
+    driver: bridge
+
+services:                   #Service guarda vários containers
+  algafood-mysql:           #Nome do container
+    image: mysql:8.0        #Nome da img e versão (tag)
+    environment:            #Permite add variáveis de ambiente
+      MYSQL_ROOT_PASSWORD: "1234"
+    ports:
+      - "3306:3306"
+    networks:                 #Seleciona uma rede criada anteriormente
+      - algafood-network      #O container MySQL precisa estar dentro de uma rede pq ele precisa estar na mesma rede da API
+
+  algafood-api:               #Nome do container
+    image: algafood-api       #Nome da imagem
+    #Comando a ser executado qnd o container for inicializado. Esse comando substitui o CMD do Dockerfile
+    #"algafood-mysql:3306"= host observado até ele ser levantado completamente  "-t" = timout        "30" = tempo em segundos
+    #Quando o container subir completamente, todos comandos depois de "--" são executados
+    command: ["/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-jar", "api.jar"]
+    environment:
+      DB_HOST: algafood-mysql
+    ports:
+      - "8080:8080"
+    networks:
+      - algafood-network
+    depends_on:               #Especifica quais containers algafood-api é dependente para poder inicializar
+      - algafood-mysql        #O container algafood-api só irá inicializar depois do algafood-mysql
