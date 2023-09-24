@@ -27,8 +27,9 @@ services:                   #Service guarda vários containers
     command: ["/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-jar", "api.jar"]
     environment:
       DB_HOST: algafood-mysql
-    ports:
-      - "8080:8080"
+      #É a mesma coisa de utilizar spring.session.store-type=redis no propertie, mas dessa forma é por variável de ambiente
+      SPRING_SESSION_STORE_TYPE: redis      #Ativa store tupe de redis
+      SPRING_REDIS_HOST: algafood-redis
     networks:
       - algafood-network
     depends_on:               #Especifica quais containers algafood-api é dependente para poder inicializar
