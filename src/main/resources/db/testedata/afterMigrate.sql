@@ -1,5 +1,11 @@
 set foreign_key_checks = 0;
 
+lock tables cidade write, cozinha write, estado write, forma_pagamento write,
+	grupo write, grupo_permissao write, permissao write,
+	produto write, restaurante write, restaurante_forma_pagamento write,
+	restaurante_usuario_responsavel write, usuario write, usuario_grupo write,
+	pedido write, item_pedido write, foto_produto write, oauth_client_details write;
+
 delete from cidade;
 delete from cozinha;
 delete from estado;
@@ -157,6 +163,26 @@ insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, 
 values (4, 3, 2, 1, 110, 110, null);
 
 
+insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep,
+                    endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
+                  status, data_criacao, data_confirmacao, data_entrega, subtotal, taxa_frete, valor_total)
+values (4, '5c621c9a-ba61-4454-8631-8aabefe58dc2', 1, 7, 1, 1, '38400-800', 'Rua Fortaleza', '900', 'Apto 504', 'Centro',
+        'ENTREGUE', '2019-11-02 20:34:04', '2019-11-02 20:35:10', '2019-11-02 21:10:32', 174.4, 5, 179.4);
+
+insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
+values (5, 4, 3, 2, 87.2, 174.4, null);
+
+
+insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep,
+                    endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
+                  status, data_criacao, data_confirmacao, data_entrega, subtotal, taxa_frete, valor_total)
+values (5, '8d774bcf-b238-42f3-aef1-5fb388754d63', 1, 3, 2, 1, '38400-200', 'Rua 10', '930', 'Casa 20', 'Martins',
+        'ENTREGUE', '2019-11-03 02:00:30', '2019-11-03 02:01:21', '2019-11-03 02:20:10', 87.2, 10, 97.2);
+
+insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
+values (6, 5, 3, 1, 87.2, 87.2, null);
+
+
 insert into oauth_client_details (
   client_id, resource_ids, client_secret,
   scope, authorized_grant_types, web_server_redirect_uri, authorities,
@@ -189,3 +215,5 @@ values (
   'READ,WRITE', 'client_credentials', null, 'CONSULTAR_PEDIDOS,GERAR_RELATORIOS',
   null, null, null
 );
+
+unlock tables;

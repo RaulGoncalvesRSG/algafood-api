@@ -14,6 +14,11 @@ services:                   #Service guarda vários containers
     networks:                 #Seleciona uma rede criada anteriormente
       - algafood-network      #O container MySQL precisa estar dentro de uma rede pq ele precisa estar na mesma rede da API
 
+  algafood-redis:
+    image: redis:6.2.1-alpine
+    networks:
+      - algafood-network
+
   algafood-api:               #Nome do container
     image: algafood-api       #Nome da imagem
     #Comando a ser executado qnd o container for inicializado. Esse comando substitui o CMD do Dockerfile
@@ -28,3 +33,13 @@ services:                   #Service guarda vários containers
       - algafood-network
     depends_on:               #Especifica quais containers algafood-api é dependente para poder inicializar
       - algafood-mysql        #O container algafood-api só irá inicializar depois do algafood-mysql
+
+  algafood-proxy:
+    build: ./nginx            #Faz um build do arquivo Dockerfile dentro da pasta especificada
+    image: algafood-proxy     #Define o nome da imagem
+    ports:
+      - "80:80"               #O padrão da porta do nginx é 80, mas tbm pode ser alterado
+    networks:
+      - algafood-network
+    depends_on:
+      - algafood-api
