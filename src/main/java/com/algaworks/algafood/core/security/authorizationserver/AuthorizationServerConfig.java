@@ -20,25 +20,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
-import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.io.InputStream;
 import java.security.KeyStore;
-import java.time.Duration;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -64,64 +56,64 @@ public class AuthorizationServerConfig {
     }
 
     @Bean       //Guarda os clients do AS
-    public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder) {
-        RegisteredClient algafoodbackend = RegisteredClient
-                .withId("1")            //ID buscado no BD
-                .clientId("algafood-backend")
-                .clientSecret(passwordEncoder.encode("backend123"))
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .scope("READ")
-                //Especifica o tipo de token a ser gerado pelo AS (token opaco ou JWT)
-                .tokenSettings(TokenSettings.builder()      //OAuth2TokenFormat.REFERENCE (token opaco); OAuth2TokenFormat.SELF_CONTAINED (token JWT)
-                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
-                        .accessTokenTimeToLive(Duration.ofMinutes(30))      //Tempo de autenticação
-                        .build())
-                .build();
+    public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder, JdbcOperations jdbcOperations) {
+//        RegisteredClient algafoodbackend = RegisteredClient
+//                .withId("1")            //ID buscado no BD
+//                .clientId("algafood-backend")
+//                .clientSecret(passwordEncoder.encode("backend123"))
+//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+//                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+//                .scope("READ")
+//                //Especifica o tipo de token a ser gerado pelo AS (token opaco ou JWT)
+//                .tokenSettings(TokenSettings.builder()      //OAuth2TokenFormat.REFERENCE (token opaco); OAuth2TokenFormat.SELF_CONTAINED (token JWT)
+//                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+//                        .accessTokenTimeToLive(Duration.ofMinutes(30))      //Tempo de autenticação
+//                        .build())
+//                .build();
+//
+//        RegisteredClient algafoodWeb = RegisteredClient
+//                .withId("2")
+//                .clientId("algafood-web")
+//                .clientSecret(passwordEncoder.encode("web123"))
+//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)       //Permite gerar o refresh token
+//                .scope("READ")
+//                .scope("WRITE")
+//                .tokenSettings(TokenSettings.builder()
+//                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+//                        .accessTokenTimeToLive(Duration.ofMinutes(15))      //TTL do ACCESS TOKEN
+//                        .reuseRefreshTokens(false)          //Desabilita a reutilização do REFRESH_TOKEN
+//                        .refreshTokenTimeToLive(Duration.ofDays(1))           //TTL do REFRESH TOKEN
+//                        .build())
+//                //Como é fluxo de AUTHORIZATION_CODE, a propriedade redirectUri é obrigatória
+//                .redirectUri("http://127.0.0.1:8080/authorized")   ///authorized recupera o AUTHORIZATION_CODE
+//                //Permite fazer o teste dentro do swagger. Essa URl recupera o o acess code para gerar o token JWT
+//                .redirectUri("http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html")
+//                .clientSettings(ClientSettings.builder()
+//                        .requireAuthorizationConsent(true)      //Torna obrigatória aparecer a tela de consentimento das permissões
+//                        .build())
+//                .build();
+//
+//        RegisteredClient foodanalytics = RegisteredClient
+//                .withId("3")
+//                .clientId("foodanalytics")
+//                .clientSecret(passwordEncoder.encode("web123"))
+//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+//                .scope("READ")
+//                .scope("WRITE")
+//                .tokenSettings(TokenSettings.builder()
+//                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+//                        .accessTokenTimeToLive(Duration.ofMinutes(30))
+//                        .build())
+//                .redirectUri("http://www.foodanalytics.local:8082")
+//                .clientSettings(ClientSettings.builder()
+//                        .requireAuthorizationConsent(false)
+//                        .build())
+//                .build();
 
-        RegisteredClient algafoodWeb = RegisteredClient
-                .withId("2")
-                .clientId("algafood-web")
-                .clientSecret(passwordEncoder.encode("web123"))
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)       //Permite gerar o refresh token
-                .scope("READ")
-                .scope("WRITE")
-                .tokenSettings(TokenSettings.builder()
-                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
-                        .accessTokenTimeToLive(Duration.ofMinutes(15))      //TTL do ACCESS TOKEN
-                        .reuseRefreshTokens(false)          //Desabilita a reutilização do REFRESH_TOKEN
-                        .refreshTokenTimeToLive(Duration.ofDays(1))           //TTL do REFRESH TOKEN
-                        .build())
-                //Como é fluxo de AUTHORIZATION_CODE, a propriedade redirectUri é obrigatória
-                .redirectUri("http://127.0.0.1:8080/authorized")   ///authorized recupera o AUTHORIZATION_CODE
-                //Permite fazer o teste dentro do swagger. Essa URl recupera o o acess code para gerar o token JWT
-                .redirectUri("http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html")
-                .clientSettings(ClientSettings.builder()
-                        .requireAuthorizationConsent(true)      //Torna obrigatória aparecer a tela de consentimento das permissões
-                        .build())
-                .build();
-
-        RegisteredClient foodanalytics = RegisteredClient
-                .withId("3")
-                .clientId("foodanalytics")
-                .clientSecret(passwordEncoder.encode("web123"))
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .scope("READ")
-                .scope("WRITE")
-                .tokenSettings(TokenSettings.builder()
-                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
-                        .accessTokenTimeToLive(Duration.ofMinutes(30))
-                        .build())
-                .redirectUri("http://www.foodanalytics.local:8082")
-                .clientSettings(ClientSettings.builder()
-                        .requireAuthorizationConsent(false)
-                        .build())
-                .build();
-
-        return new InMemoryRegisteredClientRepository(Arrays.asList(algafoodbackend, algafoodWeb, foodanalytics));
+        return new JdbcRegisteredClientRepository(jdbcOperations);
     }
 
     @Bean       //Configuração para armazenar autorizações no BD. Pega por parâmetro o @Bean RegisteredClientRepository
