@@ -2,6 +2,7 @@ package com.algaworks.algafood.core.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,8 +20,10 @@ public class ResourceServerConfig {
             .and()
             .csrf().disable()
             .cors().and()       //Ativa cors
-            .oauth2ResourceServer().opaqueToken();
+            .oauth2ResourceServer().jwt();          //ResourceServer faz a leitura do tipo do token especificado para verificar se assinatura é válida
 
-        return http.build();
+        return http
+                .formLogin(Customizer.withDefaults())           //Permite a tela de login para fluxo Authorization Code
+                .build();
     }
 }
