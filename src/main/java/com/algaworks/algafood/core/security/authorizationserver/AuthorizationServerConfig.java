@@ -13,14 +13,15 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -28,6 +29,7 @@ import org.springframework.security.oauth2.server.authorization.config.ProviderS
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -39,13 +41,36 @@ public class AuthorizationServerConfig {
 
     //Existe SecurityFilterChain para Authorization Server e outro para Resource Server, HIGHEST_PRECEDENCE garante
     // q o do AS será executado primeiro para garantir q o login e a autenticação funcione corretamente
+//    @Bean
+//    @Order(Ordered.HIGHEST_PRECEDENCE)        //Método sem configurações para constumizar página de consentimento do OAuth2
+//    public SecurityFilterChain authFilterChain(HttpSecurity http) throws Exception {
+//        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);      //applyDefaultSecurity aplica configurações padrão do AS
+//
+//        //OBS: O retorno http do AuthorizationServerConfig precisa está aplicado no ResourceServerConfig, pois AS e RS estão integrados
+//        //formLogin permite a tela de login para fluxo Authorization Code
+//        return http.formLogin(customizer -> customizer.loginPage("/login")).build();
+//    }
+
+    //OBS: As configurações são para constumizar página de consentimento do OAuth2
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authFilterChain(HttpSecurity http) throws Exception {
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);      //applyDefaultSecurity aplica configurações padrão do AS
-        return http
-                .formLogin(Customizer.withDefaults())           //Permite a tela de login para fluxo Authorization Code
-                .build();
+//        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);        //applyDefaultSecurity aplica configurações padrão do AS
+        OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer =
+                new OAuth2AuthorizationServerConfigurer<>();
+
+        //Especifica o endpoint de consentimento
+        authorizationServerConfigurer.authorizationEndpoint(customizer -> customizer.consentPage("/oauth2/consent"));
+
+        RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
+
+        http.requestMatcher(endpointsMatcher)
+                .authorizeRequests(authorizeRequests ->
+                        authorizeRequests.anyRequest().authenticated())
+                .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
+                .apply(authorizationServerConfigurer);
+
+        return http.formLogin(customizer -> customizer.loginPage("/login")).build();
     }
 
     @Bean       //ProviderSettings - responsável por escrever qm seria o AS q vai assinar os tokens
@@ -157,5 +182,11 @@ public class AuthorizationServerConfig {
                 context.getClaims().claim("authorities", authorities);
             }
         };
+    }
+
+    @Bean       //Armazena autorizações de consentimento no BD
+    public OAuth2AuthorizationConsentService consentService(JdbcOperations jdbcOperations,
+                                                            RegisteredClientRepository clientRepository) {
+        return new JdbcOAuth2AuthorizationConsentService(jdbcOperations, clientRepository);
     }
 }

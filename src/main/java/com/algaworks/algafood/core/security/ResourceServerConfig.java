@@ -2,7 +2,6 @@ package com.algaworks.algafood.core.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -34,9 +33,9 @@ public class ResourceServerConfig {
                 .jwt()          //ResourceServer faz a leitura do tipo do token especificado para verificar se assinatura é válida
                 .jwtAuthenticationConverter(jwtAuthenticationConverter());
 
-        return http
-                .formLogin(Customizer.withDefaults())           //Permite a tela de login para fluxo Authorization Code
-                .build();
+        /*OBS: O retorno http do ResourceServerConfig precisa ser o IGUAL ao AuthorizationServerConfig, pois AS e RS estão integrados
+        Se as duas aplicações estiverem separadas, essa configuração do formLogin no ResourceServerConfig n é necessária*/
+        return http.formLogin(customizer -> customizer.loginPage("/login")).build();
     }
 
 
