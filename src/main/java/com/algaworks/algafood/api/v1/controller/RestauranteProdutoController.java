@@ -37,7 +37,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
     @CheckSecurity.Restaurantes.PodeConsultar
     @GetMapping
     public ResponseEntity<List<ProdutoDTO>> listar(@PathVariable Long restauranteId,
-                                                   @RequestParam(required = false) Boolean incluirInativos) {
+                                                   @RequestParam(required = false, defaultValue = "false") Boolean incluirInativos) {
         Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 
         List<Produto> produtos = incluirInativos? produtoService.findTodosByRestaurante(restaurante) : produtoService.findAtivosByRestaurante(restaurante);
