@@ -3,9 +3,9 @@ package com.algaworks.algafood.core.validation;
 import com.algaworks.algafood.core.validation.annotations.ValorZeroIncluiDescricao;
 import org.springframework.beans.BeanUtils;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.ValidationException;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.ValidationException;
 import java.math.BigDecimal;
 
 public class ValorZeroIncluiDescricaoValidator implements ConstraintValidator<ValorZeroIncluiDescricao, Object> {

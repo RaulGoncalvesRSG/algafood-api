@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-@Configuration      //Classe para possibilitar o uso de mensagens do javax.validation.constraints no properties. OBS: N é necessário utilizar o javax.validation.constraints
+@Configuration      //Classe para possibilitar o uso de mensagens do jakarta.validation.constraints no properties. OBS: N é necessário utilizar o jakarta.validation.constraints
 public class ValidationConfig {
 
     @Bean       //LocalValidatorFactoryBean é uma classe q faz integração e configuraçãp do BeanValidation com Spring

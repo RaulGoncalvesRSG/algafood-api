@@ -7,15 +7,15 @@ import com.algaworks.algafood.domain.model.enums.StatusPedido;
 import com.algaworks.algafood.domain.service.VendaQueryService;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CompoundSelection;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CompoundSelection;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,7 +65,7 @@ public class VendaQueryServiceImpl implements VendaQueryService {
 		ArrayList<Predicate> predicates = new ArrayList<>();
 
 		if (filtro.getRestauranteId() != null) {						//root.get("restaurante") - pega o MESMO nome do atributo da classe Java infromada no Root (Pedido)
-			predicates.add(builder.equal(root.get(Pedido.Fields.restaurante), filtro.getRestauranteId()));
+			predicates.add(builder.equal(root.get(Pedido.Fields.restaurante).get(Pedido.Fields.id), filtro.getRestauranteId()));
 		}
 
 		if (filtro.getDataCriacaoInicio() != null) {

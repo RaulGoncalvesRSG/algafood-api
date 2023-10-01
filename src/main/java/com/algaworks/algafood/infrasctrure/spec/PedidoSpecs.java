@@ -4,9 +4,9 @@ import com.algaworks.algafood.domain.filter.PedidoFilter;
 import com.algaworks.algafood.domain.model.Pedido;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.util.ArrayList;
 
 public class PedidoSpecs {
@@ -31,11 +31,11 @@ public class PedidoSpecs {
 		ArrayList<Predicate> predicates = new ArrayList<>();
 
 		if (filtro.getClienteId() != null) {
-			predicates.add(builder.equal(root.get("cliente"), filtro.getClienteId()));			//get pega o nome da propriedade em Pedido
+			predicates.add(builder.equal(root.get("cliente").get("id"), filtro.getClienteId()));			//get pega o nome da propriedade em Pedido
 		}
 
 		if (filtro.getRestauranteId() != null) {
-			predicates.add(builder.equal(root.get("restaurante"), filtro.getRestauranteId()));
+			predicates.add(builder.equal(root.get("restaurante").get("id"), filtro.getRestauranteId()));
 		}
 
 		if (filtro.getDataCriacaoInicio() != null) {

@@ -2,7 +2,8 @@ package com.algaworks.algafood.core.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,15 +19,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)     //Sem o parâmetro prePostEnable=true, as anotações de PostFilter e PreFilter não funcionam
+@EnableMethodSecurity
 @EnableWebSecurity
 public class ResourceServerConfig {
 
     @Bean
     public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-            .antMatchers("/oauth2/**").authenticated()
-            .and()
+        http.formLogin(Customizer.withDefaults())   //Configuração necessária apenas se usar o AS dentro do Resource Server (a Rest API)
             .csrf().disable()
             .cors().and()       //Ativa cors
             .oauth2ResourceServer()
@@ -35,7 +34,7 @@ public class ResourceServerConfig {
 
         /*OBS: O retorno http do ResourceServerConfig precisa ser o IGUAL ao AuthorizationServerConfig, pois AS e RS estão integrados
         Se as duas aplicações estiverem separadas, essa configuração do formLogin no ResourceServerConfig n é necessária*/
-        return http.formLogin(customizer -> customizer.loginPage("/login")).build();
+        return http.build();
     }
 
 

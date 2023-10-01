@@ -35,8 +35,12 @@ public class AlgaSecurity {
     }
 
     public Long getUsuarioId() {
-        Jwt jwt = (Jwt) getAuthentication().getPrincipal();         //Token JWT com todas informações autocontidas
-        return jwt.getClaim("usuario_id");
+        Jwt jwt = (Jwt) getAuthentication().getPrincipal();     //Token JWT com todas informações autocontidas
+
+        Object usuarioId = jwt.getClaim("usuario_id");
+
+        //Na versão mais recente do JWT, o obj está sendo serializado como String
+        return Objects.isNull(usuarioId)? null : Long.valueOf(usuarioId.toString());
     }
 
     public boolean gerenciaRestaurante(Long restauranteId) {
