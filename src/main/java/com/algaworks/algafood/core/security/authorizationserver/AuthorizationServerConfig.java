@@ -1,5 +1,7 @@
 package com.algaworks.algafood.core.security.authorizationserver;
 
+import com.algaworks.algafood.core.security.authorizationserver.properties.AlgaFoodSecurityProperties;
+import com.algaworks.algafood.core.security.authorizationserver.properties.JwtKeyStoreProperties;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.UsuarioRepository;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -185,8 +187,12 @@ public class AuthorizationServerConfig {
     }
 
     @Bean       //Armazena autorizações de consentimento no BD
-    public OAuth2AuthorizationConsentService consentService(JdbcOperations jdbcOperations,
-                                                            RegisteredClientRepository clientRepository) {
+    public OAuth2AuthorizationConsentService consentService(JdbcOperations jdbcOperations, RegisteredClientRepository clientRepository) {
         return new JdbcOAuth2AuthorizationConsentService(jdbcOperations, clientRepository);
+    }
+
+    @Bean
+    public OAuth2AuthorizationQueryService auth2AuthorizationQueryService(JdbcOperations jdbcOperations, RegisteredClientRepository repository) {
+        return new JdbcOAuth2AuthorizationQueryService(jdbcOperations, repository);
     }
 }

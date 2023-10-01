@@ -1,4 +1,4 @@
-package com.algaworks.algafood.core.security.authorizationserver;
+package com.algaworks.algafood.core.security.authorizationserver.properties;
 
 import lombok.Getter;
 import lombok.Setter;

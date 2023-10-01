@@ -1,4 +1,4 @@
-package com.algaworks.algafood.core.security.authorizationserver;
+package com.algaworks.algafood.core.security.authorizationserver.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -37,7 +37,7 @@ public class AuthorizationConsentController {
             @RequestParam(OAuth2ParameterNames.STATE) String state) {
         RegisteredClient client = this.registeredClientRepository.findByClientId(clientId);
 
-        if(Objects.isNull(client)) {
+        if (Objects.isNull(client)) {
             throw new AccessDeniedException(String.format(CLIENTE_NAO_ENCONTRADO, clientId));
         }
 
