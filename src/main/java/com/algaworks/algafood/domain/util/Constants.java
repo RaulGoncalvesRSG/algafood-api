@@ -28,6 +28,9 @@ public class Constants {
     public static final String TAG_ESTATISTICA = "Estatísticas";
     public static final String TAG_ESTATISTICA_DESCRIPTION = "Estatísticas da AlgaFood";
 
+    public static final String CLAIN_USUARIO_ID = "usuario_id";
+    public static final String CLAIN_AUTHORITIES = "authorities";
+
     public Constants(){
     }
 }

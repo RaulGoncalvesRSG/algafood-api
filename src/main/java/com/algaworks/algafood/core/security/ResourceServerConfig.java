@@ -1,5 +1,6 @@
 package com.algaworks.algafood.core.security;
 
+import com.algaworks.algafood.domain.util.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -42,7 +43,7 @@ public class ResourceServerConfig {
 
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             //"authorities" é um campo costumizado no AuthorizationServerConfig
-            List<String> authorities = jwt.getClaimAsStringList("authorities");
+            List<String> authorities = jwt.getClaimAsStringList(Constants.CLAIN_AUTHORITIES);
 
             //JwtGrantedAuthoritiesConverter converte os Scopes do JWT em Authority
             JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();

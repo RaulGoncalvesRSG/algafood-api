@@ -4,6 +4,7 @@ import com.algaworks.algafood.core.security.authorizationserver.properties.AlgaF
 import com.algaworks.algafood.core.security.authorizationserver.properties.JwtKeyStoreProperties;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.UsuarioRepository;
+import com.algaworks.algafood.domain.util.Constants;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -180,14 +181,14 @@ public class AuthorizationServerConfig {
                 User user = (User) authentication.getPrincipal();
 
                 Usuario usuario = usuarioRepository.findByEmail(user.getUsername()).orElseThrow();
-
                 Set<String> authorities = new HashSet<>();
+
                 for (GrantedAuthority authority : user.getAuthorities()) {      //Authorities variam de acordo com as permissões do usuário
                     authorities.add(authority.getAuthority());
                 }
 
-                context.getClaims().claim("usuario_id", usuario.getId().toString());
-                context.getClaims().claim("authorities", authorities);
+                context.getClaims().claim(Constants.CLAIN_USUARIO_ID, usuario.getId().toString());
+                context.getClaims().claim(Constants.CLAIN_AUTHORITIES, authorities);
             }
         };
     }
