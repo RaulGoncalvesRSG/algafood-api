@@ -10,7 +10,7 @@ services:                   #Service guarda vários containers
     environment:            #Permite add variáveis de ambiente
       MYSQL_ROOT_PASSWORD: "1234"
     ports:
-      - "3306:3306"
+      - "13306:3306"
     networks:                 #Seleciona uma rede criada anteriormente
       - algafood-network      #O container MySQL precisa estar dentro de uma rede pq ele precisa estar na mesma rede da API
 
@@ -30,6 +30,7 @@ services:                   #Service guarda vários containers
       #É a mesma coisa de utilizar spring.session.store-type=redis no propertie, mas dessa forma é por variável de ambiente
       SPRING_SESSION_STORE_TYPE: redis      #Ativa store tupe de redis
       SPRING_REDIS_HOST: algafood-redis
+      SPRING_PROFILES_ACTIVE: dev
     networks:
       - algafood-network
     depends_on:               #Especifica quais containers algafood-api é dependente para poder inicializar

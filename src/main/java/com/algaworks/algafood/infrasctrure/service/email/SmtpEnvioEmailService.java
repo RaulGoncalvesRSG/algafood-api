@@ -2,12 +2,9 @@ package com.algaworks.algafood.infrasctrure.service.email;
 
 import com.algaworks.algafood.core.email.EmailProperties;
 import com.algaworks.algafood.domain.service.EnvioEmailService;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -21,7 +18,7 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
     private EmailProperties emailProperties;
 
     @Autowired
-    private Configuration freemarkerConfig;
+    private ProcessadorEmailTemplate emailTemplate;
 
     @Override
     public void enviar(Mensagem mensagem) {
@@ -34,7 +31,7 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
     }
 
     protected MimeMessage criarMimeMessage(Mensagem mensagem) throws MessagingException {
-        String corpo = processarTemplate(mensagem);
+        String corpo = emailTemplate.processarTemplate(mensagem);
         MimeMessage mimeMessage = mailSender.createMimeMessage();
 
         //MimeMessageHelper é uma classee auxiliar que ajuda a atribuir as informações para MimeMessage e configurá-lo
@@ -45,16 +42,5 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
         helper.setText(corpo, true);        //Possibilita a msg seja em html
 
         return mimeMessage;
-    }
-
-    protected String processarTemplate(Mensagem mensagem) {
-        try {
-            //Faz o atributo "corpo" ser o nome do arquivo do corpo html
-            Template template = freemarkerConfig.getTemplate(mensagem.getCorpo());
-            //Segundo param é um Object Java utilizado para gerar o html dinamicamente
-            return FreeMarkerTemplateUtils.processTemplateIntoString(template, mensagem.getVariaveis());
-        } catch (Exception e) {
-            throw new EmailException("Não foi possível montar o template do e-mail", e);
-        }
     }
 }
