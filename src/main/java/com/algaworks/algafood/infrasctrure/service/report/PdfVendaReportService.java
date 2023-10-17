@@ -21,27 +21,31 @@ import java.util.Locale;
 public class PdfVendaReportService implements VendaReportService {
 
 	private final VendaQueryService vendaQueryService;
+
+	private static final String REPORT_LOCALE = "REPORT_LOCALE";		//Nome predefinido para o Jasper Report
 	private static final String PATH_RELATORIO = "/relatorios/vendas-diarias.jasper";
 	private static final String REPORT_EXCEPTION = "Não foi possível emitir relatório de vendas diárias";
 
 	@Override
 	public byte[] emitirVendasDiarias(VendaDiariaFilter filtro, String timeOffset) {
 		try {
-			//InputStream são os dados do stream do relatório
-			InputStream inputStream = this.getClass().getResourceAsStream(PATH_RELATORIO);
+			InputStream inputStream = this.getClass().getResourceAsStream(PATH_RELATORIO);	 //InputStream é o fluxo de dados do relatório
 
 			HashMap<String, Object> parametros = new HashMap<>();
-			parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
+			parametros.put(REPORT_LOCALE, new Locale("pt", "BR"));
 
 			List<VendaDiariaDTO> vendasDiarias = vendaQueryService.consultarVendasDiarias(filtro, timeOffset);
-			var dataSource = new JRBeanCollectionDataSource(vendasDiarias);
 
+			//Fonte de dados, de onde vem os dados para preencher o relatório
+			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(vendasDiarias);
+
+			/*JasperPrint representa um relatório preenchido com parâmetros e fonte de dados. Depois de preenchido, ele pode ser exportado em diferentes formatos.
+			JasperPrint não tem formato específico (se é PDF, XLS, etc), é apenas um doc preenchido. Para preencher ele precisa de uma fonte de dados*/
 			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros, dataSource);
 
-			return JasperExportManager.exportReportToPdf(jasperPrint);
+			return JasperExportManager.exportReportToPdf(jasperPrint);		//Exporta JasperPrint em formato PDF
 		} catch (Exception e) {
 			throw new ReportException(REPORT_EXCEPTION, e);
 		}
 	}
-
 }

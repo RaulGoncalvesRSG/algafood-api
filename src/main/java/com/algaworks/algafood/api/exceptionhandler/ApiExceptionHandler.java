@@ -199,6 +199,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
+	private String joinPath(List<Reference> references) {
+		return references.stream()
+				.map(ref -> ref.getFieldName())
+				.collect(Collectors.joining("."));
+	}
+
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<?> handleEntidadeNaoEncontrada(AccessDeniedException ex, WebRequest request) {
 
@@ -275,29 +281,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
 			HttpStatusCode status, WebRequest request) {
-		
+
 		if (Objects.isNull(body)) {
-			body = Problem.builder()
-				.timestamp(OffsetDateTime.now())
-				.title(HttpStatus.valueOf(status.value()).getReasonPhrase())
-				.status(status.value())
-				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-				.build();
+			String title = HttpStatus.valueOf(status.value()).getReasonPhrase();
+			body = createProblemBuilder(title, status.value());
 		} else if (body instanceof String) {
-			body = Problem.builder()
-				.timestamp(OffsetDateTime.now())
-				.title((String) body)
-				.status(status.value())
-				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-				.build();
+			body = createProblemBuilder((String) body, status.value());
 		}
-		
+
 		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
 	
-	private Problem.ProblemBuilder createProblemBuilder(HttpStatusCode status,
-			ProblemType problemType, String detail) {
-		
+	private Problem.ProblemBuilder createProblemBuilder(HttpStatusCode status, ProblemType problemType, String detail) {
 		return Problem.builder()
 			.timestamp(OffsetDateTime.now())
 			.status(status.value())
@@ -306,10 +301,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 			.detail(detail);
 	}
 
-	private String joinPath(List<Reference> references) {
-		return references.stream()
-			.map(ref -> ref.getFieldName())
-			.collect(Collectors.joining("."));
+	private Problem createProblemBuilder(String title, Integer status) {
+		return Problem.builder()
+				.timestamp(OffsetDateTime.now())
+				.title(title)
+				.status(status)
+				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+				.build();
 	}
 
 	@ExceptionHandler(ConstraintViolationException.class)
