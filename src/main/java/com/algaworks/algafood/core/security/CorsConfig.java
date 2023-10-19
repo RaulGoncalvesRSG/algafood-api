@@ -16,7 +16,7 @@ public class CorsConfig {
 	@Bean		//Configuração de cors para authorization server e resource serve
 	public FilterRegistrationBean<CorsFilter> corsFilterFilterRegistrationBean() {
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(true);
+		config.setAllowCredentials(false);							//False porque foi usado * no AllowedOrigins, porém não faz diferença para autenticações com Token
 		config.setAllowedOrigins(Collections.singletonList("*"));
 		config.setAllowedMethods(Collections.singletonList("*"));
 		config.setAllowedHeaders(Collections.singletonList("*"));
